@@ -1,0 +1,18 @@
+{
+  "_id": "ObjectId",
+  "projectId": "ObjectId",
+  "clientId": "ObjectId",
+  "employees": [
+    {
+      "empNo": "ObjectId"
+    }
+  ],
+  "currentPhase": "String",
+  "completionPercentage": "Number",
+  "updates": [
+    {
+      "updateDate": "Date",
+      "updateText": "String"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "_id": "ObjectId",
+  "name": "String",
+  "description": "String",
+  "employees": [
+    {
+      "empNo": "ObjectId",
+      "employeeName": "String"
+    }
+  ]
+}

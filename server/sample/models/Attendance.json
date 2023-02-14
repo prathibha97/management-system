@@ -1,0 +1,8 @@
+{
+  "_id": "ObjectId",
+  "empNo": "ObjectId",
+  "date": "Date",
+  "inTime": "String",
+  "outTime": "String",
+  "status": "String"
+}

@@ -1,0 +1,38 @@
+{
+  "_id": "ObjectId",
+  "empNo": "ObjectId",
+  "name": {
+    "first": "String",
+    "last": "String"
+  },
+  "address": {
+    "street": "String",
+    "city": "String",
+    "state": "String",
+    "zip": "String"
+  },
+  "email": "String",
+  "phone": "String",
+  "isAdmin": "Boolean",
+  "employmentHistory": [
+    {
+      "company": "String",
+      "position": "String",
+      "startDate": "Date",
+      "endDate": "Date"
+    }
+  ],
+  "projectHistory": [
+    {
+      "projectId": "ObjectId",
+      "projectName": "String",
+      "startDate": "Date",
+      "endDate": "Date",
+      "timeSpent": "Number"
+    }
+  ],
+  "idCardPath": "String",
+  "bankPassPath": "String",
+  "resumePath": "String",
+  "departmentId": "ObjectId"
+}

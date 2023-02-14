@@ -1,0 +1,23 @@
+{
+  "_id": "ObjectId",
+  "name": {
+    "first": "String",
+    "last": "String"
+  },
+  "address": {
+    "street": "String",
+    "city": "String",
+    "state": "String",
+    "zip": "String"
+  },
+  "email": "String",
+  "phone": "String",
+  "projectHistory": [
+    {
+      "projectId": "ObjectId",
+      "projectName": "String",
+      "startDate": "Date",
+      "endDate": "Date"
+    }
+  ]
+}

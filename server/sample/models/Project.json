@@ -1,0 +1,14 @@
+{
+  "_id": "ObjectId",
+  "name": "String",
+  "description": "String",
+  "deadline": "Date",
+  "budget": "Number",
+  "clientId": "ObjectId",
+  "employees": [
+    {
+      "empNo": "ObjectId",
+      "employeeName": "String"
+   }
+]
+}

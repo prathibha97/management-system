@@ -1,0 +1,7 @@
+{
+  "_id": "ObjectId",
+  "empNo": "ObjectId",
+  "amount": "Number",
+  "paymentDate": "Date",
+  "paymentStatus": "String"
+}
