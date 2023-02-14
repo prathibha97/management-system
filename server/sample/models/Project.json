@@ -5,10 +5,15 @@
   "deadline": "Date",
   "budget": "Number",
   "clientId": "ObjectId",
+  "projectId": "ObjectId",
+  "projectName": "String",
+  "startDate": "Date",
+  "endDate": "Date",
+  "timeSpent": "Number",
   "employees": [
     {
       "empNo": "ObjectId",
       "employeeName": "String"
-   }
-]
+    }
+  ]
 }
