@@ -9,7 +9,7 @@ departmentRouter
   .post('/', protect, admin, createDepartment)
 
 departmentRouter
-  .get('/:id', protect, getDepartmentById)
+  .get('/:id', protect,admin, getDepartmentById)
   .put('/:id', protect, admin, updateDepartment)
   .delete('/:id', protect, admin, deleteDepartment)
 
