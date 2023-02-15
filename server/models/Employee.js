@@ -4,6 +4,7 @@ const empSchema = new mongoose.Schema({
   empNo: {
     type: String,
     required: true,
+    unique: true
   },
   name: {
     first: { type: String, required: true },
@@ -25,6 +26,7 @@ const empSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
+    unique: true
   },
   password: {
     type: String,
