@@ -4,6 +4,13 @@ const Employee = require('../models/Employee')
 const Department = require("../models/Department");
 const generateToken = require('../services/generateToken');
 
+/* 
+?@desc   Register a new user
+*@route  Post /api/emp/auth/register
+*@access Private/Admin
+*/
+// TODO: Error handling
+
 const registerEmployee = async (req, res) => {
   const {
     empNo,
@@ -63,6 +70,13 @@ const registerEmployee = async (req, res) => {
     res.status(500).json({ message: 'Failed to register employee' });
   }
 }
+
+/* 
+?@desc   Login a user
+*@route  Post /api/emp/auth/login
+*@access Private
+*/
+// TODO: Error handling
 
 const loginEmployee = async (req, res) => {
   const { email, password } = req.body

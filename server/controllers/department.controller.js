@@ -1,5 +1,12 @@
 const Department = require("../models/Department")
 
+/*
+?@desc   Create a new department
+*@route  Post /api/departments/
+*@access Private/Admin
+*/
+// TODO: Error handling
+
 const createDepartment = async (req, res) => {
   const { id, name, description, empNo } = req.body
   try {
@@ -17,6 +24,13 @@ const createDepartment = async (req, res) => {
   }
 }
 
+/*
+?@desc   Get all departments
+*@route  Get /api/departments/
+*@access Private/Admin
+*/
+// TODO: Error handling
+
 const getAllDepartments = async (req, res) => {
   try {
     const departments = await Department.find()
@@ -25,6 +39,13 @@ const getAllDepartments = async (req, res) => {
     res.status(500).json({ message: err.message })
   }
 }
+
+/*
+?@desc   Get department by id
+*@route  Get /api/departments/:id
+*@access Private/Admin
+*/
+// TODO: Error handling
 
 const getDepartmentById = async (req, res) => {
   const { id } = req.params
@@ -36,12 +57,19 @@ const getDepartmentById = async (req, res) => {
   }
 }
 
+/*
+?@desc   Update department by id
+*@route  Put /api/departments/:id
+*@access Private/Admin
+*/
+// TODO: Error handling
+
 const updateDepartment = async (req, res) => {
   const { id } = req.params
   const { depId, name, description, empNo } = req.body
   try {
-    const department = await Department.findOne({depId: id})
-    if(department){
+    const department = await Department.findOne({ depId: id })
+    if (department) {
       department.depId = depId
       department.name = name
       department.description = description
@@ -56,13 +84,21 @@ const updateDepartment = async (req, res) => {
   }
 }
 
-const deleteDepartment  = async (req, res) => {
-try {
-  await Department.deleteOne({depId: req.params.id})
-  res.status(200).json({message: "Department deleted successfully"})
-} catch (err) {
-  res.status(500).json({ message: err.message })
-}
+/*
+?@desc   Delete a department
+*@route  Delete /api/departments/:id
+*@access Private/Admin
+*/
+// TODO: Error handling
+
+const deleteDepartment = async (req, res) => {
+  const { id } = req.params
+  try {
+    await Department.deleteOne({ depId: id })
+    res.status(200).json({ message: "Department deleted successfully" })
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
 }
 
 module.exports = {
