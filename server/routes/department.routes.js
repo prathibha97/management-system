@@ -1,15 +1,16 @@
 const express = require('express')
 const { createDepartment, getAllDepartments, getDepartmentById, updateDepartment, deleteDepartment } = require('../controllers/department.controller')
+const { protect, admin } = require('../middleware/auth.middleware')
 
 const departmentRouter = express.Router()
 
 departmentRouter
-  .get('/', getAllDepartments)
-  .post('/', createDepartment)
+  .get('/', protect, getAllDepartments)
+  .post('/', protect, admin, createDepartment)
 
 departmentRouter
-  .get('/:id', getDepartmentById)
-  .put('/:id', updateDepartment)
-  .delete('/:id', deleteDepartment)
+  .get('/:id', protect, getDepartmentById)
+  .put('/:id', protect, admin, updateDepartment)
+  .delete('/:id', protect, admin, deleteDepartment)
 
 module.exports = departmentRouter
