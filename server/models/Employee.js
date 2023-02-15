@@ -15,6 +15,13 @@ const empSchema = new mongoose.Schema({
     state: { type: String },
     zip: { type: String },
   },
+  birthDate: {
+    type: String,
+    required: true
+  },
+  gender:{
+    type: String,
+  },
   email: {
     type: String,
     required: true,
@@ -38,7 +45,6 @@ const empSchema = new mongoose.Schema({
       startDate: { type: Date },
       endDate: { type: Date },
     }
-
   ],
   projectHistory: [
     {
@@ -49,7 +55,7 @@ const empSchema = new mongoose.Schema({
   idCardPath: { type: String },
   bankPassPath: { type: String },
   resumePath: { type: String },
-  department: {
+  depId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Department',
     required: true,
