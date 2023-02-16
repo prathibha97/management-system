@@ -59,6 +59,7 @@ const updateEmployee = async (req, res) => {
     zip,
     birthDate,
     gender,
+    designation,
     email,
     phone,
     isAdmin,
@@ -83,6 +84,7 @@ const updateEmployee = async (req, res) => {
       employee.birthDate = birthDate || employee.birthDate
       employee.gender = gender || employee.gender
       employee.email = email || employee.email
+      employee.designation = designation || employee.designation
       employee.phone = phone || employee.phone
       employee.isAdmin = isAdmin
       employee.employmentHistory = employmentHistory || employee.employmentHistory
