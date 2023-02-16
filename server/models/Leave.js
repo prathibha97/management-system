@@ -35,13 +35,15 @@ const leaveSchema = new mongoose.Schema({
     type: Date
   },
   approvedBy: {
-    type: String
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Employee'
   },
   rejectedOn: {
     type: Date
   },
   rejectedBy: {
-    type: String
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Employee'
   },
 });
 
