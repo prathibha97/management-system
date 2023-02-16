@@ -20,7 +20,7 @@ const empSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  gender:{
+  gender: {
     type: String,
   },
   email: {
@@ -65,6 +65,13 @@ const empSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Department',
     required: true,
+  },
+  leaveBalance: {
+    casual: { type: Number, default: 10 },
+    sick: { type: Number, default: 10 },
+    maternity: { type: Number, default: 10 },
+    paternity: { type: Number, default: 10 },
+    bereavement: { type: Number, default: 10 }
   }
 }, {
   timestamps: true
