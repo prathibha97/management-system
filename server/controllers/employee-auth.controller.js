@@ -2,7 +2,7 @@
 const bcrypt = require('bcrypt')
 const Employee = require('../models/Employee')
 const Department = require("../models/Department");
-const generateToken = require('../services/generateToken');
+const generateToken = require('../utils/generateToken');
 
 /* 
 ?@desc   Register a new user
