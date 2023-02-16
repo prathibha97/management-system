@@ -13,7 +13,7 @@ empRouter
   .delete('/:id', protect, admin, removeEmployee)
 
 empRouter
-  .get('/profile', protect, getEmployeeProfile)
-  .put('/profile', protect, updateEmployeeProfile)
+  .get('/profile/:id', protect, getEmployeeProfile)
+  .put('/profile/:id', protect, updateEmployeeProfile)
 
 module.exports = empRouter
