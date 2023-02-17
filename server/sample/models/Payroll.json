@@ -1,7 +1,10 @@
 {
   "_id": "ObjectId",
   "empNo": "ObjectId",
-  "amount": "Number",
+  "basicSalary": "Number",
+  "deductions": "Number",
+  "bonuses":"Number",
+  "netSalary": "Number",
   "paymentDate": "Date",
   "paymentStatus": "String"
 }
