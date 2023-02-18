@@ -7,6 +7,35 @@ const Attendance = require('../models/Attendance');
 *@access Private
 */
 
+// const markAttendance = async (req, res) => {
+//   const { empNo } = req.user;
+//   const existingAttendance = await Attendance.findOne({
+//     empNo,
+//     date: new Date().toISOString().slice(0, 10),
+//   });
+
+//   if (existingAttendance) {
+//     // Update the existing attendance record with the outTime
+//     const { outTime } = existingAttendance;
+//     if (outTime) {
+//       return res.status(400).json({ message: 'Attendance already marked for today' });
+//     }
+//     existingAttendance.outTime = new Date();
+//     await existingAttendance.save();
+//     return res.status(200).json(existingAttendance);
+//   }
+
+//   // Create a new attendance record with inTime
+//   const attendance = new Attendance({
+//     empNo,
+//     inTime: new Date(),
+//     date: new Date().toISOString().slice(0, 10),
+//   });
+
+//   const savedAttendance = await attendance.save();
+//   res.status(201).json(savedAttendance);
+// };
+
 const markAttendance = async (req, res) => {
   const { empNo } = req.user;
   const existingAttendance = await Attendance.findOne({
@@ -21,6 +50,8 @@ const markAttendance = async (req, res) => {
       return res.status(400).json({ message: 'Attendance already marked for today' });
     }
     existingAttendance.outTime = new Date();
+    const duration = (existingAttendance.outTime - existingAttendance.inTime) / 1000; // duration in seconds
+    existingAttendance.workHours = duration / 3600; // convert duration to hours
     await existingAttendance.save();
     return res.status(200).json(existingAttendance);
   }
@@ -35,6 +66,7 @@ const markAttendance = async (req, res) => {
   const savedAttendance = await attendance.save();
   res.status(201).json(savedAttendance);
 };
+
 
 /* 
 ?@desc   Get all attendance records
