@@ -1,5 +1,5 @@
 /* eslint-disable consistent-return */
-const Leave = require('../models/Leave')
+const Leave = require('../models/Leave');
 const Employee = require('../models/Employee');
 const getNumberOfDays = require('../utils/getNumberOfDays');
 
@@ -8,7 +8,6 @@ const getNumberOfDays = require('../utils/getNumberOfDays');
 *@route  Post /api/leaves/
 *@access Private
 */
-
 
 const createLeaveRequest = async (req, res) => {
   try {
@@ -27,7 +26,7 @@ const createLeaveRequest = async (req, res) => {
       leaveType,
       startDate,
       endDate,
-      reason
+      reason,
     });
 
     res.status(201).json({ message: 'Leave request created successfully', leaveRequest });
@@ -45,13 +44,13 @@ const createLeaveRequest = async (req, res) => {
 
 const getAllLeaveRequests = async (req, res) => {
   try {
-    const leaveRequest = await Leave.find()
-    res.status(200).json(leaveRequest)
+    const leaveRequest = await Leave.find();
+    res.status(200).json(leaveRequest);
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ message: 'Failed to fetch leave request' });
   }
-}
+};
 
 /* 
 ?@desc   Get all leave requests of a specific employee
@@ -62,13 +61,13 @@ const getAllLeaveRequests = async (req, res) => {
 const getLeaveRequestById = async (req, res) => {
   const { id } = req.params;
   try {
-    const leaveRequest = await Leave.find({ empNo: id })
-    res.status(200).json(leaveRequest)
+    const leaveRequest = await Leave.find({ empNo: id });
+    res.status(200).json(leaveRequest);
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ message: 'Failed to fetch leave request' });
   }
-}
+};
 
 /* 
 ?@desc   Approve or reject a leave request
@@ -82,19 +81,19 @@ const approveOrRejectLeave = async (req, res) => {
   try {
     const leave = await Leave.findById(id).where('empNo').equals(empNo);
     if (!leave) {
-      return res.status(404).json({ message: "Leave not found" });
+      return res.status(404).json({ message: 'Leave not found' });
     }
-    if (leave.status !== "pending") {
-      return res.status(400).json({ message: "Leave request is already processed" });
+    if (leave.status !== 'Pending') {
+      return res.status(400).json({ message: 'Leave request is already processed' });
     }
 
-    if (status === 'approved') {
+    if (status === 'Approved') {
       const { leaveType, startDate, endDate } = leave;
       const numberOfDays = getNumberOfDays(startDate, endDate);
       const employee = await Employee.findOne({ empNo });
       const leaveBalance = employee.leaveBalance[leaveType];
       if (leaveBalance < numberOfDays) {
-        return res.status(400).json({ message: "Insufficient leave balance" });
+        return res.status(400).json({ message: 'Insufficient leave balance' });
       }
 
       employee.leaveBalance[leaveType] -= numberOfDays;
@@ -113,15 +112,13 @@ const approveOrRejectLeave = async (req, res) => {
     res.status(200).json(updatedLeave);
   } catch (err) {
     console.error(err.message);
-    res.status(500).json({ message: "Failed to approve or reject leave request" });
+    res.status(500).json({ message: 'Failed to approve or reject leave request' });
   }
 };
-
-
 
 module.exports = {
   createLeaveRequest,
   getAllLeaveRequests,
   getLeaveRequestById,
-  approveOrRejectLeave
-}
+  approveOrRejectLeave,
+};
