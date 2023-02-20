@@ -12,7 +12,6 @@ const protect = async (req, res, next) => {
       req.empNo = req.user.empNo 
       next()
     } catch (err) {
-      console.error(err)
       res.status(401)
       throw new Error('Not authorized, token failed')
     }

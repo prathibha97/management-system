@@ -2,6 +2,7 @@
 import { applyMiddleware, combineReducers, legacy_createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
+import { attendanceDetailsReducer, markAttendanceReducer } from './reducers/attendanceReducers';
 import { userDetailsReducer, userLoginReducer } from './reducers/userReducers';
 
 
@@ -18,6 +19,8 @@ const reducer = combineReducers({
   userLogin: userLoginReducer,
   // userRegister: userRegisterReducer,
   userDetails: userDetailsReducer,
+  attendanceDetails: attendanceDetailsReducer,
+  markAttendance: markAttendanceReducer,
   // userUpdateProfile: userUpdateProfileReducer,
   // userList: userListReducer,
   // userDelete: userDeleteReducer,

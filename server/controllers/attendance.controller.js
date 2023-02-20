@@ -38,6 +38,7 @@ const Attendance = require('../models/Attendance');
 
 const markAttendance = async (req, res) => {
   const { empNo } = req.user;
+
   const existingAttendance = await Attendance.findOne({
     empNo,
     date: new Date().toISOString().slice(0, 10),
