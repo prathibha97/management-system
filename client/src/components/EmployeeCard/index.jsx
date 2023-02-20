@@ -104,14 +104,14 @@ function EmployeeCard({ employee }) {
               <div className="flex gap-5 items-center">
                 <FontAwesomeIcon icon={faBriefcase} className='text-[#707070]' />
                 <div>
-                  <h2>Software Development</h2>
+                  <h2>{employee.department.name}</h2>
                   <p className='text-[#707070] text-xs'>Department</p>
                 </div>
               </div>
               <div className="flex gap-5 items-center">
                 <FontAwesomeIcon icon={faHouseLaptop} className='text-[#707070]' />
                 <div>
-                  <h2>Full Time, Remote</h2>
+                  <h2>{employee.workType}</h2>
                   <p className='text-[#707070] text-xs'>Work Type</p>
                 </div>
               </div>
