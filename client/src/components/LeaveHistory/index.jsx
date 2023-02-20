@@ -2,7 +2,6 @@
 /* eslint-disable no-nested-ternary */
 import { faCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React from 'react'
 
 function LeaveHistory({leaves}) {
   console.log(leaves);
@@ -11,6 +10,7 @@ function LeaveHistory({leaves}) {
     const options = { day: 'numeric', month: 'short' };
     return date.toLocaleDateString('en-US', options);
   }
+
 
   return (
     <div className='flex flex-col bg-white px-12 py-5 mt-5 h-[450px] overflow-y-auto w-[90%] m-auto rounded-2xl'>
