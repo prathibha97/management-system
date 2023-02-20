@@ -58,7 +58,6 @@ export const markAttendance = () => async (dispatch, getState) => {
     };
 
     const { data } = await api.get(`/attendance`, config);
-    console.log('Response Data:', data);
     dispatch({
       type: USER_ATTENDANCE_MARK_SUCCESS,
       payload: data,

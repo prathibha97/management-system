@@ -13,8 +13,7 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const { data } = await api.post('/emp/auth/login', { email, password })
-      console.log(data);
+      await api.post('/emp/auth/login', { email, password })
       dispatch(login(email, password))
       navigate('/dashboard')
     } catch (err) {
