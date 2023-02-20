@@ -8,3 +8,5 @@ export { default as Header } from './Header';
 export { default as LeaveInformation } from './LeaveInformation';
 export { default as Loader } from './Loader';
 export { default as Sidebar } from './Sidebar';
+export { default as LeaveBalance } from './LeaveBalance';
+export { default as LeaveHistory } from './LeaveHistory';
