@@ -19,7 +19,7 @@ function Profile() {
     } else {
       const storedUser = JSON.parse(localStorage.getItem('user'));
       if (!storedUser || storedUser.empNo !== userInfo.empNo) {
-        dispatch(getUserDetails(userInfo.employee.empNo));
+        dispatch(getUserDetails(userInfo?.employee?.empNo));
       }
     }
   }, [userInfo])

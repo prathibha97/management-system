@@ -1,10 +1,12 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import { Alert, FormControl, InputLabel, MenuItem, Select, Snackbar, TextField } from '@mui/material';
 import { DesktopDatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import moment from 'moment';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { createLeaveRequest } from '../../redux/actions/leaveActions';
 import Button from '../Button';
 
 function ApplyLeave() {
@@ -12,6 +14,32 @@ function ApplyLeave() {
   const [startDate, setStartDate] = useState(moment().format())
   const [endDate, setEndDate] = useState(moment().format())
   const [reason, setReason] = useState('')
+  const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
+  const dispatch = useDispatch()
+
+  const leaveRequest = useSelector((state) => state.leaveRequest);
+  const { error } = leaveRequest;
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      dispatch(createLeaveRequest(leaveType, startDate, endDate, reason))
+      setAlert({ open: true, message: 'Leave reaquest created successfully', severity: 'success' });
+    } catch (err) {
+      setAlert({ open: true, message: err.response.data.message, severity: 'error' });
+    }
+  }
+
+  const handleAlertClose = () => {
+    setAlert({ ...alert, open: false });
+  };
+
+  useEffect(() => {
+    if (error) {
+      setAlert({ open: true, message: error, severity: 'error' });
+    }
+  }, [error]);
+
   return (
     <div className='bg-[#EEF2F5] h-[90%] w-[95%] rounded-xl m-auto'>
       <div className='flex flex-col mt-6 ml-[35px]'>
@@ -39,7 +67,7 @@ function ApplyLeave() {
                 label="Start Date"
                 inputFormat="MM/DD/YYYY"
                 value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
+                onChange={(date) => setStartDate(date)}
                 renderInput={(params) => <TextField {...params} />}
               />
             </LocalizationProvider>
@@ -48,25 +76,20 @@ function ApplyLeave() {
                 label="End Date"
                 inputFormat="MM/DD/YYYY"
                 value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
+                onChange={(date) => setEndDate(date)}
                 renderInput={(params) => <TextField {...params} />}
               />
             </LocalizationProvider>
           </div>
-          {/* <textarea
-            cols="20"
-            rows="5"
-            value={reason}
-            placeholder='Reason...'
-            onChange={(e) => setReason(e.target.value)}
-            className='mt-5 border w-[100%] rounded'
-          >
-            Reason
-          </textarea> */}
-          <TextField sx={{marginBottom: '20px'}} fullWidth multiline rows={5} label="Reson" value={reason} onChange={(e) => setReason(e.target.value)} />
-          <Button title="Apply Leave" />
+          <TextField sx={{ marginBottom: '20px' }} fullWidth multiline rows={5} label="Reason" value={reason} onChange={(e) => setReason(e.target.value)} />
+          <Button title="Apply Leave" onClick={handleSubmit} />
         </div>
       </div>
+      <Snackbar open={alert?.open} autoHideDuration={5000} onClose={handleAlertClose}>
+        <Alert onClose={handleAlertClose} severity={alert?.severity}>
+          {alert?.message}
+        </Alert>
+      </Snackbar>
     </div>
   )
 }

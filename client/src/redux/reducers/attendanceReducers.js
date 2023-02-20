@@ -6,16 +6,18 @@ export const attendanceDetailsReducer = (state = { attendanceInfo: [] }, action)
   switch (type) {
     case USER_ATTENDANCE_DETAILS_REQUEST:
       return {
-        state,
+        ...state,
         loading: true,
       };
     case USER_ATTENDANCE_DETAILS_SUCCESS:
       return {
+        ...state,
         loading: false,
         attendanceInfo: payload,
       };
     case USER_ATTENDANCE_DETAILS_FAIL:
       return {
+        ...state,
         loading: false,
         error: payload,
       };

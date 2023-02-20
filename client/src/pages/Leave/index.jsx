@@ -22,8 +22,8 @@ function Leave() {
     } else {
       const storedUser = JSON.parse(localStorage.getItem('user'));
       if (!storedUser || storedUser.empNo !== userInfo.empNo) {
-        dispatch(getUserDetails(userInfo.employee.empNo));
-        dispatch(getUserLeaveDetails(userInfo.employee.empNo));
+        dispatch(getUserDetails(userInfo?.employee.empNo));
+        dispatch(getUserLeaveDetails(userInfo?.employee.empNo));
       }
     }
   }, [userInfo, leaves])

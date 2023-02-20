@@ -13,11 +13,11 @@ function LeaveHistory({leaves}) {
   }
 
   return (
-    <div className='flex flex-col bg-white px-12 py-5 mt-5 h-[450px] overflow-scroll w-[90%] m-auto rounded-2xl'>
+    <div className='flex flex-col bg-white px-12 py-5 mt-5 h-[450px] overflow-y-auto w-[90%] m-auto rounded-2xl'>
       <h1 className='font-bold mb-5'>Leave History</h1>
       {leaves?.map((leave) => (
       <>
-          <div className='flex items-center justify-between' key={leave._id}>
+          <div className='flex items-center justify-between' key={leave?._id}>
             <FontAwesomeIcon icon={faCircle} className='text-[10px]' />
             <p className='text-sm'>{leave?.leaveType}</p>
             <p className='text-sm'>{formatDate(leave.startDate)} {' '}- {' '} {formatDate(leave.endDate)}</p>

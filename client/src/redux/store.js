@@ -6,7 +6,10 @@ import {
   attendanceDetailsReducer,
   markAttendanceReducer,
 } from './reducers/attendanceReducers';
-import { leaveDetailsReducer } from './reducers/leaveReducer';
+import {
+  leaveDetailsReducer,
+  leaveRequestReducer,
+} from './reducers/leaveReducer';
 import { userDetailsReducer, userLoginReducer } from './reducers/userReducers';
 
 const userInfoFromStorage = localStorage.getItem('userInfo')
@@ -24,6 +27,7 @@ const reducer = combineReducers({
   attendanceDetails: attendanceDetailsReducer,
   markAttendance: markAttendanceReducer,
   leaveDetails: leaveDetailsReducer,
+  leaveRequest: leaveRequestReducer,
   // userUpdateProfile: userUpdateProfileReducer,
   // userList: userListReducer,
   // userDelete: userDeleteReducer,
