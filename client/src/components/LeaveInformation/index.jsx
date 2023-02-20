@@ -3,7 +3,7 @@ import { faCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 
-function LeaveInformation() {
+function LeaveInformation({user}) {
   const approvalStatus = 'Approved'
   return (
     <div className='bg-[#EEF2F5] h-[90%] w-[95%] rounded-xl m-auto'>
@@ -17,19 +17,19 @@ function LeaveInformation() {
         <div className='flex flex-col items-center'>
           <div className='flex mt-2 gap-10'>
             <div className='flex flex-col items-center'>
-              <h2 className='font-semibold'>4/12</h2>
+              <h2 className='font-semibold'>{user?.leaveBalance?.casual}/10</h2>
               <p className='text-[#707070]'>Casual</p>
             </div>
             <div className='flex flex-col items-center'>
-              <h2 className='font-semibold'>3/30</h2>
+              <h2 className='font-semibold'>{user?.leaveBalance?.maternity}/10</h2>
               <p className='text-[#707070]'>Maternity</p>
             </div>
             <div className='flex flex-col items-center'>
-              <h2 className='font-semibold'>7/20</h2>
+              <h2 className='font-semibold'>{user?.leaveBalance?.annual}/10</h2>
               <p className='text-[#707070]'>Annual</p>
             </div>
             <div className='flex flex-col items-center'>
-              <h2 className='font-semibold'>7/10</h2>
+              <h2 className='font-semibold'>{user?.leaveBalance?.other}/10</h2>
               <p className='text-[#707070]'>Other</p>
             </div>
           </div>

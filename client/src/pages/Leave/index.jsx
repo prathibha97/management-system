@@ -1,12 +1,36 @@
-import React from 'react'
-import ApplyLeave from '../../components/ApplyLeave'
-import LeaveInformation from '../../components/LeaveInformation'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { ApplyLeave, LeaveInformation, Loader } from '../../components'
+import { getUserDetails } from '../../redux/actions/userActions';
 
 function Leave() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.userDetails) || {}
+
+  const userLogin = useSelector((state) => state.userLogin)
+  const { userInfo } = userLogin
+
+  useEffect(() => {
+    if (!userInfo) {
+      navigate('/')
+    } else {
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+      if (!storedUser || storedUser.empNo !== userInfo.empNo) {
+        dispatch(getUserDetails(userInfo.employee.empNo));
+      }
+    }
+  }, [userInfo])
+
+  if (!user) {
+    return <Loader />
+  }
+
   return (
     <div className="flex h-[100vh]">
       <div className="flex flex-col flex-1">
-        <LeaveInformation />
+        <LeaveInformation user={user}/>
       </div>
       <div className="flex flex-col flex-1">
         <ApplyLeave/>

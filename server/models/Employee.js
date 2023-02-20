@@ -68,10 +68,9 @@ const empSchema = new mongoose.Schema({
   },
   leaveBalance: {
     casual: { type: Number, default: 10 },
-    sick: { type: Number, default: 10 },
+    annual: { type: Number, default: 10 },
     maternity: { type: Number, default: 10 },
-    paternity: { type: Number, default: 10 },
-    bereavement: { type: Number, default: 10 }
+    other: { type: Number, default: 10 },
   }
 }, {
   timestamps: true
