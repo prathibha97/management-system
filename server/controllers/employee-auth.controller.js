@@ -1,7 +1,7 @@
 /* eslint-disable consistent-return */
-const bcrypt = require('bcrypt')
-const Employee = require('../models/Employee')
-const Department = require("../models/Department");
+const bcrypt = require('bcrypt');
+const Employee = require('../models/Employee');
+const Department = require('../models/Department');
 const generateToken = require('../utils/generateToken');
 
 /* 
@@ -32,16 +32,17 @@ const registerEmployee = async (req, res) => {
     idPath,
     bankSlipPath,
     resumePath,
-    departmentId
+    departmentId,
+    workType,
   } = req.body;
 
-  const salt = await bcrypt.genSalt(10)
-  const hashedPassword = await bcrypt.hash(password, salt)
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
 
   try {
-    const employeeExist = await Employee.findOne({ email })
+    const employeeExist = await Employee.findOne({ email });
     if (employeeExist) {
-      return res.status(400).json({ message: "Employee already exists" })
+      return res.status(400).json({ message: 'Employee already exists' });
     }
     // Create a new employee object
     const newEmployee = await Employee.create({
@@ -60,18 +61,19 @@ const registerEmployee = async (req, res) => {
       idCardPath: idPath,
       bankPassPath: bankSlipPath,
       resumePath,
-      depId: departmentId
+      department: departmentId,
+      workType,
     });
 
-    const department = await Department.findById(departmentId)
-    department.employees.push(newEmployee.depId)
-    await department.save()
-    res.status(201).json(newEmployee)
+    const department = await Department.findById(departmentId);
+    department.employees.push(newEmployee.depId);
+    await department.save();
+    res.status(201).json(newEmployee);
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ message: 'Failed to register employee' });
   }
-}
+};
 
 /* 
 ?@desc   Login a user
@@ -81,21 +83,21 @@ const registerEmployee = async (req, res) => {
 // TODO: Error handling
 
 const loginEmployee = async (req, res) => {
-  const { email, password } = req.body
+  const { email, password } = req.body;
   try {
-    const employee = await Employee.findOne({ email })
-    if (!employee) return res.status(404).json({ message: "User does not exists" })
-    const isMatch = await bcrypt.compare(password, employee.password)
-    if (!isMatch) return res.status(403).json({ message: "Invalid password" })
-    employee.password = undefined
-    res.status(200).json({ employee, token: generateToken(employee._id) })
+    const employee = await Employee.findOne({ email });
+    if (!employee) return res.status(404).json({ message: 'User does not exists' });
+    const isMatch = await bcrypt.compare(password, employee.password);
+    if (!isMatch) return res.status(403).json({ message: 'Invalid password' });
+    employee.password = undefined;
+    res.status(200).json({ employee, token: generateToken(employee._id) });
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ message: 'Failed to login employee' });
   }
-}
+};
 
 module.exports = {
   registerEmployee,
-  loginEmployee
-}
+  loginEmployee,
+};

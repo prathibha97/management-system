@@ -68,7 +68,7 @@ const updateEmployee = async (req, res) => {
     idPath,
     bankSlipPath,
     resumePath,
-    departmentId
+    department
   } = req.body
 
   try {
@@ -92,7 +92,7 @@ const updateEmployee = async (req, res) => {
       employee.idPath = idPath || employee.idPath
       employee.bankSlipPath = bankSlipPath || employee.bankSlipPath
       employee.resumePath = resumePath || employee.resumePath
-      employee.departmentId = departmentId || employee.departmentId
+      employee.department = department || employee.department;
     } else {
       res.status(404).json({ message: 'Employee not found' })
     }
@@ -133,7 +133,9 @@ const removeEmployee = async (req, res) => {
 const getEmployeeProfile = async (req, res) => { 
   const { id } = req.params
   try {
-    const employee = await Employee.findOne({ empNo: id }).select('-password')
+    const employee = await Employee.findOne({ empNo: id })
+      .select('-password')
+      .populate('department', 'name description');
     if (employee) {
       // *Check if the logged-in user is the same as the employee being viewed
       if (req.empNo !== employee.empNo) {
