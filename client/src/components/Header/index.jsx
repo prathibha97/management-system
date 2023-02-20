@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { markAttendance } from '../../redux/actions/attendanceActions';
 import AccountMenu from '../AccountMenu';
-import LogTimeButton from '../LogTimeButton';
+import Button from '../Button';
 
 function Header() {
   const location = useLocation();
@@ -68,7 +68,7 @@ function Header() {
     <div className="flex items-center justify-between px-10 pt-5">
       <div className="text-3xl font-semibold">{heading}</div>
       <div className="flex items-center gap-10">
-        <LogTimeButton onClick={handleMarkAttendance} />
+        <Button title="Log Time" onClick={handleMarkAttendance} />
         <FontAwesomeIcon icon={faBell} />
         <AccountMenu />
       </div>

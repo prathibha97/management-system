@@ -1,6 +1,6 @@
 
 
-function LogTimeButton({ onClick }) {
+function Button({ onClick, title }) {
 
 
   return (
@@ -9,9 +9,9 @@ function LogTimeButton({ onClick }) {
       type='button'
       onClick={onClick}
     >
-      Log Time
+      {title}
     </button>
   )
 }
 
-export default LogTimeButton
+export default Button
