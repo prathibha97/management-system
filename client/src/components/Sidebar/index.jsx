@@ -63,6 +63,7 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faArrowRightFromBracket,
   faChartPie,
   faCog,
   faColumns,
@@ -93,6 +94,11 @@ function Sidebar() {
       name: "Attendance",
       link: "/attendance",
       icon: faIdBadge,
+    },
+    {
+      name: "Leave",
+      link: "/leave",
+      icon: faArrowRightFromBracket,
     },
     {
       name: "Settings",

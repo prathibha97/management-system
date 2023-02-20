@@ -8,6 +8,7 @@ import {
   Profile,
   Settings,
 } from './pages';
+import Leave from './pages/Leave';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/board" element={<Board />} />
           <Route path="/attendance" element={<Attendance />} />
+          <Route path="/leave" element={<Leave />} />
           <Route path="/settings" element={<Settings />} />
         </Route>
       </Routes>
