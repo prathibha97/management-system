@@ -4,7 +4,6 @@ import { faCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 function LeaveHistory({leaves}) {
-  console.log(leaves);
   function formatDate(dateStr) {
     const date = new Date(dateStr);
     const options = { day: 'numeric', month: 'short' };

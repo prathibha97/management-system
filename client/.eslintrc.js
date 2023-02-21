@@ -19,5 +19,6 @@ module.exports = {
     'no-param-reassign': 0,
     'default-param-last': 0,
     'react/no-array-index-key': 0,
+    'no-console': 0,
   },
 };
