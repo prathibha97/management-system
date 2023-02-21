@@ -1,7 +1,7 @@
 /* eslint-disable react/destructuring-assignment */
 import { faCircle, faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {Avatar, AvatarGroup} from "@mui/material";
+import { Avatar, AvatarGroup } from "@mui/material";
 
 function Card({ task }) {
   return (

@@ -13,6 +13,7 @@ function Header() {
   const location = useLocation();
   const dispatch = useDispatch()
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
+  // const [project, setProject] = useState('');
 
   // Get attendanceMark state from the Redux store
   const attendanceMark = useSelector((state) => state.markAttendance);
@@ -32,6 +33,17 @@ function Header() {
     }
   }, [error]);
 
+  let dropdown;
+  if (location.pathname === '/board') {
+    dropdown = (
+      <select className="ml-3 bg-gray-100 border border-gray-300 outline-none py-1 px-3 rounded-md text-xs">
+        <option value={null}>Select a project</option>
+        <option value="project1">Project 1</option>
+        <option value="project2">Project 2</option>
+        <option value="project3">Project 3</option>
+      </select>
+    );
+  }
 
 
   let heading;
@@ -63,10 +75,27 @@ function Header() {
     setAlert({ ...alert, open: false });
   };
 
+  // const handleProjectChange = (event) => {
+  //   setProject(event.target.value);
+  // };
+
 
   return (
     <div className="flex items-center justify-between px-10 pt-5">
-      <div className="text-3xl font-semibold">{heading}</div>
+      <div className='flex gap-2 items-center'>
+        <div className="text-3xl font-semibold">{heading}</div>
+        {/* {heading === 'Board' && (
+          <div className="flex items-center">
+            <Select value={project} onChange={handleProjectChange}>
+              <MenuItem value="">Select Project</MenuItem>
+              <MenuItem value="project1">Project 1</MenuItem>
+              <MenuItem value="project2">Project 2</MenuItem>
+              <MenuItem value="project3">Project 3</MenuItem>
+            </Select>
+          </div>
+        )} */}
+        {dropdown}
+      </div>
       <div className="flex items-center gap-10">
         <Button title="Log Time" onClick={handleMarkAttendance} />
         <FontAwesomeIcon icon={faBell} />
