@@ -1,2 +1,2 @@
 build-dev:
-	docker build -t react-app .
+	docker build -t prathibha097/react-app .

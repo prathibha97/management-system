@@ -1,2 +1,2 @@
 build:
-	docker build -t api-server .
+	docker build -t prathibha097/api-server .
