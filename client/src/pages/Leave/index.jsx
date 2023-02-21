@@ -14,7 +14,7 @@ function Leave() {
   const { userInfo } = userLogin
 
   const leaveDetails = useSelector((state) => state.leaveDetails)
-  const { leaves } = leaveDetails
+  const { leaves , loading} = leaveDetails
 
   useEffect(() => {
     if (!userInfo) {
@@ -28,7 +28,7 @@ function Leave() {
     }
   }, [userInfo, leaves])
 
-  if (!user) {
+  if (!user || loading) {
     return <Loader />
   }
 
