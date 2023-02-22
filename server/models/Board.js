@@ -15,6 +15,11 @@ const boardSchema = mongoose.Schema({
     ref: 'Project',
     required: true,
   },
+  tasks: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Task',
+    required: true,
+  }],
 });
 
 module.exports = mongoose.model('Board', boardSchema);

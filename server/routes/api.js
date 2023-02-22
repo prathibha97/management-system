@@ -5,6 +5,7 @@ const empAuthRouter = require('./employee-auth.routes');
 const empRouter = require('./employee.routes');
 const leaveRouter = require('./leave.routes');
 const projectRouter = require('./project.routes');
+const taskRouter = require('./task.routes');
 
 const api = express.Router();
 
@@ -14,5 +15,6 @@ api.use('/departments', departmentRouter);
 api.use('/attendance', attendanceRouter);
 api.use('/leaves', leaveRouter);
 api.use('/projects', projectRouter);
+api.use('/tasks', taskRouter);
 
 module.exports = api;
