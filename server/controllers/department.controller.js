@@ -49,9 +49,7 @@ const getAllDepartments = async (req, res) => {
 const getDepartmentById = async (req, res) => {
   const { id } = req.params;
   try {
-    const department = await Department.find({ depId: id })
-      .populate('projects')
-      .populate('employees');
+    const department = await Department.find({ depId: id }).populate('projects');
     res.status(200).json(department);
   } catch (err) {
     res.status(500).json({ message: err.message });
