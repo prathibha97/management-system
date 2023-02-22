@@ -67,7 +67,7 @@ const getAllProjects = async (req, res) => {
 const getProjectByEmpId = async (req, res) => {
   const { _id } = req.user;
   try {
-    const projects = await Project.find({ assignee: _id }).populate('boards');
+    const projects = await Project.find({ assignee: _id }).populate('boards').populate('tasks');
     return res.status(200).json(projects);
   } catch (err) {
     console.log(err);
