@@ -54,7 +54,30 @@ const getProjectById = async (req, res) => {
   }
 };
 
+const getAllProjects = async (req, res) => {
+  try {
+    const projects = await Project.find();
+    return res.status(200).json(projects);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: 'Error occured while getting the project details' });
+  }
+};
+
+const getProjectByEmpId = async (req, res) => {
+  const { _id } = req.user;
+  try {
+    const projects = await Project.find({ assignee: _id });
+    return res.status(200).json(projects);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: 'Error occured while getting the project details' });
+  }
+};
+
 module.exports = {
   createProject,
   getProjectById,
+  getAllProjects,
+  getProjectByEmpId,
 };
