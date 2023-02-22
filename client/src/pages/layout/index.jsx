@@ -7,8 +7,10 @@ function Layout() {
     <div className="flex h-screen">
       <Sidebar />
       <div className="flex flex-col flex-1 h-screen overflow-y-auto">
-        <Header />
-        <div className="flex-grow p-4">
+        <div className='fixed w-[82%]'>
+          <Header />
+        </div>
+        <div className="flex-grow p-4 mt-[40px]">
           <Outlet />
         </div>
       </div>

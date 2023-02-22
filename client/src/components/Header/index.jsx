@@ -81,7 +81,7 @@ function Header() {
 
 
   return (
-    <div className="flex items-center justify-between px-10 pt-5">
+    <div className="flex items-center justify-between px-10 pt-2">
       <div className='flex gap-2 items-center'>
         <div className="text-3xl font-semibold">{heading}</div>
         {/* {heading === 'Board' && (
