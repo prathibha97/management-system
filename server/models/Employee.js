@@ -58,8 +58,14 @@ const empSchema = new mongoose.Schema(
     ],
     projectHistory: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Project',
+        project: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Project',
+        },
+        assignedOn: {
+          type: Date,
+          default: Date.now,
+        },
       },
     ],
     idCardPath: { type: String },
