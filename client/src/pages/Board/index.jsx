@@ -3,7 +3,7 @@ import KanbanBoard from '../../components/KanbanBoard'
 
 function Board() {
   return (
-    <div>
+    <div className='h-[90%]'>
       <KanbanBoard/>
     </div>
   )

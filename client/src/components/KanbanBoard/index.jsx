@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable no-shadow */
-import { faEllipsis, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faEllipsis } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useState } from 'react'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
@@ -45,10 +45,9 @@ function Kanban() {
     }
   };
 
-
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <div className="flex items-start justify-between mt-5 m-auto gap-10">
+      <div className="flex items-start justify-between mt-5 m-auto gap-10 ">
         {data.map(section => (
           <Droppable
             key={section.id}
@@ -57,14 +56,13 @@ function Kanban() {
             {(provided) => (
               <div
                 {...provided.droppableProps}
-                className='w-[90%] bg-[#EEF2F5] rounded-xl p-4 overflow-y-auto max-h-[650px]'
+                className='w-[90%] bg-[#EEF2F5] rounded-xl p-4 overflow-y-auto max-h-[670px]'
                 ref={provided.innerRef}
               >
                 <div className="text-lg font-bold mb-4">
                   <div className='flex justify-between items-center'>
                     {section.title}
                     <div className='flex gap-2'>
-                      <FontAwesomeIcon icon={faPlus} />
                       <FontAwesomeIcon icon={faEllipsis} />
                     </div>
                   </div>
