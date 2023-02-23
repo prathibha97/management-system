@@ -3,6 +3,7 @@ const cors = require('cors')
 const morgan = require('morgan')
 const path = require('path')
 const api = require('./routes/api')
+const {errorHandler,notFound} = require('./middleware/error.middleware')
 
 const app = express()
 
@@ -20,4 +21,6 @@ if(process.env.NODE_ENV !== 'development') {
   });
 }
 
+app.use(notFound);
+app.use(errorHandler)
 module.exports = app
