@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { getBoardsByProjectId } from '../../redux/actions/boardActions'
 import { getUserProjectDetails } from '../../redux/actions/projectActions'
+import { updateTask } from '../../redux/actions/taskActions'
 import Card from '../Card'
 import Loader from '../Loader'
 
@@ -43,16 +44,13 @@ function Kanban() {
     return <Loader />
   }
 
-  // const [data, setData] = useState('')
-
-
-  // const onDragEnd = async result => {
+  // const onDragEnd = async (result) => {
   //   if (!result.destination) return;
-  //   const { source, destination, draggableId } = result;
+  //   const { source, destination } = result;
   //   if (source.droppableId === destination.droppableId && source.index === destination.index) return;
 
-  //   const sourceBoard = boards.find(board => board._id === source.droppableId);
-  //   const destinationBoard = boards.find(board => board._id === destination.droppableId);
+  //   const sourceBoard = boards.find((board) => board._id === source.droppableId);
+  //   const destinationBoard = boards.find((board) => board._id === destination.droppableId);
   //   const sourceTasks = [...sourceBoard.tasks];
   //   const destinationTasks = [...destinationBoard.tasks];
   //   const task = sourceTasks[source.index];
@@ -64,62 +62,23 @@ function Kanban() {
   //   destinationBoard.tasks = destinationTasks;
 
   //   try {
-  //     await fetch(`/api/tasks/${draggableId}`, {
-  //       method: 'PUT',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       body: JSON.stringify({ boardId: destinationBoard._id, status: destination.droppableId }),
-  //     });
-  //     setData([...data]); // This will trigger a re-render, showing the updated task in the destination board
+  //     dispatch(updateTask(task._id, destinationBoard._id))
+  //     dispatch(getBoardsByProjectId(project?._id));
   //   } catch (err) {
   //     console.log(err);
   //     // If there's an error, undo the changes made to the local state
   //     sourceBoard.tasks = [...sourceTasks, task];
-  //     destinationBoard.tasks = destinationTasks.filter(t => t._id !== task._id);
+  //     destinationBoard.tasks = destinationTasks.filter((t) => t._id !== task._id);
   //   }
   // };
 
-  // const onDragEnd = async result => {
-  //   if (!result.destination) return;
-  //   const { source, destination, draggableId } = result;
-  //   if (source.droppableId === destination.droppableId && source.index === destination.index) return;
-
-  //   const sourceBoard = boards.find(board => board._id === source.droppableId);
-  //   const destinationBoard = boards.find(board => board._id === destination.droppableId);
-  //   const sourceTasks = [...sourceBoard.tasks];
-  //   const destinationTasks = [...destinationBoard.tasks];
-  //   const task = sourceTasks[source.index];
-
-  //   sourceTasks.splice(source.index, 1);
-  //   destinationTasks.splice(destination.index, 0, task);
-
-  //   const newBoards = [...boards];
-  //   const newSourceBoard = newBoards.find(board => board._id === source.droppableId);
-  //   const newDestinationBoard = newBoards.find(board => board._id === destination.droppableId);
-  //   newSourceBoard.tasks = sourceTasks;
-  //   newDestinationBoard.tasks = destinationTasks;
-
-  //   try {
-  //     await fetch(`/api/tasks/${draggableId}`, {
-  //       method: 'PUT',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       body: JSON.stringify({ boardId: destinationBoard._id, status: destination.droppableId }),
-  //     });
-  //     setData([...data]); // This will trigger a re-render, showing the updated task in the destination board
-  //   } catch (err) {
-  //     console.log(err);
-  //     // If there's an error, undo the changes made to the local state
-  //     newSourceBoard.tasks = [...sourceTasks, task];
-  //     newDestinationBoard.tasks = destinationTasks.filter(t => t._id !== task._id);
-  //   }
-  // }; second
-
   const onDragEnd = async (result) => {
     if (!result.destination) return;
-    const { source, destination, draggableId } = result;
+    const { source, destination } = result;
     if (source.droppableId === destination.droppableId && source.index === destination.index) return;
 
-    const sourceBoard = boards.find((board) => board._id === source.droppableId);
-    const destinationBoard = boards.find((board) => board._id === destination.droppableId);
+    const sourceBoard = boards.find(board => board._id === source.droppableId);
+    const destinationBoard = boards.find(board => board._id === destination.droppableId);
     const sourceTasks = [...sourceBoard.tasks];
     const destinationTasks = [...destinationBoard.tasks];
     const task = sourceTasks[source.index];
@@ -127,30 +86,29 @@ function Kanban() {
     sourceTasks.splice(source.index, 1);
     destinationTasks.splice(destination.index, 0, task);
 
-    sourceBoard.tasks = sourceTasks;
-    destinationBoard.tasks = destinationTasks;
+    const newBoards = [...boards];
+    const newSourceBoard = newBoards.find(board => board._id === source.droppableId);
+    const newDestinationBoard = newBoards.find(board => board._id === destination.droppableId);
+    newSourceBoard.tasks = sourceTasks;
+    newDestinationBoard.tasks = destinationTasks;
 
     try {
-      const res = await fetch(`http://localhost:5000/api/tasks/${draggableId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          boardId: destinationBoard._id,
-          status: destination.droppableId,
-        }),
-      });
-
-      if (res.status === 200) {
-        dispatch(getBoardsByProjectId(project?._id));
-      }
+      // Update the destinationBoard object before dispatching the updateTask action
+      const updatedTask = {
+        ...task,
+        boardId: destinationBoard._id,
+        status: destination.droppableId,
+      };
+      await dispatch(updateTask(task._id, updatedTask));
     } catch (err) {
       console.log(err);
       // If there's an error, undo the changes made to the local state
-      sourceBoard.tasks = [...sourceTasks, task];
-      destinationBoard.tasks = destinationTasks.filter((t) => t._id !== task._id);
+      newSourceBoard.tasks = [...sourceTasks, task];
+      newDestinationBoard.tasks = destinationTasks.filter(t => t._id !== task._id);
     }
   };
 
+if(boards.length === 0) return <h1>No projects available</h1>
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
