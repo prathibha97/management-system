@@ -2,26 +2,29 @@
 
 import { faBell } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Alert, Snackbar } from '@mui/material';
+import { Alert, FormControl, InputLabel, MenuItem, Select, Snackbar } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { markAttendance } from '../../redux/actions/attendanceActions';
+import { ProjectDetailsById } from '../../redux/actions/projectActions';
 import AccountMenu from '../AccountMenu';
 import Button from '../Button';
 
 function Header() {
   const location = useLocation();
   const dispatch = useDispatch()
-  const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
-  const [project, setProject] = useState('');
-
   // Get attendanceMark state from the Redux store
   const attendanceMark = useSelector((state) => state.markAttendance);
   const { error } = attendanceMark;
 
   const userProjectDetails = useSelector((state) => state.userProjectDetails);
   const { projects } = userProjectDetails
+
+  const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
+  const [project, setProject] = useState({});
+
+
 
   const handleMarkAttendance = () => {
     try {
@@ -38,21 +41,10 @@ function Header() {
   }, [error]);
 
   const handleProjectChange = (event) => {
-    setProject(event.target.value);
+    const selectedProject = event.target.value || {};
+    setProject(selectedProject);
+    dispatch(ProjectDetailsById(selectedProject?._id))
   };
-
-  let dropdown;
-  if (location.pathname === '/board') {
-    dropdown = (
-      <select className="ml-3 bg-gray-100 border border-gray-300 outline-none py-1 px-3 rounded-md text-xs" onChange={handleProjectChange}>
-        <option value={null}>Select a project</option>
-        {projects?.map((item) => (
-          <option key={item?._id} value={project}>{item?.title}</option>
-        ))}
-      </select>
-    );
-  }
-
 
   let heading;
   switch (location.pathname) {
@@ -90,17 +82,20 @@ function Header() {
     <div className="flex items-center justify-between px-10 pt-2">
       <div className='flex gap-2 items-center'>
         <div className="text-3xl font-semibold">{heading}</div>
-        {/* {heading === 'Board' && (
+        {heading === 'Board' && (
           <div className="flex items-center">
-            <Select value={project} onChange={handleProjectChange}>
-              <MenuItem value="">Select Project</MenuItem>
-              <MenuItem value="project1">Project 1</MenuItem>
-              <MenuItem value="project2">Project 2</MenuItem>
-              <MenuItem value="project3">Project 3</MenuItem>
-            </Select>
+            <FormControl sx={{ m: 1, minWidth: 150 }}>
+              <InputLabel id="Select Project">Select Project</InputLabel>
+              <Select onChange={handleProjectChange} labelId="Select Project" autoWidth
+                label="Age" value={project?._id}>
+                {projects?.map((item) => (
+                  <MenuItem key={item._id} value={item}>{item?.title}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </div>
-        )} */}
-        {dropdown}
+        )}
+        {/* {dropdown} */}
       </div>
       <div className="flex items-center gap-10">
         <Button title="Log Time" onClick={handleMarkAttendance} />

@@ -6,11 +6,15 @@ import {
   attendanceDetailsReducer,
   markAttendanceReducer,
 } from './reducers/attendanceReducers';
+import { projectBoardDetailsReducer } from './reducers/boardReducer';
 import {
   leaveDetailsReducer,
   leaveRequestReducer,
 } from './reducers/leaveReducer';
-import { userProjectDetailsReducer } from './reducers/projectReducer';
+import {
+  projectDetailsByIdReducer,
+  userProjectDetailsReducer,
+} from './reducers/projectReducer';
 import { userDetailsReducer, userLoginReducer } from './reducers/userReducers';
 
 const userInfoFromStorage = localStorage.getItem('userInfo')
@@ -29,7 +33,9 @@ const reducer = combineReducers({
   markAttendance: markAttendanceReducer,
   leaveDetails: leaveDetailsReducer,
   leaveRequest: leaveRequestReducer,
-  userProjectDetails:userProjectDetailsReducer,
+  userProjectDetails: userProjectDetailsReducer,
+  projectDetailsById: projectDetailsByIdReducer,
+  projectBoardDetails:projectBoardDetailsReducer,
   // userUpdateProfile: userUpdateProfileReducer,
   // userList: userListReducer,
   // userDelete: userDeleteReducer,

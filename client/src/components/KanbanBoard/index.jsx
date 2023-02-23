@@ -3,12 +3,12 @@
 /* eslint-disable no-shadow */
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { getBoardsByProjectId } from '../../redux/actions/boardActions'
 import { getUserProjectDetails } from '../../redux/actions/projectActions'
-// import mockData from '../../data/mockData'
 import Card from '../Card'
 import Loader from '../Loader'
 
@@ -19,13 +19,13 @@ function Kanban() {
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin
+
   const { user } = useSelector((state) => state.userDetails) || {}
-  const userProjectDetails = useSelector((state) => state.userProjectDetails);
-  const { projects } = userProjectDetails
+  const projectDetailsById = useSelector((state) => state.projectDetailsById) || {};
+  const { project } = projectDetailsById
 
-  console.log(projects[0]?.boards);
-
-  console.log(projects);
+  const projectBoardDetails = useSelector((state) => state.projectBoardDetails) || [];
+  const { boards } = projectBoardDetails
 
   useEffect(() => {
     if (!userInfo) {
@@ -34,61 +34,128 @@ function Kanban() {
       const storedUser = JSON.parse(localStorage.getItem('user'));
       if (!storedUser || storedUser.empNo !== userInfo.empNo) {
         dispatch(getUserProjectDetails())
+        dispatch(getBoardsByProjectId(project?._id))
       }
     }
-  }, [userInfo])
+  }, [userInfo, project])
 
-  if (!user || !projects) {
+  if (!user || !project) {
     return <Loader />
   }
 
-  const [data, setData] = useState('')
+  // const [data, setData] = useState('')
 
 
-  const onDragEnd = result => {
-    // if (!result.destination) return;
-    // const { source, destination } = result;
+  // const onDragEnd = async result => {
+  //   if (!result.destination) return;
+  //   const { source, destination, draggableId } = result;
+  //   if (source.droppableId === destination.droppableId && source.index === destination.index) return;
 
-    // if (source.droppableId === destination.droppableId) {
-    //   const colIndex = data?.findIndex(e => e.id === source.droppableId);
-    //   const column = data[colIndex];
-    //   const newTasks = Array.from(column.tasks);
-    //   const [removed] = newTasks.splice(source.index, 1);
-    //   newTasks.splice(destination.index, 0, removed);
+  //   const sourceBoard = boards.find(board => board._id === source.droppableId);
+  //   const destinationBoard = boards.find(board => board._id === destination.droppableId);
+  //   const sourceTasks = [...sourceBoard.tasks];
+  //   const destinationTasks = [...destinationBoard.tasks];
+  //   const task = sourceTasks[source.index];
 
-    //   const newData = [...data];
-    //   newData[colIndex] = { ...column, tasks: newTasks };
-    //   setData(newData);
-    // } else {
-    //   const sourceColIndex = data.findIndex(e => e.id === source.droppableId);
-    //   const destinationColIndex = data.findIndex(e => e.id === destination.droppableId);
+  //   sourceTasks.splice(source.index, 1);
+  //   destinationTasks.splice(destination.index, 0, task);
 
-    //   const sourceCol = data[sourceColIndex];
-    //   const destinationCol = data[destinationColIndex];
+  //   sourceBoard.tasks = sourceTasks;
+  //   destinationBoard.tasks = destinationTasks;
 
-    //   const sourceTask = [...sourceCol.tasks];
-    //   const destinationTask = [...destinationCol.tasks];
+  //   try {
+  //     await fetch(`/api/tasks/${draggableId}`, {
+  //       method: 'PUT',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({ boardId: destinationBoard._id, status: destination.droppableId }),
+  //     });
+  //     setData([...data]); // This will trigger a re-render, showing the updated task in the destination board
+  //   } catch (err) {
+  //     console.log(err);
+  //     // If there's an error, undo the changes made to the local state
+  //     sourceBoard.tasks = [...sourceTasks, task];
+  //     destinationBoard.tasks = destinationTasks.filter(t => t._id !== task._id);
+  //   }
+  // };
 
-    //   const [removed] = sourceTask.splice(source.index, 1);
-    //   destinationTask.splice(destination.index, 0, removed);
+  // const onDragEnd = async result => {
+  //   if (!result.destination) return;
+  //   const { source, destination, draggableId } = result;
+  //   if (source.droppableId === destination.droppableId && source.index === destination.index) return;
 
-    //   const newData = [...data];
-    //   newData[sourceColIndex].tasks = sourceTask;
-    //   newData[destinationColIndex].tasks = destinationTask;
+  //   const sourceBoard = boards.find(board => board._id === source.droppableId);
+  //   const destinationBoard = boards.find(board => board._id === destination.droppableId);
+  //   const sourceTasks = [...sourceBoard.tasks];
+  //   const destinationTasks = [...destinationBoard.tasks];
+  //   const task = sourceTasks[source.index];
 
-    //   setData(newData);
-    // }
+  //   sourceTasks.splice(source.index, 1);
+  //   destinationTasks.splice(destination.index, 0, task);
+
+  //   const newBoards = [...boards];
+  //   const newSourceBoard = newBoards.find(board => board._id === source.droppableId);
+  //   const newDestinationBoard = newBoards.find(board => board._id === destination.droppableId);
+  //   newSourceBoard.tasks = sourceTasks;
+  //   newDestinationBoard.tasks = destinationTasks;
+
+  //   try {
+  //     await fetch(`/api/tasks/${draggableId}`, {
+  //       method: 'PUT',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({ boardId: destinationBoard._id, status: destination.droppableId }),
+  //     });
+  //     setData([...data]); // This will trigger a re-render, showing the updated task in the destination board
+  //   } catch (err) {
+  //     console.log(err);
+  //     // If there's an error, undo the changes made to the local state
+  //     newSourceBoard.tasks = [...sourceTasks, task];
+  //     newDestinationBoard.tasks = destinationTasks.filter(t => t._id !== task._id);
+  //   }
+  // }; second
+
+  const onDragEnd = async (result) => {
     if (!result.destination) return;
-    const newTasks = [...data];
-    const [removed] = newTasks.splice(result.source.index, 1);
-    newTasks.splice(result.destination.index, 0, removed);
-    setData(newTasks);
+    const { source, destination, draggableId } = result;
+    if (source.droppableId === destination.droppableId && source.index === destination.index) return;
+
+    const sourceBoard = boards.find((board) => board._id === source.droppableId);
+    const destinationBoard = boards.find((board) => board._id === destination.droppableId);
+    const sourceTasks = [...sourceBoard.tasks];
+    const destinationTasks = [...destinationBoard.tasks];
+    const task = sourceTasks[source.index];
+
+    sourceTasks.splice(source.index, 1);
+    destinationTasks.splice(destination.index, 0, task);
+
+    sourceBoard.tasks = sourceTasks;
+    destinationBoard.tasks = destinationTasks;
+
+    try {
+      const res = await fetch(`http://localhost:5000/api/tasks/${draggableId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          boardId: destinationBoard._id,
+          status: destination.droppableId,
+        }),
+      });
+
+      if (res.status === 200) {
+        dispatch(getBoardsByProjectId(project?._id));
+      }
+    } catch (err) {
+      console.log(err);
+      // If there's an error, undo the changes made to the local state
+      sourceBoard.tasks = [...sourceTasks, task];
+      destinationBoard.tasks = destinationTasks.filter((t) => t._id !== task._id);
+    }
   };
+
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <div className="flex items-start justify-between mt-5 m-auto gap-10 ">
-        {projects[0]?.boards?.map(section => (
+      <div className="flex items-start justify-between mt-10 m-auto gap-10 w-[1400px]">
+        {boards?.map(section => (
           <Droppable
             key={section?._id}
             droppableId={section?._id}
@@ -96,7 +163,7 @@ function Kanban() {
             {(provided) => (
               <div
                 {...provided.droppableProps}
-                className='w-[90%] bg-[#EEF2F5] rounded-xl p-4 overflow-y-auto max-h-[670px]'
+                className='w-[100%] bg-[#EEF2F5] rounded-xl p-4 overflow-y-auto max-h-[670px]'
                 ref={provided.innerRef}
               >
                 <div className="text-lg font-bold mb-4">

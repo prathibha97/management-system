@@ -4,6 +4,12 @@ const Department = require('../models/Department');
 const Employee = require('../models/Employee');
 const Project = require('../models/Project');
 
+/*
+?@desc   Create new project
+*@route  Post /api/projects
+*@access Private/Admin
+*/
+
 const createProject = async (req, res) => {
   const { title, description, deadline, startDate, endDate, assignee, client, department } =
     req.body;
@@ -44,6 +50,12 @@ const createProject = async (req, res) => {
   }
 };
 
+/*
+?@desc   Get project by id
+*@route  Post /api/projects/:id
+*@access Private
+*/
+
 const getProjectById = async (req, res) => {
   const { id } = req.params;
   try {
@@ -54,6 +66,12 @@ const getProjectById = async (req, res) => {
   }
 };
 
+/*
+?@desc   Get all projects
+*@route  Get /api/projects
+*@access Private/Admin
+*/
+
 const getAllProjects = async (req, res) => {
   try {
     const projects = await Project.find();
@@ -63,6 +81,12 @@ const getAllProjects = async (req, res) => {
     return res.status(500).json({ message: 'Error occured while getting the project details' });
   }
 };
+
+/*
+?@desc   Get all projects
+*@route  Get /api/projects/emp
+*@access Private
+*/
 
 const getProjectByEmpId = async (req, res) => {
   const { _id } = req.user;
