@@ -1,57 +1,97 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable no-shadow */
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
-import mockData from '../../data/mockData'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { getUserProjectDetails } from '../../redux/actions/projectActions'
+// import mockData from '../../data/mockData'
 import Card from '../Card'
+import Loader from '../Loader'
 
 function Kanban() {
-  const [data, setData] = useState(mockData)
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin
+  const { user } = useSelector((state) => state.userDetails) || {}
+  const userProjectDetails = useSelector((state) => state.userProjectDetails);
+  const { projects } = userProjectDetails
+
+  console.log(projects[0]?.boards);
+
+  console.log(projects);
+
+  useEffect(() => {
+    if (!userInfo) {
+      navigate('/');
+    } else {
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+      if (!storedUser || storedUser.empNo !== userInfo.empNo) {
+        dispatch(getUserProjectDetails())
+      }
+    }
+  }, [userInfo])
+
+  if (!user || !projects) {
+    return <Loader />
+  }
+
+  const [data, setData] = useState('')
+
 
   const onDragEnd = result => {
+    // if (!result.destination) return;
+    // const { source, destination } = result;
+
+    // if (source.droppableId === destination.droppableId) {
+    //   const colIndex = data?.findIndex(e => e.id === source.droppableId);
+    //   const column = data[colIndex];
+    //   const newTasks = Array.from(column.tasks);
+    //   const [removed] = newTasks.splice(source.index, 1);
+    //   newTasks.splice(destination.index, 0, removed);
+
+    //   const newData = [...data];
+    //   newData[colIndex] = { ...column, tasks: newTasks };
+    //   setData(newData);
+    // } else {
+    //   const sourceColIndex = data.findIndex(e => e.id === source.droppableId);
+    //   const destinationColIndex = data.findIndex(e => e.id === destination.droppableId);
+
+    //   const sourceCol = data[sourceColIndex];
+    //   const destinationCol = data[destinationColIndex];
+
+    //   const sourceTask = [...sourceCol.tasks];
+    //   const destinationTask = [...destinationCol.tasks];
+
+    //   const [removed] = sourceTask.splice(source.index, 1);
+    //   destinationTask.splice(destination.index, 0, removed);
+
+    //   const newData = [...data];
+    //   newData[sourceColIndex].tasks = sourceTask;
+    //   newData[destinationColIndex].tasks = destinationTask;
+
+    //   setData(newData);
+    // }
     if (!result.destination) return;
-    const { source, destination } = result;
-
-    if (source.droppableId === destination.droppableId) {
-      const colIndex = data.findIndex(e => e.id === source.droppableId);
-      const column = data[colIndex];
-      const newTasks = Array.from(column.tasks);
-      const [removed] = newTasks.splice(source.index, 1);
-      newTasks.splice(destination.index, 0, removed);
-
-      const newData = [...data];
-      newData[colIndex] = { ...column, tasks: newTasks };
-      setData(newData);
-    } else {
-      const sourceColIndex = data.findIndex(e => e.id === source.droppableId);
-      const destinationColIndex = data.findIndex(e => e.id === destination.droppableId);
-
-      const sourceCol = data[sourceColIndex];
-      const destinationCol = data[destinationColIndex];
-
-      const sourceTask = [...sourceCol.tasks];
-      const destinationTask = [...destinationCol.tasks];
-
-      const [removed] = sourceTask.splice(source.index, 1);
-      destinationTask.splice(destination.index, 0, removed);
-
-      const newData = [...data];
-      newData[sourceColIndex].tasks = sourceTask;
-      newData[destinationColIndex].tasks = destinationTask;
-
-      setData(newData);
-    }
+    const newTasks = [...data];
+    const [removed] = newTasks.splice(result.source.index, 1);
+    newTasks.splice(result.destination.index, 0, removed);
+    setData(newTasks);
   };
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <div className="flex items-start justify-between mt-5 m-auto gap-10 ">
-        {data.map(section => (
+        {projects[0]?.boards?.map(section => (
           <Droppable
-            key={section.id}
-            droppableId={section.id}
+            key={section?._id}
+            droppableId={section?._id}
           >
             {(provided) => (
               <div
@@ -68,10 +108,10 @@ function Kanban() {
                   </div>
                 </div>
                 <div className="space-y-4">
-                  {section.tasks.map((task, index) => (
+                  {section?.tasks.map((task, index) => (
                     <Draggable
-                      key={task.id}
-                      draggableId={task.id}
+                      key={task?._id}
+                      draggableId={task?._id}
                       index={index}
                     >
                       {(provided, snapshot) => (

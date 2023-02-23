@@ -19,7 +19,7 @@ const createTask = async (req, res) => {
       boardId,
       { $push: { tasks: task._id } },
       { new: true }
-    );
+    ).populate('tasks');
 
     // Find the project and update its tasks array
     await Project.findByIdAndUpdate(projectId, { $push: { tasks: task._id } }, { new: true });

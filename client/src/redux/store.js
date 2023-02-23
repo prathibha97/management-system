@@ -10,6 +10,7 @@ import {
   leaveDetailsReducer,
   leaveRequestReducer,
 } from './reducers/leaveReducer';
+import { userProjectDetailsReducer } from './reducers/projectReducer';
 import { userDetailsReducer, userLoginReducer } from './reducers/userReducers';
 
 const userInfoFromStorage = localStorage.getItem('userInfo')
@@ -28,6 +29,7 @@ const reducer = combineReducers({
   markAttendance: markAttendanceReducer,
   leaveDetails: leaveDetailsReducer,
   leaveRequest: leaveRequestReducer,
+  userProjectDetails:userProjectDetailsReducer,
   // userUpdateProfile: userUpdateProfileReducer,
   // userList: userListReducer,
   // userDelete: userDeleteReducer,

@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Avatar, AvatarGroup } from "@mui/material";
 
 function Card({ task }) {
+  // console.log(task);
   return (
     <div className='p-1 rounded-lg'>
       <div className="flex justify-between items-center mb-2">

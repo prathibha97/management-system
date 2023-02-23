@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 
 import { faBell } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -13,11 +14,14 @@ function Header() {
   const location = useLocation();
   const dispatch = useDispatch()
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
-  // const [project, setProject] = useState('');
+  const [project, setProject] = useState('');
 
   // Get attendanceMark state from the Redux store
   const attendanceMark = useSelector((state) => state.markAttendance);
   const { error } = attendanceMark;
+
+  const userProjectDetails = useSelector((state) => state.userProjectDetails);
+  const { projects } = userProjectDetails
 
   const handleMarkAttendance = () => {
     try {
@@ -33,14 +37,18 @@ function Header() {
     }
   }, [error]);
 
+  const handleProjectChange = (event) => {
+    setProject(event.target.value);
+  };
+
   let dropdown;
   if (location.pathname === '/board') {
     dropdown = (
-      <select className="ml-3 bg-gray-100 border border-gray-300 outline-none py-1 px-3 rounded-md text-xs">
+      <select className="ml-3 bg-gray-100 border border-gray-300 outline-none py-1 px-3 rounded-md text-xs" onChange={handleProjectChange}>
         <option value={null}>Select a project</option>
-        <option value="project1">Project 1</option>
-        <option value="project2">Project 2</option>
-        <option value="project3">Project 3</option>
+        {projects?.map((item) => (
+          <option key={item?._id} value={project}>{item?.title}</option>
+        ))}
       </select>
     );
   }
@@ -75,9 +83,7 @@ function Header() {
     setAlert({ ...alert, open: false });
   };
 
-  // const handleProjectChange = (event) => {
-  //   setProject(event.target.value);
-  // };
+
 
 
   return (
