@@ -26,7 +26,7 @@ function Kanban() {
   const { project } = projectDetailsById
 
   const projectBoardDetails = useSelector((state) => state.projectBoardDetails) || [];
-  const { boards } = projectBoardDetails
+  const { boards, loading } = projectBoardDetails
 
   useEffect(() => {
     if (!userInfo) {
@@ -40,37 +40,9 @@ function Kanban() {
     }
   }, [userInfo, project])
 
-  if (!user || !project) {
+  if (!user || !project || loading) {
     return <Loader />
   }
-
-  // const onDragEnd = async (result) => {
-  //   if (!result.destination) return;
-  //   const { source, destination } = result;
-  //   if (source.droppableId === destination.droppableId && source.index === destination.index) return;
-
-  //   const sourceBoard = boards.find((board) => board._id === source.droppableId);
-  //   const destinationBoard = boards.find((board) => board._id === destination.droppableId);
-  //   const sourceTasks = [...sourceBoard.tasks];
-  //   const destinationTasks = [...destinationBoard.tasks];
-  //   const task = sourceTasks[source.index];
-
-  //   sourceTasks.splice(source.index, 1);
-  //   destinationTasks.splice(destination.index, 0, task);
-
-  //   sourceBoard.tasks = sourceTasks;
-  //   destinationBoard.tasks = destinationTasks;
-
-  //   try {
-  //     dispatch(updateTask(task._id, destinationBoard._id))
-  //     dispatch(getBoardsByProjectId(project?._id));
-  //   } catch (err) {
-  //     console.log(err);
-  //     // If there's an error, undo the changes made to the local state
-  //     sourceBoard.tasks = [...sourceTasks, task];
-  //     destinationBoard.tasks = destinationTasks.filter((t) => t._id !== task._id);
-  //   }
-  // };
 
   const onDragEnd = async (result) => {
     if (!result.destination) return;
@@ -97,7 +69,6 @@ function Kanban() {
       const updatedTask = {
         ...task,
         boardId: destinationBoard._id,
-        status: destination.droppableId,
       };
       await dispatch(updateTask(task._id, updatedTask));
     } catch (err) {
@@ -108,7 +79,10 @@ function Kanban() {
     }
   };
 
-if(boards.length === 0) return <h1>No projects available</h1>
+  if (boards.length === 0) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '90vh' }}>
+    <h1 className='text-center'>Select a project to view the boards!</h1>
+  </div>
+
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>

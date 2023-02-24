@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable no-underscore-dangle */
 
 import { faBell } from '@fortawesome/free-solid-svg-icons';
@@ -22,8 +23,7 @@ function Header() {
   const { projects } = userProjectDetails
 
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
-  const [project, setProject] = useState({});
-
+  const [project, setProject] = useState(projects[0] || []);
 
 
   const handleMarkAttendance = () => {
@@ -41,7 +41,7 @@ function Header() {
   }, [error]);
 
   const handleProjectChange = (event) => {
-    const selectedProject = event.target.value || {};
+    const selectedProject = event.target.value;
     setProject(selectedProject);
     dispatch(ProjectDetailsById(selectedProject?._id))
   };
@@ -75,24 +75,29 @@ function Header() {
     setAlert({ ...alert, open: false });
   };
 
-
-
-
   return (
     <div className="flex items-center justify-between px-10 pt-2">
       <div className='flex gap-2 items-center'>
         <div className="text-3xl font-semibold">{heading}</div>
         {heading === 'Board' && (
           <div className="flex items-center">
-            <FormControl sx={{ m: 1, minWidth: 150 }}>
+
+            {/* <select value={project?._id} onChange={handleProjectChange} >
+              {projects?.map((item) => (
+                <option key={item._id} value={item}>{item.title}</option>
+              ))}
+            </select>  */}
+
+            <FormControl sx={{ m: 1, minWidth: 150}}>
               <InputLabel id="Select Project">Select Project</InputLabel>
-              <Select onChange={handleProjectChange} labelId="Select Project" autoWidth
-                label="Age" value={project?._id}>
-                {projects?.map((item) => (
+              <Select onChange={handleProjectChange} labelId="Select Project" sx={{ width: 150, m: 1 }}
+                label="Select Project" value={project?._id}>
+                {projects && projects.length > 0 ? projects.map((item) => (
                   <MenuItem key={item._id} value={item}>{item?.title}</MenuItem>
-                ))}
+                )) : <MenuItem disabled>No Projects Found</MenuItem>}
               </Select>
             </FormControl>
+
           </div>
         )}
         {/* {dropdown} */}
@@ -112,3 +117,13 @@ function Header() {
 }
 
 export default Header;
+
+// {/* <FormControl sx={{ m: 1, minWidth: 150}}> */ }
+// {/* <InputLabel id="Select Project">Select Project</InputLabel>
+//             <Select onChange={handleProjectChange} labelId="Select Project" sx={{width:150, m:1}}
+//               label="Select Project" value={project?._id}>
+//               {projects?.map((item) => (
+//                 <MenuItem key={item._id} value={item}>{item?.title}</MenuItem>
+//               ))}
+//             </Select> */}
+// {/* </FormControl> */ }

@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Avatar, AvatarGroup } from "@mui/material";
 
 function Card({ task }) {
-  // console.log(task);
+  console.log(task);
   return (
     <div className='p-1 rounded-lg'>
       <div className="flex justify-between items-center mb-2">
@@ -22,9 +22,9 @@ function Card({ task }) {
       <div className="flex justify-start">
         {/* {task.assignee} */}
         <AvatarGroup max={4}>
-          <Avatar alt="Remy Sharp" sx={{ width: 24, height: 24 }} />
-          <Avatar alt="Remy Sharp" sx={{ width: 24, height: 24 }} />
-          <Avatar alt="Remy Sharp" sx={{ width: 24, height: 24 }} />
+          {task?.assignee?.map((assignee, index) => (
+            <Avatar key={index} alt="Remy Sharp" sx={{ width: 24, height: 24 }} />
+          ))}
         </AvatarGroup>
       </div>
     </div>
