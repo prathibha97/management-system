@@ -1,7 +1,9 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable no-shadow */
 /* eslint-disable react/jsx-props-no-spreading */
 
-import { faEllipsis } from '@fortawesome/free-solid-svg-icons'
+import { faEllipsis, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useEffect, useState } from 'react'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
@@ -10,8 +12,8 @@ import { useNavigate } from 'react-router-dom'
 import { getBoardsByProjectId } from '../../redux/actions/boardActions'
 import { getUserProjectDetails } from '../../redux/actions/projectActions'
 import { updateTask } from '../../redux/actions/taskActions'
+import AddTaskModal from '../AddTaskModal'
 import Card from '../Card'
-import CreateTaskForm from '../CreateTaskForm'
 import Loader from '../Loader'
 
 function Kanban() {
@@ -99,79 +101,79 @@ function Kanban() {
     <DragDropContext onDragEnd={onDragEnd}>
       <div className="flex items-start justify-between mt-10 m-auto gap-10 w-[1400px]">
         {boards?.map((section, index) => (
-            <Droppable
-              key={section?._id}
-              droppableId={section?._id}
-              style={{ height: '670px' }}
-            >
-              {(provided) => (
-                <div
-                  {...provided.droppableProps}
-                  className='w-[100%] bg-[#EEF2F5] rounded-xl p-4 '
-                  ref={provided.innerRef}
-                  onMouseEnter={() => setIsBoardHovered(section._id)}
-                  onMouseLeave={() => setIsBoardHovered(section._id)}
-                >
-                  <div className="text-lg font-bold mb-4">
-                    <div className='flex justify-between items-center'>
-                      {section.title}
-                      <div className='flex gap-2'>
-                        <FontAwesomeIcon icon={faEllipsis} />
-                      </div>
+          <Droppable
+            key={section?._id}
+            droppableId={section?._id}
+            style={{ height: '670px' }}
+          >
+            {(provided) => (
+              <div
+                {...provided.droppableProps}
+                className='w-[100%] bg-[#EEF2F5] rounded-xl p-4 overflow-y-auto max-h-[670px]'
+                ref={provided.innerRef}
+                onMouseEnter={() => {
+                  setIsBoardHovered(section._id)
+                }
+                }
+                onMouseLeave={() => setIsBoardHovered(null)}
+              >
+                <div className="text-lg font-bold mb-4">
+                  <div className='flex justify-between items-center'>
+                    {section.title}
+                    <div className='flex gap-2'>
+                      <FontAwesomeIcon icon={faEllipsis} />
                     </div>
                   </div>
-                  <div className="space-y-4">
-                    {section?.tasks.map((task, index) => (
-                      <Draggable
-                        key={task?._id}
-                        draggableId={task?._id}
-                        index={index}
-                      >
-                        {(provided, snapshot) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            className={`bg-white rounded-lg shadow p-4 transition-opacity ${snapshot.isDragging ? 'opacity-50' : ''}`}
-                          >
-                            <Card
-                              task={task}
-                              boardId={section?._id}
-                            />
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                  </div>
-                  {isBoardHovered === section._id && (
-                    <div className="mt-4">
-                      <button
-                        type="button"
-                        className="py-2 px-4"
-                        onClick={() => setShowCreateForms(prev => {
-                          const newState = [...prev];
-                          newState[index] = true;
-                          return newState;
-                        })}
-                      >
-                        Create New Task
-                      </button>
-                      {showCreateForms[index] && (
-                        <CreateTaskForm
-                          boardId={section._id}
-                          onClose={() => setShowCreateForms(prev => {
-                            const newState = [...prev];
-                            newState[index] = false;
-                            return newState;
-                          })}
-                        />
-                      )}
-                    </div>
-                  )}
                 </div>
-              )}
-            </Droppable>
-          ))}
+                <div className="space-y-4">
+                  {section?.tasks.map((task, index) => (
+                    <Draggable
+                      key={task?._id}
+                      draggableId={task?._id}
+                      index={index}
+                    >
+                      {(provided, snapshot) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          className={`bg-white rounded-lg shadow p-4 transition-opacity ${snapshot.isDragging ? 'opacity-50' : ''}`}
+                        >
+                          <Card
+                            task={task}
+                            boardId={section?._id}
+                          />
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                </div>
+                {isBoardHovered === section._id && (
+                  <div className="mt-4">
+                    <div
+                      className={`flex items-center justify-center p-2 gap-2 cursor-pointer rounded-md hover:bg-[#E2E4EA] ${showCreateForms[index] ? 'hidden' : ''}`}
+                      onClick={() => setShowCreateForms(prev => {
+                        const newState = [...prev];
+                        newState[index] = true;
+                        return newState;
+                      })}
+                    >
+                      <FontAwesomeIcon icon={faPlus} />
+                      <p>Create Task</p>
+                    </div>
+                    {showCreateForms[index] && (
+                      <AddTaskModal boardId={section._id} open={showCreateForms} handleClose={() => setShowCreateForms(prev => {
+                        const newState = [...prev];
+                        newState[index] = false;
+                        return newState;
+                      })} />
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+          </Droppable>
+        ))}
       </div>
     </DragDropContext>
   );

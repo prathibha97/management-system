@@ -1,4 +1,5 @@
 import { useState } from "react";
+// import { useDispatch, useSelector } from "react-redux";
 
 function CreateTaskForm() {
   const [title, setTitle] = useState("");
@@ -10,7 +11,7 @@ function CreateTaskForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // dispatch(createTask(projectId, { title, description }));
+    // dispatch(createTask(projectId, { title }));
     setSubmitted(true);
     // reset form fields
     setTitle("");
@@ -19,13 +20,14 @@ function CreateTaskForm() {
   if (submitted) {
     return null; // Return null to hide the form
   }
-  
+
   return (
     <form onSubmit={handleSubmit}>
-      <input
+      <textarea
         type="text"
         placeholder="What needs to be done?"
         value={title}
+        className="outline-none h-20 w-full"
         onChange={(e) => setTitle(e.target.value)}
       />
     </form>

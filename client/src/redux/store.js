@@ -15,7 +15,7 @@ import {
   projectDetailsByIdReducer,
   userProjectDetailsReducer,
 } from './reducers/projectReducer';
-import { updateTaskReducer } from './reducers/taskReducer';
+import { createTaskReducer, updateTaskReducer } from './reducers/taskReducer';
 import { userDetailsReducer, userLoginReducer } from './reducers/userReducers';
 
 const userInfoFromStorage = localStorage.getItem('userInfo')
@@ -37,6 +37,7 @@ const reducer = combineReducers({
   userProjectDetails: userProjectDetailsReducer,
   projectDetailsById: projectDetailsByIdReducer,
   projectBoardDetails: projectBoardDetailsReducer,
+  createTask:createTaskReducer,
   updateTask: updateTaskReducer,
   // userUpdateProfile: userUpdateProfileReducer,
   // userList: userListReducer,

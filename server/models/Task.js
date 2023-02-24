@@ -9,7 +9,6 @@ const taskSchema = new Schema({
   },
   description: {
     type: String,
-    required: true,
   },
   project: {
     type: Schema.Types.ObjectId,
@@ -32,7 +31,6 @@ const taskSchema = new Schema({
   assignee: [{
     type: Schema.Types.ObjectId,
     ref: 'Employee',
-    required: true,
   }],
 });
 
