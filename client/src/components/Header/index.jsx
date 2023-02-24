@@ -90,8 +90,12 @@ function Header() {
 
             <FormControl sx={{ m: 1, minWidth: 150 }}>
               <InputLabel id="Select Project">Select Project</InputLabel>
-              <Select onChange={handleProjectChange} labelId="Select Project"
-                label="Select Project" value={project?._id || ''}>
+              <Select
+                onChange={handleProjectChange}
+                labelId="Select Project"
+                label="Select Project"
+                value={project?._id || ''}
+              >
                 {projects && projects.length > 0 ? projects.map((item) => (
                   <MenuItem key={item._id} value={item}>{item?.title}</MenuItem>
                 )) : <MenuItem disabled>No Projects Found</MenuItem>}

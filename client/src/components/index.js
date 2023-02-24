@@ -12,3 +12,4 @@ export { default as LeaveHistory } from './LeaveHistory';
 export { default as LeaveInformation } from './LeaveInformation';
 export { default as Loader } from './Loader';
 export { default as Sidebar } from './Sidebar';
+export { default as CreateTaskForm } from './CreateTaskForm';
