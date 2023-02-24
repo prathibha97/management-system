@@ -23,7 +23,7 @@ function Header() {
   const { projects } = userProjectDetails
 
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
-  const [project, setProject] = useState(projects[0] || []);
+  const [project, setProject] = useState(projects.length > 0 ? projects[0]?._id : '');
 
 
   const handleMarkAttendance = () => {
@@ -42,7 +42,7 @@ function Header() {
 
   const handleProjectChange = (event) => {
     const selectedProject = event.target.value;
-    setProject(selectedProject);
+    setProject(selectedProject?._id);
     dispatch(ProjectDetailsById(selectedProject?._id))
   };
 
@@ -88,10 +88,10 @@ function Header() {
               ))}
             </select>  */}
 
-            <FormControl sx={{ m: 1, minWidth: 150}}>
+            <FormControl sx={{ m: 1, minWidth: 150 }}>
               <InputLabel id="Select Project">Select Project</InputLabel>
-              <Select onChange={handleProjectChange} labelId="Select Project" sx={{ width: 150, m: 1 }}
-                label="Select Project" value={project?._id}>
+              <Select onChange={handleProjectChange} labelId="Select Project"
+                label="Select Project" value={project?._id || ''}>
                 {projects && projects.length > 0 ? projects.map((item) => (
                   <MenuItem key={item._id} value={item}>{item?.title}</MenuItem>
                 )) : <MenuItem disabled>No Projects Found</MenuItem>}

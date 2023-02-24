@@ -35,7 +35,9 @@ function Kanban() {
       const storedUser = JSON.parse(localStorage.getItem('user'));
       if (!storedUser || storedUser.empNo !== userInfo.empNo) {
         dispatch(getUserProjectDetails())
-        dispatch(getBoardsByProjectId(project?._id))
+        if (project && project._id) {
+          dispatch(getBoardsByProjectId(project?._id))
+        }
       }
     }
   }, [userInfo, project])
