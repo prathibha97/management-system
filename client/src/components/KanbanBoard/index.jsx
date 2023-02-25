@@ -48,6 +48,7 @@ function Kanban() {
   const [showCreateForms, setShowCreateForms] = useState([]);
   const [isBoardHovered, setIsBoardHovered] = useState(false);
 
+
   // Initialize the showCreateForms array with false values for each board
   useEffect(() => {
     setShowCreateForms(new Array(boards.length).fill(false));

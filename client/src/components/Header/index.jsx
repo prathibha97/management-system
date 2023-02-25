@@ -81,13 +81,6 @@ function Header() {
         <div className="text-3xl font-semibold">{heading}</div>
         {heading === 'Board' && (
           <div className="flex items-center">
-
-            {/* <select value={project?._id} onChange={handleProjectChange} >
-              {projects?.map((item) => (
-                <option key={item._id} value={item}>{item.title}</option>
-              ))}
-            </select>  */}
-
             <FormControl sx={{ m: 1, minWidth: 150 }}>
               <InputLabel id="Select Project">Select Project</InputLabel>
               <Select
@@ -121,13 +114,3 @@ function Header() {
 }
 
 export default Header;
-
-// {/* <FormControl sx={{ m: 1, minWidth: 150}}> */ }
-// {/* <InputLabel id="Select Project">Select Project</InputLabel>
-//             <Select onChange={handleProjectChange} labelId="Select Project" sx={{width:150, m:1}}
-//               label="Select Project" value={project?._id}>
-//               {projects?.map((item) => (
-//                 <MenuItem key={item._id} value={item}>{item?.title}</MenuItem>
-//               ))}
-//             </Select> */}
-// {/* </FormControl> */ }

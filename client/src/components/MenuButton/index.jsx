@@ -15,7 +15,6 @@ export default function MenuButton({ id }) {
     setAnchorEl(null);
   };
 
-
   const deleteTaskhandler = useCallback(() => {
     dispatch(deleteTask(id));
     handleClose();
