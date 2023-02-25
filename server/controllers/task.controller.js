@@ -53,71 +53,6 @@ const getTaskById = async (req, res) => {
   }
 };
 
-// const updateTask = async (req, res) => {
-//   const { boardId, status } = req.body;
-//   const { id } = req.params;
-
-//   try {
-//     const task = await Task.findById(id);
-
-//     const board = await Board.findById(boardId);
-//     if (!board) {
-//       return res.status(404).json({ message: `Board with id ${boardId} not found` });
-//     }
-
-//     const taskIndex = board.tasks.findIndex((taskId) => taskId.toString() === task._id.toString());
-//     if (taskIndex === -1) {
-//       board.tasks.push(task._id);
-//     }
-//     board.status = status || board.status;
-//     await board.save();
-
-//     task.board = {
-//       boardId: board._id,
-//       status: board.status,
-//     };
-//     await task.save();
-
-//     return res.status(200).json(task);
-//   } catch (err) {
-//     return res.status(500).json({ message: 'Error occurred while updating the task' });
-//   }
-// };
-
-// const updateTask = async (req, res) => {
-//   const { boardId } = req.body;
-//   const { id } = req.params;
-
-//   try {
-//     const task = await Task.findById(id);
-
-//     const board = await Board.findById(boardId);
-//     if (!board) {
-//       return res.status(404).json({ message: `Board with id ${boardId} not found` });
-//     }
-
-//     // Check if the board has the 'tasks' property before accessing it
-//     if (!board.tasks) {
-//       board.tasks = [];
-//     }
-
-//     const taskIndex = board.tasks.findIndex((taskId) => taskId.toString() === task._id.toString());
-//     if (taskIndex === -1) {
-//       board.tasks.push(task._id);
-//     }
-
-//     task.board = {
-//       boardId: board._id,
-//     };
-//     await task.save();
-
-//     return res.status(200).json(task);
-//   } catch (err) {
-//     console.log(err);
-//     return res.status(500).json({ message: 'Error occurred while updating the task' });
-//   }
-// };
-
 const updateTask = async (req, res) => {
   const { boardId } = req.body;
   const { id } = req.params;
@@ -153,5 +88,15 @@ const updateTask = async (req, res) => {
   }
 };
 
+const deleteTask = async (req, res) => {
+  const { id } = req.params;
+  try {
+    await Task.findByIdAndDelete(id);
+    return res.status(200).json({ message: 'Task deleted successfully' });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: 'Error occurred while deleting the task' });
+  }
+};
 
-module.exports = { createTask, getTasks, getTaskById, updateTask };
+module.exports = { createTask, getTasks, getTaskById, updateTask, deleteTask };
