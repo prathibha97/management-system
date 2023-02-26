@@ -66,6 +66,15 @@ function Header() {
     case '/settings':
       heading = 'Settings';
       break;
+    case '/people':
+      heading = 'People';
+      break;
+    case '/payroll':
+      heading = 'Payroll';
+      break;
+    case '/projects':
+      heading = 'Projects';
+      break;
     default:
       heading = 'Unknown Page';
       break;
@@ -97,7 +106,6 @@ function Header() {
 
           </div>
         )}
-        {/* {dropdown} */}
       </div>
       <div className="flex items-center gap-10">
         <Button title="Log Time" onClick={handleMarkAttendance} />
