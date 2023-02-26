@@ -1,16 +1,38 @@
-import { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRightFromBracket,
+  faBriefcase,
   faChartPie,
   faCog,
   faColumns,
   faHome,
   faIdBadge,
+  faMoneyBillAlt,
+  faUsers
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useState } from "react";
 
-function Sidebar() {
+function Sidebar({ user }) {
   const [activeIndex, setActiveIndex] = useState(0);
+
+  const adminSidebarItems = [
+    {
+      name: "People",
+      link: "/people",
+      icon: faUsers,
+    },
+    {
+      name: "Projects",
+      link: "/projects",
+      icon: faBriefcase,
+    },
+    {
+      name: "Payroll",
+      link: "/payroll",
+      icon: faMoneyBillAlt,
+    },
+  ];
+
 
   const sidebarItems = [
     {
@@ -38,12 +60,23 @@ function Sidebar() {
       link: "/leave",
       icon: faArrowRightFromBracket,
     },
-    {
+  ];
+
+  if (user.isAdmin) {
+    adminSidebarItems.push({
       name: "Settings",
       link: "/settings",
       icon: faCog,
-    },
-  ];
+    });
+  } else {
+    sidebarItems.push({
+      name: "Settings",
+      link: "/settings",
+      icon: faCog,
+    });
+  }
+
+
 
   const handleItemClick = (index) => {
     setActiveIndex(index);
@@ -63,6 +96,23 @@ function Sidebar() {
               className={`my-px ${activeIndex === index ? "text-black" : "text-gray-600"
                 }`}
             >
+              <a
+                href={item.link}
+                className="flex flex-row items-center h-12 px-4 rounded-lg hover:bg-gray-100"
+                onClick={() => handleItemClick(index)}
+              >
+                <FontAwesomeIcon
+                  icon={item.icon}
+                  className={`text-lg ${activeIndex === index ? "text-black" : "text-gray-400"
+                    } group-hover:text-gray-600 mr-3`}
+                />
+                <span className="text-sm font-medium">{item.name}</span>
+              </a>
+            </li>
+          ))}
+          {user.isAdmin && adminSidebarItems.map((item, index) => (
+            <li key={index} className={`my-px ${activeIndex === index ? "text-black" : "text-gray-600"
+              }`}>
               <a
                 href={item.link}
                 className="flex flex-row items-center h-12 px-4 rounded-lg hover:bg-gray-100"
