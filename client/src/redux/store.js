@@ -7,6 +7,7 @@ import {
   markAttendanceReducer,
 } from './reducers/attendanceReducers';
 import { projectBoardDetailsReducer } from './reducers/boardReducer';
+import { employeeListReducer } from './reducers/employeeReducer';
 import {
   leaveDetailsReducer,
   leaveRequestReducer,
@@ -15,7 +16,11 @@ import {
   projectDetailsByIdReducer,
   userProjectDetailsReducer,
 } from './reducers/projectReducer';
-import { createTaskReducer, deleteTaskReducer, updateTaskReducer } from './reducers/taskReducer';
+import {
+  createTaskReducer,
+  deleteTaskReducer,
+  updateTaskReducer,
+} from './reducers/taskReducer';
 import { userDetailsReducer, userLoginReducer } from './reducers/userReducers';
 
 const userInfoFromStorage = localStorage.getItem('userInfo')
@@ -39,7 +44,8 @@ const reducer = combineReducers({
   projectBoardDetails: projectBoardDetailsReducer,
   createTask: createTaskReducer,
   updateTask: updateTaskReducer,
-  deleteTask:deleteTaskReducer,
+  deleteTask: deleteTaskReducer,
+  employeeList: employeeListReducer,
   // userUpdateProfile: userUpdateProfileReducer,
   // userList: userListReducer,
   // userDelete: userDeleteReducer,

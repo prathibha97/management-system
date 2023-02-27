@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { Loader } from './components';
 import {
   Attendance,
   Board,
@@ -11,13 +10,14 @@ import {
   People,
   Profile,
   Projects,
+  Register,
   Settings,
 } from './pages';
 import Leave from './pages/Leave';
 
 function App() {
-  const { userInfo, loading } = useSelector((state) => state.userLogin);
-  if (loading) return <Loader />;
+  const { userInfo } = useSelector((state) => state.userLogin);
+  // if (loading) return <Loader />;
   return (
     <Router>
       <Routes>
@@ -34,6 +34,7 @@ function App() {
               <Route path="/people" element={<People />} />
               <Route path="/projects" element={<Projects />} />
               <Route path="/payroll" element={<Payroll />} />
+              <Route path="/register" element={<Register />} />
             </>
           )}
         </Route>

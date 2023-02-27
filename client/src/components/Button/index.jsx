@@ -1,6 +1,7 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 
-function Button({ onClick, title }) {
+function Button({ onClick, title, icon }) {
 
 
   return (
@@ -10,6 +11,7 @@ function Button({ onClick, title }) {
       onClick={onClick}
     >
       {title}
+      <FontAwesomeIcon icon={icon || ''} className='ml-2' />
     </button>
   )
 }
