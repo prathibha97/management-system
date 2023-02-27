@@ -5,6 +5,7 @@ const {
   getTaskById,
   getTasks,
   deleteTask,
+  getTasksByProject,
 } = require('../controllers/task.controller');
 const { protect, admin } = require('../middleware/auth.middleware');
 
@@ -15,5 +16,7 @@ taskRouter
   .get('/:id', protect, getTaskById)
   .put('/:id', protect, updateTask)
   .delete('/:id', protect, deleteTask);
+
+taskRouter.get('/project/:id', protect, getTasksByProject);
 
 module.exports = taskRouter;

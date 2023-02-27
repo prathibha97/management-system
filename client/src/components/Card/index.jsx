@@ -8,14 +8,15 @@ import MenuButton from "../MenuButton";
 
 function Card({ task }) {
 
+
   return (
-    <div className='p-1 rounded-lg' >
+    <div className='p-1 rounded-lg' key={task._id}>
       <div className="flex justify-between items-center mb-2">
         <div className="flex items-center gap-2">
           <FontAwesomeIcon icon={faCircle} className="text-[8px]" />
           <p>tag</p>
         </div>
-        <MenuButton id={task._id}/>
+        <MenuButton id={task._id} />
       </div>
       <div className="flex flex-col gap-2 mb-5">
         <h1 className="font-semibold">{task.title}</h1>

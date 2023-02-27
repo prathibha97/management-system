@@ -11,10 +11,20 @@ function AddTaskModal({ open, handleClose, boardId }) {
   const taskNameRef = useRef();
 
   const dispatch = useDispatch();
+
   const projectId = useSelector((state) => state.projectDetailsById.project._id);
+  // const { tasks } = useSelector((state) => state.getTasksByProject);
+
 
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
 
+  // useEffect(() => {
+  //   // Update the state of the component when the tasks state changes
+  //   setTitle('');
+  //   setDescription('');
+  //   setStatus('backlog');
+  //   setAssignee('');
+  // }, [tasks]);
 
   const handleTitleChange = (event) => {
     setTitle(event.target.value);
@@ -36,6 +46,7 @@ function AddTaskModal({ open, handleClose, boardId }) {
     try {
       // Add the task and close the dialog
       dispatch(createTask(boardId, projectId, title, description, status, assignee));
+
       setAlert({ open: true, message: 'Attendance marked successfully', severity: 'success' });
       handleClose();
     } catch (err) {

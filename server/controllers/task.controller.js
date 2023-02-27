@@ -2,6 +2,12 @@ const Board = require('../models/Board');
 const Project = require('../models/Project');
 const Task = require('../models/Task');
 
+/*
+?@desc   create new task
+*@route  Post /api/tasks/
+*@access Private
+*/
+
 const createTask = async (req, res) => {
   const { title, description, projectId, boardId, status, assignee } = req.body;
 
@@ -32,6 +38,12 @@ const createTask = async (req, res) => {
   }
 };
 
+/*
+?@desc   Get all tasks
+*@route  get /api/tasks
+*@access Private/Admin
+*/
+
 const getTasks = async (req, res) => {
   try {
     const tasks = await Task.find();
@@ -41,6 +53,12 @@ const getTasks = async (req, res) => {
     return res.status(500).json({ message: 'Error occurred while getting the tasks' });
   }
 };
+
+/*
+?@desc   Get task by Id
+*@route  get /api/tasks
+*@access Private
+*/
 
 const getTaskById = async (req, res) => {
   const { id } = req.params;
@@ -52,6 +70,12 @@ const getTaskById = async (req, res) => {
     return res.status(500).json({ message: 'Error occurred while getting the task details' });
   }
 };
+
+/*
+?@desc   Update task board
+*@route  put /api/tasks/:id
+*@access Private
+*/
 
 const updateTask = async (req, res) => {
   const { boardId } = req.body;
@@ -88,6 +112,12 @@ const updateTask = async (req, res) => {
   }
 };
 
+/*
+?@desc   Delete task
+*@route  delete /api/tasks/:id
+*@access Private
+*/
+
 const deleteTask = async (req, res) => {
   const { id } = req.params;
   try {
@@ -99,4 +129,21 @@ const deleteTask = async (req, res) => {
   }
 };
 
-module.exports = { createTask, getTasks, getTaskById, updateTask, deleteTask };
+/*
+?@desc   Get tasks by project
+*@route  delete /api/tasks/project/:id
+*@access Private
+*/
+
+const getTasksByProject = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const tasks = await Task.find({ project: id });
+    return res.status(200).json(tasks);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: 'Error occurred while fetching the tasks' });
+  }
+};
+
+module.exports = { createTask, getTasks, getTaskById, updateTask, deleteTask, getTasksByProject };

@@ -19,6 +19,7 @@ import {
 import {
   createTaskReducer,
   deleteTaskReducer,
+  getTasksByProjectReducer,
   updateTaskReducer,
 } from './reducers/taskReducer';
 import { userDetailsReducer, userLoginReducer } from './reducers/userReducers';
@@ -44,6 +45,7 @@ const reducer = combineReducers({
   projectBoardDetails: projectBoardDetailsReducer,
   createTask: createTaskReducer,
   updateTask: updateTaskReducer,
+  getTasksByProject: getTasksByProjectReducer,
   deleteTask: deleteTaskReducer,
   employeeList: employeeListReducer,
   // userUpdateProfile: userUpdateProfileReducer,
