@@ -1,4 +1,5 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
+import { InputLabel, TextField } from '@mui/material'
 import React from 'react'
 
 function DocumentUpload({ handleChange, values, nextStep, prevStep }) {
@@ -20,28 +21,34 @@ function DocumentUpload({ handleChange, values, nextStep, prevStep }) {
       <div className='flex bg-white px-12 py-5 mt-5 justify-between items-center w-[90%] m-auto rounded-2xl'>
         <div className='flex flex-wrap justify-between gap-8'>
           <div className='flex flex-col w-[45%]'>
-            <label>NIC</label>
-            <input
+            <InputLabel
+              labelid="nic-lable">
+              NIC
+            </InputLabel>
+            <TextField
               type='file'
-              className='border rounde'
               accept=".pdf,.doc,.docx,.jpeg,.jpg,.png"
               onChange={handleChange('idCardPath')}
               defaultValue={values.idCardPath} />
           </div>
           <div className='flex flex-col w-[45%]'>
-            <label>Bank Passbook</label>
-            <input
+            <InputLabel
+              labelid="bankPass-lable">
+              Bank Pass
+            </InputLabel>
+            <TextField
               type='file'
-              className='border rounded'
               accept=".pdf,.doc,.docx,.jpeg,.jpg,.png"
               onChange={handleChange('bankPassPath')}
               defaultValue={values.bankPassPath} />
           </div>
           <div className='flex flex-col w-[45%]'>
-            <label>Resume</label>
-            <input
+            <InputLabel
+              labelid="resume-lable">
+              Resume
+            </InputLabel>
+            <TextField
               type='file'
-              className='border rounded'
               accept=".pdf,.doc,.docx,.jpeg,.jpg,.png"
               onChange={handleChange('resumePath')}
               defaultValue={values.resumePath} />
