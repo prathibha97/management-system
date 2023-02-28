@@ -85,24 +85,40 @@ const empSchema = new mongoose.Schema(
     leaveBalance: {
       casual: {
         type: Number,
-        default () {
+        default() {
           if (['Intern', 'Contract', 'Part-Time'].includes(this.workType)) {
             return 1;
           }
           return 10;
         },
       },
-      annual: { type: Number, default: 10 },
+      annual: {
+        type: Number,
+        default() {
+          if (['Intern', 'Contract', 'Part-Time'].includes(this.workType)) {
+            return 0;
+          }
+          return 10;
+        },
+      },
       maternity: {
         type: Number,
-        default () {
-          if (this.gender === 'female') {
+        default() {
+          if (this.gender === 'Female') {
             return 10;
           }
           return 0;
         },
       },
-      other: { type: Number, default: 10 },
+      other: {
+        type: Number,
+        default() {
+          if (['Intern', 'Contract', 'Part-Time'].includes(this.workType)) {
+            return 1;
+          }
+          return 10;
+        },
+      },
     },
   },
   {
