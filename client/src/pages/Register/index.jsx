@@ -5,8 +5,9 @@ function Register() {
   const [step, setStep] = useState(1)
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
-  const [dob, setDob] = useState('')
+  const [birthDate, setBirthDate] = useState('')
   const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [phone, setPhone] = useState('')
   const [gender, setGender] = useState('')
   const [nic, setNic] = useState('')
@@ -14,6 +15,15 @@ function Register() {
   const [city, setCity] = useState('')
   const [state, setState] = useState('')
   const [zip, setZip] = useState('')
+  const [empNo, setEmpNo] = useState('')
+  const [designation, setDesignation] = useState('')
+  const [workType, setWorkType] = useState('')
+  const [department, setDepartment] = useState('')
+  const [leaveAllocation, setLeaveAllocation] = useState([])
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [idCardPath, setIdCardPath] = useState(null)
+  const [bankPassPath, setBankPassPath] = useState(null)
+  const [resumePath, setResumePath] = useState(null)
 
   const nextStep = () => {
     setStep(step + 1);
@@ -34,6 +44,9 @@ function Register() {
       case 'email':
         setEmail(e.target.value);
         break;
+      case 'password':
+        setPassword(e.target.value);
+        break;
       case 'phone':
         setPhone(e.target.value);
         break;
@@ -44,7 +57,7 @@ function Register() {
         setGender(e.target.value);
         break;
       case 'dob':
-        setDob(e.target.value);
+        setBirthDate(e.target.value);
         break;
       case 'street':
         setStreet(e.target.value);
@@ -58,13 +71,48 @@ function Register() {
       case 'zip':
         setZip(e.target.value);
         break;
+      case 'empNo':
+        setEmpNo(e.target.value);
+        break;
+      case 'designation':
+        setDesignation(e.target.value);
+        break;
+      case 'workType':
+        setWorkType(e.target.value);
+        break;
+      case 'department':
+        setDepartment(e.target.value);
+        break;
+      case 'leaveAllocation':
+        setLeaveAllocation(e.target.value);
+        break;
+      case 'admin':
+        setIsAdmin(e.target.checked);
+        break;
+      case 'idCardPath':
+        setIdCardPath(e.target.files[0]);
+        break;
+      case 'bankPassPath':
+        setBankPassPath(e.target.files[0]);
+        break;
+      case 'resumePath':
+        setResumePath(e.target.files[0]);
+        break;
       default:
         break;
     }
+
+    if (input === 'workType') {
+      const selectedLeaveTypes = e.target.value;
+      setLeaveAllocation(prevAllocation => ({
+        ...prevAllocation,
+        [input]: selectedLeaveTypes
+      }));
+    }
   };
 
-  const values = { firstName, lastName, email, dob, phone, gender, nic, street, city, state, zip };
 
+  const values = { firstName, lastName, email, password, birthDate, phone, gender, nic, street, city, state, zip, empNo, designation, workType, department, leaveAllocation, isAdmin, idCardPath, bankPassPath, resumePath };
   switch (step) {
     case 1:
       return (

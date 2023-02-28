@@ -38,7 +38,7 @@ function PersonalInfoForm({ handleChange, values, nextStep }) {
             <input
               className='border rounded'
               onChange={handleChange('dob')}
-              defaultValue={values.dob} />
+              defaultValue={values.birthDate} />
           </div>
           <div className='flex flex-col w-[45%]'>
             <label>Email</label>
@@ -46,6 +46,13 @@ function PersonalInfoForm({ handleChange, values, nextStep }) {
               className='border rounded'
               onChange={handleChange('email')}
               defaultValue={values.email} />
+          </div>
+          <div className='flex flex-col w-[45%]'>
+            <label>Password</label>
+            <input
+              className='border rounded'
+              onChange={handleChange('password')}
+              defaultValue={values.password} />
           </div>
           <div className='flex flex-col w-[45%]'>
             <label>Phone</label>

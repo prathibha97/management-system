@@ -4,6 +4,7 @@ import React from 'react'
 function DocumentUpload({ handleChange, values, nextStep, prevStep }) {
   const handleNextStep = (e) => {
     e.preventDefault()
+    console.log(values.idCardPath, values.bankPassPath, values.resumePath)
     nextStep()
   }
   const handlePrevStep = (e) => {
@@ -22,25 +23,28 @@ function DocumentUpload({ handleChange, values, nextStep, prevStep }) {
             <label>NIC</label>
             <input
               type='file'
-              className='border rounded'
-              onChange={handleChange('firstName')}
-              defaultValue={values.firstName} />
+              className='border rounde'
+              accept=".pdf,.doc,.docx,.jpeg,.jpg,.png"
+              onChange={handleChange('idCardPath')}
+              defaultValue={values.idCardPath} />
           </div>
           <div className='flex flex-col w-[45%]'>
             <label>Bank Passbook</label>
             <input
               type='file'
               className='border rounded'
-              onChange={handleChange('lastName')}
-              defaultValue={values.lastName} />
+              accept=".pdf,.doc,.docx,.jpeg,.jpg,.png"
+              onChange={handleChange('bankPassPath')}
+              defaultValue={values.bankPassPath} />
           </div>
           <div className='flex flex-col w-[45%]'>
             <label>Resume</label>
             <input
               type='file'
               className='border rounded'
-              onChange={handleChange('email')}
-              defaultValue={values.email} />
+              accept=".pdf,.doc,.docx,.jpeg,.jpg,.png"
+              onChange={handleChange('resumePath')}
+              defaultValue={values.resumePath} />
           </div>
         </div>
       </div>

@@ -7,7 +7,11 @@ import {
   markAttendanceReducer,
 } from './reducers/attendanceReducers';
 import { projectBoardDetailsReducer } from './reducers/boardReducer';
-import { employeeListReducer } from './reducers/employeeReducer';
+import { departmentDetailsReducer } from './reducers/departmentReducer';
+import {
+  employeeListReducer,
+  registerEmployeeReducer,
+} from './reducers/employeeReducer';
 import {
   leaveDetailsReducer,
   leaveRequestReducer,
@@ -34,7 +38,7 @@ const initialState = {
 
 const reducer = combineReducers({
   userLogin: userLoginReducer,
-  // userRegister: userRegisterReducer,
+  registerEmployee: registerEmployeeReducer,
   userDetails: userDetailsReducer,
   attendanceDetails: attendanceDetailsReducer,
   markAttendance: markAttendanceReducer,
@@ -48,6 +52,7 @@ const reducer = combineReducers({
   getTasksByProject: getTasksByProjectReducer,
   deleteTask: deleteTaskReducer,
   employeeList: employeeListReducer,
+  departmentDetails: departmentDetailsReducer,
   // userUpdateProfile: userUpdateProfileReducer,
   // userList: userListReducer,
   // userDelete: userDeleteReducer,

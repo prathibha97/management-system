@@ -29,6 +29,11 @@ const empSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    nic: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     password: {
       type: String,
       required: true,
@@ -47,6 +52,7 @@ const empSchema = new mongoose.Schema(
     },
     workType: {
       type: String,
+      enum: ['Intern', 'Contract', 'Part-Time', 'Full-Time'],
     },
     employmentHistory: [
       {
@@ -77,9 +83,25 @@ const empSchema = new mongoose.Schema(
       required: true,
     },
     leaveBalance: {
-      casual: { type: Number, default: 10 },
+      casual: {
+        type: Number,
+        default () {
+          if (['Intern', 'Contract', 'Part-Time'].includes(this.workType)) {
+            return 1;
+          }
+          return 10;
+        },
+      },
       annual: { type: Number, default: 10 },
-      maternity: { type: Number, default: 10 },
+      maternity: {
+        type: Number,
+        default () {
+          if (this.gender === 'female') {
+            return 10;
+          }
+          return 0;
+        },
+      },
       other: { type: Number, default: 10 },
     },
   },

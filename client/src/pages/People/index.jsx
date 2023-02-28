@@ -19,7 +19,6 @@ function People() {
   const { userInfo } = userLogin
 
   const { employees, loading } = useSelector((state) => state.employeeList);
-  console.log(employees);
   useEffect(() => {
     if (!userInfo) {
       navigate('/');
@@ -130,7 +129,7 @@ function People() {
       </Paper>
 
       <div className='flex justify-end mt-10'>
-      <Button title='Add New Employee' icon={faUserPlus} onClick={()=>navigate('/register')}/>
+        <Button title='Add New Employee' icon={faUserPlus} onClick={() => navigate('/register')} />
       </div>
     </>
   );
