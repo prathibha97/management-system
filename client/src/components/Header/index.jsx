@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable no-underscore-dangle */
 
-import { faBell } from '@fortawesome/free-solid-svg-icons';
+import { faBell, faClock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Alert, FormControl, InputLabel, MenuItem, Select, Snackbar } from '@mui/material';
 import React, { useEffect, useState } from 'react';
@@ -111,7 +111,7 @@ function Header() {
         )}
       </div>
       <div className="flex items-center gap-10">
-        <Button title="Log Time" onClick={handleMarkAttendance} />
+        <Button title="Log Time" onClick={handleMarkAttendance} icon={faClock}/>
         <FontAwesomeIcon icon={faBell} />
         <AccountMenu />
       </div>
