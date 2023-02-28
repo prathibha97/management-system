@@ -75,6 +75,9 @@ function Header() {
     case '/projects':
       heading = 'Projects';
       break;
+    case '/register':
+      heading = 'Register New Employee';
+      break;
     default:
       heading = 'Unknown Page';
       break;
