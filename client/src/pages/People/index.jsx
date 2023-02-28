@@ -118,7 +118,7 @@ function People() {
             </TableHead>
             <TableBody>
               {employees?.map((row) => (
-                <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
                   <TableCell align='center'>{row.empNo}</TableCell>
                   <TableCell align='center'>{row.name.first} {row.name.last}</TableCell>
                   <TableCell align='center'>{row.designation}</TableCell>
