@@ -1,5 +1,6 @@
+/* eslint-disable import/no-extraneous-dependencies */
 const multer = require('multer');
-// Set up multer storage
+
 const storage = multer.diskStorage({
   destination(req, file, cb) {
     if (file.fieldname === 'idCardPath') {
@@ -13,11 +14,13 @@ const storage = multer.diskStorage({
     }
   },
   filename(req, file, cb) {
-    cb(null, `${Date.now()}_${file.originalname}`);
+    const { firstName, lastName } = req.body;
+    const sanitizedFirstName = firstName.replace(/\s+/g, '_');
+    const sanitizedLastName = lastName.replace(/\s+/g, '_');
+    cb(null, `${sanitizedFirstName}_${sanitizedLastName}_${file.originalname}`);
   },
 });
 
-// Set up multer upload
 const upload = multer({ storage });
 
 module.exports = upload;
