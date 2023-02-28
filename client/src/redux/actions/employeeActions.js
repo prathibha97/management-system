@@ -6,6 +6,9 @@ import {
   REGISTER_EMPLOYEE_FAIL,
   REGISTER_EMPLOYEE_REQUEST,
   REGISTER_EMPLOYEE_SUCCESS,
+  REMOVE_EMPLOYEE_FAIL,
+  REMOVE_EMPLOYEE_REQUEST,
+  REMOVE_EMPLOYEE_SUCCESS,
 } from '../constants/employeeConstants';
 
 export const getEmployeeList = () => async (dispatch, getState) => {
@@ -120,3 +123,32 @@ export const registerEmployee =
       });
     }
   };
+
+export const removeEmployee = (empNo) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: REMOVE_EMPLOYEE_REQUEST,
+    });
+    const {
+      userLogin: { userInfo },
+    } = getState();
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    const { data } = await api.delete(`/emp/${empNo}`, config);
+    dispatch({
+      type: REMOVE_EMPLOYEE_SUCCESS,
+      payload: data,
+    });
+  } catch (err) {
+    dispatch({
+      type: REMOVE_EMPLOYEE_FAIL,
+      payload:
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message,
+    });
+  }
+};

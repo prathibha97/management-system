@@ -144,7 +144,7 @@ const registerEmployee = async (req, res) => {
     dept.employees.push(newEmployee.depId);
     await dept.save();
 
-    res.status(201).json(newEmployee);
+    res.status(201).json({newEmployee, message: 'Employee created successfully'});
   } catch (err) {
     console.error(err.message);
 

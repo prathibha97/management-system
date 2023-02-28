@@ -1,11 +1,12 @@
 /* eslint-disable react/no-unstable-nested-components */
 import { faEdit, faTrash, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@mui/material';
+import { Alert, Paper, Snackbar, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Button, Loader } from '../../components';
+import AlertDialog from '../../components/AlertDialog';
 import { getEmployeeList } from '../../redux/actions/employeeActions';
 
 
@@ -14,9 +15,13 @@ function People() {
   const navigate = useNavigate();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [open, setOpen] = useState(false);
+  const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin
+
+  const { error } = useSelector((state) => state.removeEmployee);
 
   const { employees, loading } = useSelector((state) => state.employeeList);
   useEffect(() => {
@@ -30,6 +35,13 @@ function People() {
     }
   }, [userInfo])
 
+  useEffect(() => {
+    if (error) {
+      setAlert({ open: true, message: error, severity: 'error' });
+    } else {
+      dispatch(getEmployeeList());
+    }
+  }, [error]);
 
 
   if (!userInfo || loading) {
@@ -41,10 +53,10 @@ function People() {
     console.log(`Edit row ${row.empNo}`);
   };
 
-  const handleDelete = (row) => {
-    // handle delete action here
-    console.log(`Delete row ${row.empNo}`);
+  const handleClose = () => {
+    setOpen(false);
   };
+
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -53,6 +65,10 @@ function People() {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
+  };
+
+  const handleAlertClose = () => {
+    setAlert({ ...alert, open: false });
   };
 
   return (
@@ -110,7 +126,10 @@ function People() {
                   <TableCell align='center'>{row.phone}</TableCell>
                   <TableCell align='center'>
                     <FontAwesomeIcon icon={faEdit} onClick={() => handleEdit(row)} className="mx-1 hover:text-[#1DB3AB]" />
-                    <FontAwesomeIcon icon={faTrash} onClick={() => handleDelete(row)} className="mx-1 hover:text-[#FF6760]" />
+                    <FontAwesomeIcon icon={faTrash} onClick={() => setOpen(true)} className="mx-1 hover:text-[#FF6760]" />
+                    {open && (
+                      <AlertDialog open={open} handleClose={handleClose} setAlert={setAlert} empNo={row.empNo} />
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
@@ -131,6 +150,11 @@ function People() {
       <div className='flex justify-end mt-10'>
         <Button title='Add New Employee' icon={faUserPlus} onClick={() => navigate('/register')} />
       </div>
+      <Snackbar open={alert?.open} autoHideDuration={5000} onClose={handleAlertClose}>
+        <Alert onClose={handleAlertClose} severity={alert?.severity}>
+          {alert?.message}
+        </Alert>
+      </Snackbar>
     </>
   );
 }

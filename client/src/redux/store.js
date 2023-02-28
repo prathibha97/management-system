@@ -11,6 +11,7 @@ import { departmentDetailsReducer } from './reducers/departmentReducer';
 import {
   employeeListReducer,
   registerEmployeeReducer,
+  removeEmployeeReducer,
 } from './reducers/employeeReducer';
 import {
   leaveDetailsReducer,
@@ -39,6 +40,7 @@ const initialState = {
 const reducer = combineReducers({
   userLogin: userLoginReducer,
   registerEmployee: registerEmployeeReducer,
+  removeEmployee: removeEmployeeReducer,
   userDetails: userDetailsReducer,
   attendanceDetails: attendanceDetailsReducer,
   markAttendance: markAttendanceReducer,
