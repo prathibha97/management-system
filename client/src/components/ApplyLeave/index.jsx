@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createLeaveRequest } from '../../redux/actions/leaveActions';
 import Button from '../Button';
 
-function ApplyLeave() {
+function ApplyLeave({ user }) {
   const [leaveType, setLeaveType] = useState('')
   const [startDate, setStartDate] = useState(moment().format())
   const [endDate, setEndDate] = useState(moment().format())
@@ -57,7 +57,10 @@ function ApplyLeave() {
               onChange={(e) => setLeaveType(e.target.value)}
             >
               <MenuItem value='Casual'>Casual</MenuItem>
-              <MenuItem value='Maternity'>Maternity</MenuItem>
+              {
+                user?.leaveBalance?.Maternity === 0 ? null :
+                  <MenuItem value='Maternity'>Maternity</MenuItem>
+              }
               <MenuItem value='Annual'>Annual</MenuItem>
               <MenuItem value='Other'>Other</MenuItem>
             </Select>
@@ -83,7 +86,7 @@ function ApplyLeave() {
             </LocalizationProvider>
           </div>
           <TextField sx={{ marginBottom: '20px' }} fullWidth multiline rows={5} label="Reason" value={reason} onChange={(e) => setReason(e.target.value)} />
-          <Button title="Apply Leave" onClick={handleSubmit} icon={faGreaterThan}/>
+          <Button title="Apply Leave" onClick={handleSubmit} icon={faGreaterThan} />
         </div>
       </div>
       <Snackbar open={alert?.open} autoHideDuration={5000} onClose={handleAlertClose}>
