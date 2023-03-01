@@ -11,6 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
+import {Link} from "react-router-dom";
 
 function Sidebar({ user }) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -76,8 +77,6 @@ function Sidebar({ user }) {
     });
   }
 
-
-
   const handleItemClick = (index) => {
     setActiveIndex(index);
   };
@@ -93,11 +92,11 @@ function Sidebar({ user }) {
           {sidebarItems.map((item, index) => (
             <li
               key={index}
-              className={`my-px ${activeIndex === index ? "text-black" : "text-gray-600"
-                }`}
+              className={`my-px ${activeIndex === index ? "text-gray-600" : "text-gray-400"
+                }group-hover:text-gray-600 mr-3`}
             >
-              <a
-                href={item.link}
+              <Link
+                to={item.link}
                 className="flex flex-row items-center h-12 px-4 rounded-lg hover:bg-gray-100"
                 onClick={() => handleItemClick(index)}
               >
@@ -107,24 +106,24 @@ function Sidebar({ user }) {
                     } group-hover:text-gray-600 mr-3`}
                 />
                 <span className="text-sm font-medium">{item.name}</span>
-              </a>
+              </Link>
             </li>
           ))}
           {user.isAdmin && adminSidebarItems.map((item, index) => (
-            <li key={index} className={`my-px ${activeIndex === index ? "text-black" : "text-gray-600"
+            <li key={index} className={`my-px ${activeIndex === index + sidebarItems.length ? "text-black" : "text-gray-600"
               }`}>
-              <a
-                href={item.link}
+              <Link
+                to={item.link}
                 className="flex flex-row items-center h-12 px-4 rounded-lg hover:bg-gray-100"
-                onClick={() => handleItemClick(index)}
+                onClick={() => handleItemClick(index + sidebarItems.length)}
               >
                 <FontAwesomeIcon
                   icon={item.icon}
-                  className={`text-lg ${activeIndex === index ? "text-black" : "text-gray-400"
+                  className={`text-lg ${activeIndex === index + sidebarItems.length ? "text-black" : "text-gray-400"
                     } group-hover:text-gray-600 mr-3`}
                 />
                 <span className="text-sm font-medium">{item.name}</span>
-              </a>
+              </Link>
             </li>
           ))}
         </ul>

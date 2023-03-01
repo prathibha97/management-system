@@ -15,8 +15,14 @@ RUN npm run build --prefix client
 
 COPY server/ server/
 
+USER root
+
+RUN apk update && apk add sudo
+
+RUN echo "node ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
 USER node
 
-CMD [ "npm", "start", "--prefix", "server" ]
+CMD [ "sudo", "npm", "start", "--prefix", "server" ]
 
 EXPOSE 5000
