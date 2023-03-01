@@ -1,7 +1,20 @@
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable consistent-return */
 const Leave = require('../models/Leave');
 const Employee = require('../models/Employee');
 const getNumberOfDays = require('../utils/getNumberOfDays');
+
+// const io = new Server(5001);
+
+// const getSocketIdByUserId = (userId) => {
+//   const connectedClients = io.of('/').connected;
+//   for (const socketId in connectedClients) {
+//     if (connectedClients[socketId].userId === userId) {
+//       return socketId;
+//     }
+//   }
+//   return null;
+// };
 
 /* 
 ?@desc   Create a new leave request
@@ -89,14 +102,17 @@ const approveOrRejectLeave = async (req, res) => {
 
     if (status === 'Approved') {
       const { leaveType, startDate, endDate } = leave;
+      console.log('leaveType:', leaveType);
       const numberOfDays = getNumberOfDays(startDate, endDate);
       const employee = await Employee.findOne({ empNo });
+      console.log('leaveBalance:', employee.leaveBalance[leaveType]);
       const leaveBalance = employee.leaveBalance[leaveType];
       if (leaveBalance < numberOfDays) {
         return res.status(400).json({ message: 'Insufficient leave balance' });
       }
 
       employee.leaveBalance[leaveType] -= numberOfDays;
+      console.log('updated leaveBalance:', employee.leaveBalance[leaveType]);
       await employee.save();
 
       leave.status = status;
@@ -115,6 +131,74 @@ const approveOrRejectLeave = async (req, res) => {
     res.status(500).json({ message: 'Failed to approve or reject leave request' });
   }
 };
+
+
+// const approveOrRejectLeave = async (req, res) => {
+//   const { empNo, id } = req.params;
+//   const { status } = req.body;
+//   try {
+//     const leave = await Leave.findById(id).where('empNo').equals(empNo);
+//     if (!leave) {
+//       return res.status(404).json({ message: 'Leave not found' });
+//     }
+//     if (leave.status !== 'Pending') {
+//       return res.status(400).json({ message: 'Leave request is already processed' });
+//     }
+
+//     if (status === 'Approved') {
+//       const { leaveType, startDate, endDate } = leave;
+//       const numberOfDays = getNumberOfDays(startDate, endDate);
+//       const employee = await Employee.findOne({ empNo });
+//       const leaveBalance = employee.leaveBalance[leaveType];
+//       if (leaveBalance < numberOfDays) {
+//         return res.status(400).json({ message: 'Insufficient leave balance' });
+//       }
+
+//       employee.leaveBalance[leaveType] -= numberOfDays;
+//       await employee.save();
+
+//       leave.status = status;
+//       leave.approvedOn = new Date();
+//       leave.approvedBy = req.user.id;
+
+//       // Notify employee
+//       const notification = new Notification({
+//         message: `Your leave request from ${startDate} to ${endDate} has been approved.`,
+//         receiver: empNo,
+//         type: 'Leave Approval',
+//       });
+//       await notification.save();
+//       const socketId = await getSocketIdByUserId(empNo);
+//       if (socketId) {
+//         io.to(socketId).emit('notification', notification);
+//         console.log(notification);
+//       }
+//     } else {
+//       leave.status = status;
+//       leave.rejectedOn = new Date();
+//       leave.rejectedBy = req.user.id;
+
+//       // Notify employee
+//       const notification = new Notification({
+//         message: `Your leave request from ${leave.startDate} to ${leave.endDate} has been rejected.`,
+//         receiver: empNo,
+//         type: 'Leave Rejection',
+//       });
+//       await notification.save();
+//       const socketId = await getSocketIdByUserId(empNo);
+//       if (socketId) {
+//         io.to(socketId).emit('notification', notification);
+//         console.log(notification);
+//       }
+//     }
+
+//     const updatedLeave = await leave.save();
+//     res.status(200).json(updatedLeave);
+//   } catch (err) {
+//     console.error(err.message);
+//     res.status(500).json({ message: 'Failed to approve or reject leave request' });
+//   }
+// };
 
 module.exports = {
   createLeaveRequest,
