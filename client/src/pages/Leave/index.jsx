@@ -38,7 +38,7 @@ function Leave() {
         <LeaveInformation user={user} leaves={leaves}/>
       </div>
       <div className="flex flex-col flex-1">
-        <ApplyLeave />
+        <ApplyLeave user={user}/>
       </div>
     </div>
   )

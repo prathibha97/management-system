@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable no-shadow */
@@ -31,6 +32,14 @@ function Kanban() {
   const projectBoardDetails = useSelector((state) => state.projectBoardDetails) || [];
   const { boards, loading } = projectBoardDetails
 
+  // const { tasks } = useSelector((state) => state.getTasksByProject);
+
+
+  const [showCreateForms, setShowCreateForms] = useState([]);
+  const [isBoardHovered, setIsBoardHovered] = useState(false);
+  // const [numTasks, setNumTasks] = useState(0);
+
+
   useEffect(() => {
     if (!userInfo) {
       navigate('/');
@@ -45,13 +54,19 @@ function Kanban() {
     }
   }, [userInfo, project])
 
-  const [showCreateForms, setShowCreateForms] = useState([]);
-  const [isBoardHovered, setIsBoardHovered] = useState(false);
-
   // Initialize the showCreateForms array with false values for each board
   useEffect(() => {
     setShowCreateForms(new Array(boards.length).fill(false));
   }, [boards]);
+
+  // Track changes in the number of tasks
+  // useEffect(() => {
+  //   let count = 0;
+  //   boards.forEach((board) => {
+  //     count += board.tasks.length;
+  //   });
+  //   setNumTasks(count);
+  // }, [boards]);
 
   if (!user || !project || loading) {
     return <Loader />
@@ -84,6 +99,8 @@ function Kanban() {
         boardId: destinationBoard._id,
       };
       await dispatch(updateTask(task._id, updatedTask));
+      // const updatedTasks = boards.flatMap(board => board.tasks);
+      // setTasks(updatedTasks);
     } catch (err) {
       console.log(err);
       // If there's an error, undo the changes made to the local state
@@ -91,6 +108,7 @@ function Kanban() {
       newDestinationBoard.tasks = destinationTasks.filter(t => t._id !== task._id);
     }
   };
+
 
   if (boards.length === 0) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '90vh' }}>
     <h1 className='text-center'>Select a project to view the boards!</h1>
@@ -162,11 +180,15 @@ function Kanban() {
                       <p>Create Task</p>
                     </div>
                     {showCreateForms[index] && (
-                      <AddTaskModal boardId={section._id} open={showCreateForms} handleClose={() => setShowCreateForms(prev => {
-                        const newState = [...prev];
-                        newState[index] = false;
-                        return newState;
-                      })} />
+                      <AddTaskModal
+                        boardId={section._id}
+                        open={showCreateForms}
+                        handleClose={() => setShowCreateForms(prev => {
+                          const newState = [...prev];
+                          newState[index] = false;
+                          return newState;
+                        })}
+                      />
                     )}
                   </div>
                 )}

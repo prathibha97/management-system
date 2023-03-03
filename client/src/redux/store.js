@@ -7,6 +7,12 @@ import {
   markAttendanceReducer,
 } from './reducers/attendanceReducers';
 import { projectBoardDetailsReducer } from './reducers/boardReducer';
+import { departmentDetailsReducer } from './reducers/departmentReducer';
+import {
+  employeeListReducer,
+  registerEmployeeReducer,
+  removeEmployeeReducer,
+} from './reducers/employeeReducer';
 import {
   leaveDetailsReducer,
   leaveRequestReducer,
@@ -15,7 +21,12 @@ import {
   projectDetailsByIdReducer,
   userProjectDetailsReducer,
 } from './reducers/projectReducer';
-import { createTaskReducer, updateTaskReducer } from './reducers/taskReducer';
+import {
+  createTaskReducer,
+  deleteTaskReducer,
+  getTasksByProjectReducer,
+  updateTaskReducer,
+} from './reducers/taskReducer';
 import { userDetailsReducer, userLoginReducer } from './reducers/userReducers';
 
 const userInfoFromStorage = localStorage.getItem('userInfo')
@@ -28,7 +39,8 @@ const initialState = {
 
 const reducer = combineReducers({
   userLogin: userLoginReducer,
-  // userRegister: userRegisterReducer,
+  registerEmployee: registerEmployeeReducer,
+  removeEmployee: removeEmployeeReducer,
   userDetails: userDetailsReducer,
   attendanceDetails: attendanceDetailsReducer,
   markAttendance: markAttendanceReducer,
@@ -37,8 +49,12 @@ const reducer = combineReducers({
   userProjectDetails: userProjectDetailsReducer,
   projectDetailsById: projectDetailsByIdReducer,
   projectBoardDetails: projectBoardDetailsReducer,
-  createTask:createTaskReducer,
+  createTask: createTaskReducer,
   updateTask: updateTaskReducer,
+  getTasksByProject: getTasksByProjectReducer,
+  deleteTask: deleteTaskReducer,
+  employeeList: employeeListReducer,
+  departmentDetails: departmentDetailsReducer,
   // userUpdateProfile: userUpdateProfileReducer,
   // userList: userListReducer,
   // userDelete: userDeleteReducer,

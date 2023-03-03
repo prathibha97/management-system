@@ -9,40 +9,8 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import { useState } from 'react';
 
-const columns = [
-  { id: 'date', label: 'Date', minWidth: 170 },
-  {
-    id: 'inTime',
-    label: 'In Time',
-    minWidth: 100,
-    format: (value) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'outTime',
-    label: 'Out Time',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'workHours',
-    label: 'Worked Hours',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'overtimeHours',
-    label: 'Overtime Hours',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toFixed(2),
-  },
-];
 
-
-
-function DataTable({ data }) {
+function DataTable({ data, columns }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -80,7 +48,7 @@ function DataTable({ data }) {
                     const value = row[column.id];
                     return (
                       <TableCell key={column.id} align={column.align}>
-                        {column.format && typeof value === 'number'
+                        {column.format && typeof value === 'string' || typeof value === 'number'
                           ? column.format(value)
                           : value}
                       </TableCell>

@@ -2,6 +2,12 @@ const Board = require('../models/Board');
 const Project = require('../models/Project');
 const Task = require('../models/Task');
 
+/*
+?@desc   create new task
+*@route  Post /api/tasks/
+*@access Private
+*/
+
 const createTask = async (req, res) => {
   const { title, description, projectId, boardId, status, assignee } = req.body;
 
@@ -32,6 +38,12 @@ const createTask = async (req, res) => {
   }
 };
 
+/*
+?@desc   Get all tasks
+*@route  get /api/tasks
+*@access Private/Admin
+*/
+
 const getTasks = async (req, res) => {
   try {
     const tasks = await Task.find();
@@ -41,6 +53,12 @@ const getTasks = async (req, res) => {
     return res.status(500).json({ message: 'Error occurred while getting the tasks' });
   }
 };
+
+/*
+?@desc   Get task by Id
+*@route  get /api/tasks
+*@access Private
+*/
 
 const getTaskById = async (req, res) => {
   const { id } = req.params;
@@ -53,70 +71,11 @@ const getTaskById = async (req, res) => {
   }
 };
 
-// const updateTask = async (req, res) => {
-//   const { boardId, status } = req.body;
-//   const { id } = req.params;
-
-//   try {
-//     const task = await Task.findById(id);
-
-//     const board = await Board.findById(boardId);
-//     if (!board) {
-//       return res.status(404).json({ message: `Board with id ${boardId} not found` });
-//     }
-
-//     const taskIndex = board.tasks.findIndex((taskId) => taskId.toString() === task._id.toString());
-//     if (taskIndex === -1) {
-//       board.tasks.push(task._id);
-//     }
-//     board.status = status || board.status;
-//     await board.save();
-
-//     task.board = {
-//       boardId: board._id,
-//       status: board.status,
-//     };
-//     await task.save();
-
-//     return res.status(200).json(task);
-//   } catch (err) {
-//     return res.status(500).json({ message: 'Error occurred while updating the task' });
-//   }
-// };
-
-// const updateTask = async (req, res) => {
-//   const { boardId } = req.body;
-//   const { id } = req.params;
-
-//   try {
-//     const task = await Task.findById(id);
-
-//     const board = await Board.findById(boardId);
-//     if (!board) {
-//       return res.status(404).json({ message: `Board with id ${boardId} not found` });
-//     }
-
-//     // Check if the board has the 'tasks' property before accessing it
-//     if (!board.tasks) {
-//       board.tasks = [];
-//     }
-
-//     const taskIndex = board.tasks.findIndex((taskId) => taskId.toString() === task._id.toString());
-//     if (taskIndex === -1) {
-//       board.tasks.push(task._id);
-//     }
-
-//     task.board = {
-//       boardId: board._id,
-//     };
-//     await task.save();
-
-//     return res.status(200).json(task);
-//   } catch (err) {
-//     console.log(err);
-//     return res.status(500).json({ message: 'Error occurred while updating the task' });
-//   }
-// };
+/*
+?@desc   Update task board
+*@route  put /api/tasks/:id
+*@access Private
+*/
 
 const updateTask = async (req, res) => {
   const { boardId } = req.body;
@@ -153,5 +112,38 @@ const updateTask = async (req, res) => {
   }
 };
 
+/*
+?@desc   Delete task
+*@route  delete /api/tasks/:id
+*@access Private
+*/
 
-module.exports = { createTask, getTasks, getTaskById, updateTask };
+const deleteTask = async (req, res) => {
+  const { id } = req.params;
+  try {
+    await Task.findByIdAndDelete(id);
+    return res.status(200).json({ message: 'Task deleted successfully' });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: 'Error occurred while deleting the task' });
+  }
+};
+
+/*
+?@desc   Get tasks by project
+*@route  delete /api/tasks/project/:id
+*@access Private
+*/
+
+const getTasksByProject = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const tasks = await Task.find({ project: id });
+    return res.status(200).json(tasks);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: 'Error occurred while fetching the tasks' });
+  }
+};
+
+module.exports = { createTask, getTasks, getTaskById, updateTask, deleteTask, getTasksByProject };

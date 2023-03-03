@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable no-underscore-dangle */
 
-import { faBell } from '@fortawesome/free-solid-svg-icons';
+import { faBell, faClock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Alert, FormControl, InputLabel, MenuItem, Select, Snackbar } from '@mui/material';
 import React, { useEffect, useState } from 'react';
@@ -66,6 +66,18 @@ function Header() {
     case '/settings':
       heading = 'Settings';
       break;
+    case '/people':
+      heading = 'People';
+      break;
+    case '/payroll':
+      heading = 'Payroll';
+      break;
+    case '/projects':
+      heading = 'Projects';
+      break;
+    case '/register':
+      heading = 'Register New Employee';
+      break;
     default:
       heading = 'Unknown Page';
       break;
@@ -81,13 +93,6 @@ function Header() {
         <div className="text-3xl font-semibold">{heading}</div>
         {heading === 'Board' && (
           <div className="flex items-center">
-
-            {/* <select value={project?._id} onChange={handleProjectChange} >
-              {projects?.map((item) => (
-                <option key={item._id} value={item}>{item.title}</option>
-              ))}
-            </select>  */}
-
             <FormControl sx={{ m: 1, minWidth: 150 }}>
               <InputLabel id="Select Project">Select Project</InputLabel>
               <Select
@@ -104,10 +109,9 @@ function Header() {
 
           </div>
         )}
-        {/* {dropdown} */}
       </div>
       <div className="flex items-center gap-10">
-        <Button title="Log Time" onClick={handleMarkAttendance} />
+        <Button title="Log Time" onClick={handleMarkAttendance} icon={faClock}/>
         <FontAwesomeIcon icon={faBell} />
         <AccountMenu />
       </div>
@@ -121,13 +125,3 @@ function Header() {
 }
 
 export default Header;
-
-// {/* <FormControl sx={{ m: 1, minWidth: 150}}> */ }
-// {/* <InputLabel id="Select Project">Select Project</InputLabel>
-//             <Select onChange={handleProjectChange} labelId="Select Project" sx={{width:150, m:1}}
-//               label="Select Project" value={project?._id}>
-//               {projects?.map((item) => (
-//                 <MenuItem key={item._id} value={item}>{item?.title}</MenuItem>
-//               ))}
-//             </Select> */}
-// {/* </FormControl> */ }

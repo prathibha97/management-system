@@ -9,28 +9,6 @@ import {
   USER_LOGOUT,
 } from '../constants/userConstants';
 
-// export const login = (email, password) => async (dispatch) => {
-//   try {
-//     dispatch({
-//       type: USER_LOGIN_REQUEST,
-//     });
-//     const { data } = await api.post('/emp/auth/login', { email, password });
-//     dispatch({
-//       type: USER_LOGIN_SUCCESS,
-//       payload: data,
-//     });
-//     localStorage.setItem('userInfo', JSON.stringify(data));
-
-//   } catch (err) {
-//     dispatch({
-//       type: USER_LOGIN_FAIL,
-//       payload:
-//         err.response && err.response.data.message
-//           ? err.response.data.message
-//           : err.message,
-//     });
-//   }
-// };
 export const login = (email, password) => async (dispatch) => {
   try {
     dispatch({
@@ -88,5 +66,6 @@ export const getUserDetails = (empNo) => async (dispatch, getState) => {
 
 export const logout = () => (dispatch) => {
   localStorage.removeItem('userInfo');
+  localStorage.removeItem('user');
   dispatch({ type: USER_LOGOUT });
 };
