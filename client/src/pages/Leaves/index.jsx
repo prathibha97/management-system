@@ -1,38 +1,12 @@
-import * as React from 'react';
+import { Chip } from '@mui/material';
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
-
-// const columns = [
-//   { field: 'id', headerName: 'ID', width: 90 },
-//   {
-//     field: 'firstName',
-//     headerName: 'First name',
-//     width: 150,
-//     editable: true,
-//   },
-//   {
-//     field: 'lastName',
-//     headerName: 'Last name',
-//     width: 150,
-//     editable: true,
-//   },
-//   {
-//     field: 'age',
-//     headerName: 'Age',
-//     type: 'number',
-//     width: 110,
-//     editable: true,
-//   },
-//   {
-//     field: 'fullName',
-//     headerName: 'Full name',
-//     description: 'This column has a value getter and is not sortable.',
-//     sortable: false,
-//     width: 160,
-//     valueGetter: (params) =>
-//       `${params.row.firstName || ''} ${params.row.lastName || ''}`,
-//   },
-// ];
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { Loader } from '../../components';
+import { getAllLeaveDetails } from '../../redux/actions/leaveActions';
+import { formatDate } from '../../utils/formatDate';
 
 const columns = [
   { field: 'empNo', headerName: 'Emp No', width: 90 },
@@ -40,79 +14,117 @@ const columns = [
     field: 'firstName',
     headerName: 'First name',
     width: 150,
-    editable: true,
   },
   {
     field: 'lastName',
     headerName: 'Last name',
     width: 150,
-    editable: true,
   },
   {
     field: 'leaveType',
     headerName: 'Leave Type',
     width: 110,
-    editable: true,
   },
   {
     field: 'startDate',
     headerName: 'Start Date',
     width: 110,
-    editable: true,
+    valueFormatter: ({ value }) => formatDate(value),
   },
   {
     field: 'endDate',
     headerName: 'End Date',
     width: 110,
-    editable: true,
+    valueFormatter: ({ value }) => formatDate(value),
   },
   {
     field: 'reason',
     headerName: 'Reason',
     width: 170,
-    editable: true,
   },
   {
     field: 'status',
     headerName: 'Status',
     width: 110,
-    editable: true,
+    renderCell: (params) => {
+      const status = params.value;
+
+      let color;
+      if (status === 'Approved') {
+        color = 'green';
+      } else if (status === 'Pending') {
+        color = 'orange';
+      } else if (status === 'Rejected') {
+        color = 'red';
+      }
+
+      return (
+        <span style={{ color }}>
+          {status}
+        </span>
+      );
+    },
   },
   {
     field: 'action',
     headerName: 'Action',
-    width: 110,
-    editable: true,
-  },
-  // {
-  //   field: 'fullName',
-  //   headerName: 'Full name',
-  //   description: 'This column has a value getter and is not sortable.',
-  //   sortable: false,
-  //   width: 160,
-  //   valueGetter: (params) =>
-  //     `${params.row.firstName || ''} ${params.row.lastName || ''}`,
-  // },
-];
+    width: 170,
+    renderCell: (params) => {
+      const handleApprove = () => {
+        // handle approve logic here
+        const leaveId = params.row._id;
+        console.log('approved', leaveId);
+      };
 
-const rows = [
-  { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-  { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-  { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-  { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-  { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-  { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-  { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
+      const handleReject = () => {
+        // handle reject logic here
+        const leaveId = params.row._id;
+        console.log('rejected', leaveId);
+      };
+
+      return (
+        <div>
+          <Chip label="Approve" color='success' variant='outlined' onClick={() => handleApprove(params)} />
+          <Chip label="Reject" color='error' variant='outlined' onClick={() => handleReject(params)} sx={{ marginLeft: 1 }} />
+        </div>
+      );
+    },
+  },
 ];
 
 export default function DataGridDemo() {
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin
+
+
+  const { leaves, loading } = useSelector((state) => state.allLeaveDetails);
+
+  useEffect(() => {
+    if (!userInfo) {
+      navigate('/');
+    } else {
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+      if (!storedUser || storedUser.empNo !== userInfo.empNo) {
+        dispatch(getAllLeaveDetails())
+      }
+    }
+  }, [userInfo])
+
+  if (!userInfo || loading) {
+    return <Loader />
+  }
+
   return (
-    <Box sx={{ height: 650, width: '100%' , marginTop: 4}}>
+    <Box sx={{ height: 650, width: '100%', marginTop: 4 }}>
       <DataGrid
-        rows={rows}
+        rows={leaves.map((leave) => leave)}
+        getRowId={(leave) => leave._id}
         columns={columns}
+        autoPageSize
         initialState={{
           pagination: {
             paginationModel: {

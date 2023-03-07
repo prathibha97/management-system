@@ -14,6 +14,7 @@ import {
   removeEmployeeReducer,
 } from './reducers/employeeReducer';
 import {
+  allLeaveDetailsReducer,
   leaveDetailsReducer,
   leaveRequestReducer,
 } from './reducers/leaveReducer';
@@ -46,6 +47,7 @@ const reducer = combineReducers({
   markAttendance: markAttendanceReducer,
   leaveDetails: leaveDetailsReducer,
   leaveRequest: leaveRequestReducer,
+  allLeaveDetails: allLeaveDetailsReducer,
   userProjectDetails: userProjectDetailsReducer,
   projectDetailsById: projectDetailsByIdReducer,
   projectBoardDetails: projectBoardDetailsReducer,
