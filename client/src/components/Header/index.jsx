@@ -97,13 +97,13 @@ function Header() {
       heading = 'Profile';
       break;
     case '/board':
-      heading = 'Board';
+      heading = 'Project Boards';
       break;
     case '/attendance':
-      heading = 'Attendance';
+      heading = 'Attendance Sheet';
       break;
     case '/leave':
-      heading = 'Leave';
+      heading = 'Apply Leave';
       break;
     case '/settings':
       heading = 'Settings';
@@ -136,7 +136,7 @@ function Header() {
     <div className="flex items-center justify-between px-10 pt-2">
       <div className='flex gap-2 items-center'>
         <div className="text-3xl font-semibold">{heading}</div>
-        {heading === 'Board' && (
+        {heading === 'Project Boards' && (
           <div className="flex items-center">
             <FormControl sx={{ m: 1, minWidth: 150 }}>
               <InputLabel id="Select Project">Select Project</InputLabel>

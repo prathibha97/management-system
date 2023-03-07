@@ -53,17 +53,17 @@ function Sidebar({ user }) {
       icon: faIdBadge,
     },
     {
-      name: "Board",
+      name: "Project Boards",
       link: "/board",
       icon: faColumns,
     },
     {
-      name: "Attendance",
+      name: "Attendance Sheet",
       link: "/attendance",
       icon: faIdBadge,
     },
     {
-      name: "Leave",
+      name: "Apply Leave",
       link: "/leave",
       icon: faArrowRightFromBracket,
     },
