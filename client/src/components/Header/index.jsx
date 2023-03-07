@@ -31,38 +31,38 @@ function Header() {
 
   Pusher.logToConsole = true;
 
-  const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-  const { token } = userInfo;
-  const { empNo } = userInfo.employee;
+  // const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+  // const { token } = userInfo;
+  // const { empNo } = userInfo.employee;
   // console.log(token); // prints the token value
 
 
-  const pusher = new Pusher('32527c1cf3eeb5dc061a', {
-    cluster: 'ap2',
-    authEndpoint: 'http://localhost:5000/pusher/auth',
-    auth: {
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-    }
-  });
+  // const pusher = new Pusher('32527c1cf3eeb5dc061a', {
+  //   cluster: 'ap2',
+  //   authEndpoint: 'http://localhost:5000/pusher/auth',
+  //   auth: {
+  //     headers: {
+  //       Authorization: `Bearer ${token}`
+  //     },
+  //   }
+  // });
 
-  useEffect(() => {
-    const channel = pusher.subscribe(`private-${empNo}`);
+  // useEffect(() => {
+  //   const channel = pusher.subscribe(`private-${empNo}`);
 
-    channel.bind('leave-approved', (data) => {
-      setNotifications((notifications) => [...notifications, data]);
-    });
-    channel.bind('leave-rejected', (data) => {
-      setNotifications((notifications) => [...notifications, data]);
-    });
+  //   channel.bind('leave-approved', (data) => {
+  //     setNotifications((notifications) => [...notifications, data]);
+  //   });
+  //   channel.bind('leave-rejected', (data) => {
+  //     setNotifications((notifications) => [...notifications, data]);
+  //   });
 
-    return () => {
-      channel.unbind_all();
-      channel.unsubscribe();
-      pusher.disconnect();
-    };
-  }, []);
+  //   return () => {
+  //     channel.unbind_all();
+  //     channel.unsubscribe();
+  //     pusher.disconnect();
+  //   };
+  // }, []);
 
   const handleNotificationClick = () => {
     setNotifications([]);
