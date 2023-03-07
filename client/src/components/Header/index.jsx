@@ -32,8 +32,8 @@ function Header() {
   Pusher.logToConsole = true;
 
   const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-  const {token} = userInfo;
-  const {empNo} = userInfo.employee;
+  const { token } = userInfo;
+  const { empNo } = userInfo.employee;
   // console.log(token); // prints the token value
 
 
@@ -109,13 +109,16 @@ function Header() {
       heading = 'Settings';
       break;
     case '/people':
-      heading = 'People';
+      heading = 'Manage People';
       break;
     case '/payroll':
-      heading = 'Payroll';
+      heading = 'Manage Payroll';
       break;
     case '/projects':
-      heading = 'Projects';
+      heading = 'Manage Projects';
+      break;
+    case '/leaves':
+      heading = 'Manage Leaves';
       break;
     case '/register':
       heading = 'Register New Employee';
