@@ -93,7 +93,7 @@ function ReviewNewEmployee({ prevStep, values }) {
       </div>
       <div className='flex bg-white px-12 py-5 mt-5 justify-between items-center w-[90%] m-auto rounded-2xl'>
         <div className='flex flex-wrap justify-between gap-8'>
-          <p>review</p>
+          <p>{firstName} {lastName}</p>
         </div>
       </div>
       <div className='flex justify-end py-10 gap-6 mr-[55px]'>

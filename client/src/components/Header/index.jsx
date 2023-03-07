@@ -1,10 +1,12 @@
+/* eslint-disable no-shadow */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable no-underscore-dangle */
 
-import { faBell, faClock } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Alert, FormControl, InputLabel, MenuItem, Select, Snackbar } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { faClock } from '@fortawesome/free-solid-svg-icons';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import { Alert, Badge, FormControl, InputLabel, MenuItem, Select, Snackbar } from '@mui/material';
+import Pusher from 'pusher-js';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { markAttendance } from '../../redux/actions/attendanceActions';
@@ -24,7 +26,47 @@ function Header() {
 
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
   const [project, setProject] = useState(projects.length > 0 ? projects[0]?._id : '');
+  const [notifications, setNotifications] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
 
+  Pusher.logToConsole = true;
+
+  const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+  const {token} = userInfo;
+  const {empNo} = userInfo.employee;
+  // console.log(token); // prints the token value
+
+
+  const pusher = new Pusher('32527c1cf3eeb5dc061a', {
+    cluster: 'ap2',
+    authEndpoint: 'http://localhost:5000/pusher/auth',
+    auth: {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+    }
+  });
+
+  useEffect(() => {
+    const channel = pusher.subscribe(`private-${empNo}`);
+
+    channel.bind('leave-approved', (data) => {
+      setNotifications((notifications) => [...notifications, data]);
+    });
+    channel.bind('leave-rejected', (data) => {
+      setNotifications((notifications) => [...notifications, data]);
+    });
+
+    return () => {
+      channel.unbind_all();
+      channel.unsubscribe();
+      pusher.disconnect();
+    };
+  }, []);
+
+  const handleNotificationClick = () => {
+    setNotifications([]);
+  }
 
   const handleMarkAttendance = () => {
     try {
@@ -111,8 +153,10 @@ function Header() {
         )}
       </div>
       <div className="flex items-center gap-10">
-        <Button title="Log Time" onClick={handleMarkAttendance} icon={faClock}/>
-        <FontAwesomeIcon icon={faBell} />
+        <Button title="Log Time" onClick={handleMarkAttendance} icon={faClock} />
+        <Badge badgeContent={notifications.length} color='secondary'>
+          <NotificationsIcon color='action' onClick={handleNotificationClick} />
+        </Badge>
         <AccountMenu />
       </div>
       <Snackbar open={alert?.open} autoHideDuration={5000} onClose={handleAlertClose}>
@@ -120,6 +164,13 @@ function Header() {
           {alert?.message}
         </Alert>
       </Snackbar>
+      {notifications.map(notification => (
+        <Snackbar key={notification.id} open={showNotifications} autoHideDuration={5000} onClose={() => setShowNotifications(false)}>
+          <Alert onClose={() => setShowNotifications(false)} severity={notification.severity}>
+            {notification.message}
+          </Alert>
+        </Snackbar>
+      ))}
     </div>
   );
 }

@@ -1,5 +1,6 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable consistent-return */
+const Pusher = require('pusher');
 const Leave = require('../models/Leave');
 const Employee = require('../models/Employee');
 const getNumberOfDays = require('../utils/getNumberOfDays');
@@ -91,6 +92,15 @@ const getLeaveRequestById = async (req, res) => {
 const approveOrRejectLeave = async (req, res) => {
   const { empNo, id } = req.params;
   const { status } = req.body;
+
+  const pusher = new Pusher({
+    appId: process.env.PUSHER_APP_ID,
+    key: process.env.PUSHER_APP_KEY,
+    secret: process.env.PUSHER_APP_SECRET,
+    cluster: process.env.PUSHER_APP_CLUSTER,
+    useTLS: true,
+  });
+
   try {
     const leave = await Leave.findById(id).where('empNo').equals(empNo);
     if (!leave) {
@@ -118,10 +128,24 @@ const approveOrRejectLeave = async (req, res) => {
       leave.status = status;
       leave.approvedOn = new Date();
       leave.approvedBy = req.user.id;
+
+      // Notify employee about leave approval
+      const message = `Your leave request has been approved for ${numberOfDays} days from ${startDate} to ${endDate}.`;
+      const payload = { message };
+      const channel = `private-${empNo}`;
+      const eventName = 'leave-approved';
+      pusher.trigger(channel, eventName, payload);
     } else {
       leave.status = status;
       leave.rejectedOn = new Date();
       leave.rejectedBy = req.user.id;
+
+      // Notify employee about leave rejection
+      const message = `Your leave request has been rejected.`;
+      const payload = { message };
+      const channel = `private-${empNo}`;
+      const eventName = 'leave-rejected';
+      pusher.trigger(channel, eventName, payload);
     }
 
     const updatedLeave = await leave.save();
@@ -131,7 +155,6 @@ const approveOrRejectLeave = async (req, res) => {
     res.status(500).json({ message: 'Failed to approve or reject leave request' });
   }
 };
-
 
 // const approveOrRejectLeave = async (req, res) => {
 //   const { empNo, id } = req.params;
