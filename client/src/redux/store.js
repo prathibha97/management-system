@@ -15,8 +15,10 @@ import {
 } from './reducers/employeeReducer';
 import {
   allLeaveDetailsReducer,
+  approveLeaveReducer,
   leaveDetailsReducer,
   leaveRequestReducer,
+  rejectLeaveReducer,
 } from './reducers/leaveReducer';
 import {
   projectDetailsByIdReducer,
@@ -48,6 +50,8 @@ const reducer = combineReducers({
   leaveDetails: leaveDetailsReducer,
   leaveRequest: leaveRequestReducer,
   allLeaveDetails: allLeaveDetailsReducer,
+  approveLeave: approveLeaveReducer,
+  rejectLeave:rejectLeaveReducer,
   userProjectDetails: userProjectDetailsReducer,
   projectDetailsById: projectDetailsByIdReducer,
   projectBoardDetails: projectBoardDetailsReducer,
