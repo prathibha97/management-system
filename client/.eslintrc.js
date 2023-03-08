@@ -20,5 +20,6 @@ module.exports = {
     'default-param-last': 0,
     'react/no-array-index-key': 0,
     'no-console': 0,
+    'no-underscore-dangle': 0,
   },
 };

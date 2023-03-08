@@ -33,12 +33,12 @@ function Leave() {
   }
 
   return (
-    <div className="flex h-[100vh]">
+    <div className="flex h-[90vh]">
       <div className="flex flex-col flex-1">
         <LeaveInformation user={user} leaves={leaves}/>
       </div>
       <div className="flex flex-col flex-1">
-        <ApplyLeave />
+        <ApplyLeave user={user}/>
       </div>
     </div>
   )

@@ -1,8 +1,16 @@
 import api from '../../utils/api';
 import {
+  APPROVE_LEAVE_FAIL,
+  APPROVE_LEAVE_REQUEST,
+  APPROVE_LEAVE_SUCCESS,
   CREATE_LEAVE_FAIL,
   CREATE_LEAVE_REQUEST,
   CREATE_LEAVE_SUCCESS,
+  GET_ALL_LEAVE_REQUEST,
+  GET_ALL_LEAVE_SUCCESS,
+  REJECT_LEAVE_FAIL,
+  REJECT_LEAVE_REQUEST,
+  REJECT_LEAVE_SUCCESS,
   USER_LEAVE_DETAILS_FAIL,
   USER_LEAVE_DETAILS_REQUEST,
   USER_LEAVE_DETAILS_SUCCESS,
@@ -68,7 +76,6 @@ export const createLeaveRequest =
         type: CREATE_LEAVE_SUCCESS,
         payload: data,
       });
-
     } catch (error) {
       dispatch({
         type: CREATE_LEAVE_FAIL,
@@ -79,3 +86,102 @@ export const createLeaveRequest =
       });
     }
   };
+
+export const getAllLeaveDetails = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: GET_ALL_LEAVE_REQUEST,
+    });
+    const {
+      userLogin: { userInfo },
+    } = getState();
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    const { data } = await api.get(`/leaves/`, config);
+    dispatch({
+      type: GET_ALL_LEAVE_SUCCESS,
+      payload: data,
+    });
+  } catch (err) {
+    dispatch({
+      type: USER_LEAVE_DETAILS_FAIL,
+      payload:
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message,
+    });
+  }
+};
+
+export const approveLeaveRequest =
+  ({ leaveId, empNo, status }) =>
+  async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: APPROVE_LEAVE_REQUEST,
+      });
+      const {
+        userLogin: { userInfo },
+      } = getState();
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const { data } = await api.put(
+        `/leaves/${empNo}/approval/${leaveId}`,
+        { status },
+        config
+      );
+      dispatch({
+        type: APPROVE_LEAVE_SUCCESS,
+        payload: data,
+      });
+    } catch (err) {
+      dispatch({
+        type: APPROVE_LEAVE_FAIL,
+        payload:
+          err.response && err.response.data.message
+            ? err.response.data.message
+            : err.message,
+      });
+    }
+  };
+
+  export const rejectLeaveRequest =
+    ({ leaveId, empNo, status }) =>
+    async (dispatch, getState) => {
+      try {
+        dispatch({
+          type: REJECT_LEAVE_REQUEST,
+        });
+        const {
+          userLogin: { userInfo },
+        } = getState();
+        const config = {
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+          },
+        };
+        const { data } = await api.put(
+          `/leaves/${empNo}/approval/${leaveId}`,
+          { status },
+          config
+        );
+        dispatch({
+          type: REJECT_LEAVE_SUCCESS,
+          payload: data,
+        });
+      } catch (err) {
+        dispatch({
+          type: REJECT_LEAVE_FAIL,
+          payload:
+            err.response && err.response.data.message
+              ? err.response.data.message
+              : err.message,
+        });
+      }
+    };

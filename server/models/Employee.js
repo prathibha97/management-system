@@ -29,6 +29,11 @@ const empSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    nic: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     password: {
       type: String,
       required: true,
@@ -47,6 +52,7 @@ const empSchema = new mongoose.Schema(
     },
     workType: {
       type: String,
+      enum: ['Intern', 'Contract', 'Part-Time', 'Full-Time'],
     },
     employmentHistory: [
       {
@@ -58,8 +64,14 @@ const empSchema = new mongoose.Schema(
     ],
     projectHistory: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Project',
+        project: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Project',
+        },
+        assignedOn: {
+          type: Date,
+          default: Date.now,
+        },
       },
     ],
     idCardPath: { type: String },
@@ -71,10 +83,42 @@ const empSchema = new mongoose.Schema(
       required: true,
     },
     leaveBalance: {
-      casual: { type: Number, default: 10 },
-      annual: { type: Number, default: 10 },
-      maternity: { type: Number, default: 10 },
-      other: { type: Number, default: 10 },
+      Casual: {
+        type: Number,
+        default() {
+          if (['Intern', 'Contract', 'Part-Time'].includes(this.workType)) {
+            return 1;
+          }
+          return 10;
+        },
+      },
+      Annual: {
+        type: Number,
+        default() {
+          if (['Intern', 'Contract', 'Part-Time'].includes(this.workType)) {
+            return 0;
+          }
+          return 10;
+        },
+      },
+      Maternity: {
+        type: Number,
+        default() {
+          if (this.gender === 'Female') {
+            return 10;
+          }
+          return 0;
+        },
+      },
+      Other: {
+        type: Number,
+        default() {
+          if (['Intern', 'Contract', 'Part-Time'].includes(this.workType)) {
+            return 1;
+          }
+          return 10;
+        },
+      },
     },
   },
   {

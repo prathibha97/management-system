@@ -12,7 +12,9 @@ const Employee = require("../models/Employee")
 
 const getAllEmployees = async (req, res) => {
   try {
-    const employees = await Employee.find({}).select("-password")
+    const employees = await Employee.find({})
+    .populate('department', 'name')
+    .select("-password")
     res.status(200).json(employees)
   } catch (err) {
     console.error(err.message)

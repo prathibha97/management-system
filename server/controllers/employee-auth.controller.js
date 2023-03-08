@@ -1,8 +1,12 @@
 /* eslint-disable consistent-return */
 const bcrypt = require('bcrypt');
+const { promisify } = require('util');
+const fs = require('fs');
 const Employee = require('../models/Employee');
 const Department = require('../models/Department');
 const generateToken = require('../utils/generateToken');
+
+const unlinkAsync = promisify(fs.unlink);
 
 /* 
 ?@desc   Register a new user
@@ -10,6 +14,72 @@ const generateToken = require('../utils/generateToken');
 *@access Private/Admin
 */
 // TODO: Error handling
+
+// const registerEmployee = async (req, res) => {
+//   const {
+//     empNo,
+//     firstName,
+//     lastName,
+//     street,
+//     city,
+//     state,
+//     zip,
+//     birthDate,
+//     gender,
+//     email,
+//     password,
+//     phone,
+//     designation,
+//     isAdmin,
+//     employmentHistory,
+//     projectHistory,
+//     idPath,
+//     nic,
+//     bankSlipPath,
+//     resumePath,
+//     department,
+//     workType,
+//   } = req.body;
+
+//   const salt = await bcrypt.genSalt(10);
+//   const hashedPassword = await bcrypt.hash(password, salt);
+
+//   try {
+//     const employeeExist = await Employee.findOne({ email });
+//     if (employeeExist) {
+//       return res.status(400).json({ message: 'Employee already exists' });
+//     }
+//     // Create a new employee object
+//     const newEmployee = await Employee.create({
+//       empNo,
+//       name: { first: firstName, last: lastName },
+//       address: { street, city, state, zip },
+//       email,
+//       birthDate,
+//       gender,
+//       password: hashedPassword,
+//       phone,
+//       nic,
+//       designation,
+//       isAdmin,
+//       employmentHistory,
+//       projectHistory,
+//       idCardPath: idPath,
+//       bankPassPath: bankSlipPath,
+//       resumePath,
+//       department,
+//       workType,
+//     });
+
+//     const dept = await Department.findById(department);
+//     dept.employees.push(newEmployee.depId);
+//     await dept.save();
+//     res.status(201).json(newEmployee);
+//   } catch (err) {
+//     console.error(err.message);
+//     res.status(500).json({ message: 'Failed to register employee' });
+//   }
+// };
 
 const registerEmployee = async (req, res) => {
   const {
@@ -29,10 +99,8 @@ const registerEmployee = async (req, res) => {
     isAdmin,
     employmentHistory,
     projectHistory,
-    idPath,
-    bankSlipPath,
-    resumePath,
-    departmentId,
+    nic,
+    department,
     workType,
   } = req.body;
 
@@ -44,6 +112,12 @@ const registerEmployee = async (req, res) => {
     if (employeeExist) {
       return res.status(400).json({ message: 'Employee already exists' });
     }
+
+    // Upload files using the "upload" middleware
+    const idCardPath = req.files?.idCardPath[0].path;
+    const bankPassPath = req.files?.bankPassPath[0].path;
+    const resumePath = req.files?.resumePath[0].path;
+
     // Create a new employee object
     const newEmployee = await Employee.create({
       empNo,
@@ -54,27 +128,42 @@ const registerEmployee = async (req, res) => {
       gender,
       password: hashedPassword,
       phone,
+      nic,
       designation,
       isAdmin,
       employmentHistory,
       projectHistory,
-      idCardPath: idPath,
-      bankPassPath: bankSlipPath,
+      idCardPath,
+      bankPassPath,
       resumePath,
-      department: departmentId,
+      department,
       workType,
     });
 
-    const department = await Department.findById(departmentId);
-    department.employees.push(newEmployee.depId);
-    await department.save();
-    res.status(201).json(newEmployee);
+    const dept = await Department.findById(department);
+    dept.employees.push(newEmployee.depId);
+    await dept.save();
+
+    res.status(201).json({newEmployee, message: 'Employee created successfully'});
   } catch (err) {
     console.error(err.message);
+
+    // Delete uploaded files if any
+    if (req.files?.idCard) {
+      await unlinkAsync(req.files?.idCardPath[0].path);
+    }
+
+    if (req.files?.bankPass) {
+      await unlinkAsync(req.files?.bankPassPath[0].path);
+    }
+
+    if (req.files?.resume) {
+      await unlinkAsync(req.files?.resumePath[0].path);
+    }
+
     res.status(500).json({ message: 'Failed to register employee' });
   }
 };
-
 /* 
 ?@desc   Login a user
 *@route  Post /api/emp/auth/login

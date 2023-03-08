@@ -9,7 +9,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Tooltip from '@mui/material/Tooltip';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { logout } from '../../redux/actions/userActions';
 
 export default function AccountMenu() {
@@ -26,6 +26,7 @@ export default function AccountMenu() {
 
   const handleLogout = () => {
     dispatch(logout())
+    navigate('/')
   }
   return (
     <>
@@ -78,7 +79,7 @@ export default function AccountMenu() {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem onClick={()=>navigate('/profile')}>
+        <MenuItem onClick={() => navigate('/profile')}>
           <Avatar /> Profile
         </MenuItem>
         <Divider />

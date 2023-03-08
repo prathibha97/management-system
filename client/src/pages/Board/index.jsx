@@ -1,8 +1,12 @@
-import React from 'react'
+import React from 'react';
+import KanbanBoard from '../../components/KanbanBoard';
 
 function Board() {
+
   return (
-    <div>Board</div>
+    <div className='h-[100%] w-full overflow-x-auto'>
+      <KanbanBoard />
+    </div>
   )
 }
 
