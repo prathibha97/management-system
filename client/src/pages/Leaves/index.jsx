@@ -50,43 +50,47 @@ export default function DataGridDemo() {
   }
 
   const columns = [
-    { field: 'empNo', headerName: 'Emp No', width: 90 },
+    { field: 'empNo', headerName: 'Emp No', width: 90},
     {
-      field: 'firstName',
-      headerName: 'First name',
-      width: 150,
-    },
-    {
-      field: 'lastName',
-      headerName: 'Last name',
-      width: 150,
+      field: 'fullName',
+      headerName: 'Full name',
+      sortable: false,
+      width: 140,
+      // headerAlign: 'center',
+      valueGetter: (params) =>
+        `${params?.row?.employee?.name?.first || ''} ${params?.row?.employee?.name?.last || ''}`,
     },
     {
       field: 'leaveType',
       headerName: 'Leave Type',
       width: 110,
+      // headerAlign: 'center',
     },
     {
       field: 'startDate',
       headerName: 'Start Date',
       width: 110,
+      // headerAlign: 'center',
       valueFormatter: ({ value }) => formatDate(value),
     },
     {
       field: 'endDate',
       headerName: 'End Date',
       width: 110,
+      // headerAlign: 'center',
       valueFormatter: ({ value }) => formatDate(value),
     },
     {
       field: 'reason',
       headerName: 'Reason',
-      width: 170,
+      width: 280,
+      // headerAlign: 'center',
     },
     {
       field: 'status',
       headerName: 'Status',
       width: 110,
+      // headerAlign: 'center',
       renderCell: (params) => {
         const status = params.value;
 
@@ -110,6 +114,7 @@ export default function DataGridDemo() {
       field: 'action',
       headerName: 'Action',
       width: 170,
+      // headerAlign: 'center',
       renderCell: (params) => {
         const handleApprove = () => {
           const leaveId = params.row._id;
@@ -142,6 +147,7 @@ export default function DataGridDemo() {
       },
     },
   ];
+
 
   const handleAlertClose = () => {
     setAlert({ ...alert, open: false });

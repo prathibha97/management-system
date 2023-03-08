@@ -46,8 +46,6 @@ function Notifications({ empNo }) {
     setAnchorEl(null);
   };
 
-  console.log(notifications);
-
   return (
     <>
       <IconButton color="inherit" onClick={handleNotificationClick}>

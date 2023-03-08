@@ -31,6 +31,7 @@ const createLeaveRequest = async (req, res) => {
 
     // Create a new leave request object
     const leaveRequest = await Leave.create({
+      employee: employee._id,
       empNo,
       leaveType,
       startDate,
@@ -53,8 +54,8 @@ const createLeaveRequest = async (req, res) => {
 
 const getAllLeaveRequests = async (req, res) => {
   try {
-    const leaveRequest = await Leave.find();
-    res.status(200).json(leaveRequest);
+    const leaveRequests = await Leave.find().populate('employee', 'name');
+    res.status(200).json(leaveRequests);
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ message: 'Failed to fetch leave request' });
@@ -139,16 +140,15 @@ const approveOrRejectLeave = async (req, res) => {
   }
 };
 
- io.on('connection', (socket) => {
-   const { empNo } = socket.handshake.query;
-   const channel = `private-${empNo}`;
-   socket.join(channel);
+io.on('connection', (socket) => {
+  const { empNo } = socket.handshake.query;
+  const channel = `private-${empNo}`;
+  socket.join(channel);
 
-   socket.on('disconnect', () => {
-     socket.leave(channel);
-   });
- });
-
+  socket.on('disconnect', () => {
+    socket.leave(channel);
+  });
+});
 
 // const approveOrRejectLeave = async (req, res) => {
 //   const { empNo, id } = req.params;
