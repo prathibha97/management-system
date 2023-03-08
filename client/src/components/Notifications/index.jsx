@@ -1,8 +1,8 @@
 /* eslint-disable no-shadow */
-import React, { useState, useEffect } from 'react';
-import io from 'socket.io-client';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { IconButton, Badge, Popover, List, ListItem, ListItemText } from '@mui/material';
+import { Badge, IconButton, List, ListItem, ListItemText, Popover } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import io from 'socket.io-client';
 
 function Notifications({ empNo }) {
   const [notifications, setNotifications] = useState([]);
@@ -39,12 +39,14 @@ function Notifications({ empNo }) {
 
   const handleNotificationClick = (event) => {
     setAnchorEl(event.currentTarget);
-    setNotifications([]);
+    // setNotifications([]);
   };
 
   const handleNotificationClose = () => {
     setAnchorEl(null);
   };
+
+  console.log(notifications);
 
   return (
     <>
@@ -66,16 +68,24 @@ function Notifications({ empNo }) {
           horizontal: 'right',
         }}
         PaperProps={{
-          style: { minWidth: '20em', minHeight: '18em' , overflowY: 'scroll' },
+          style: { minWidth: '20em', minHeight: '18em', overflowY: 'scroll' },
         }}
       >
-        <List>
-          {notifications.map((notification, index) => (
-            <ListItem key={index}>
-              <ListItemText primary={notification} />
+        {notifications.length === 0 ? (
+          <List>
+            <ListItem sx={{ textAlign: 'center' }}>
+              <ListItemText primary="No new notifications" />
             </ListItem>
-          ))}
-        </List>
+          </List>
+        ) : (
+          <List>
+            {notifications.map((notification, index) => (
+              <ListItem key={index} sx={{ background: '#EEF2F5' }}>
+                <ListItemText primary={notification} />
+              </ListItem>
+            ))}
+          </List>
+        )}
       </Popover>
     </>
   );
