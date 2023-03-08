@@ -19,3 +19,4 @@ export { default as PersonalInfoForm } from './PersonalInfoForm';
 export { default as ProfessionalInfoForm } from './ProfessionalInfoForm';
 export { default as ReviewNewEmployee } from './ReviewNewEmployee';
 export { default as Sidebar } from './Sidebar';
+export { default as Notifications } from './Notifications';
