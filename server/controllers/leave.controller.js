@@ -1,20 +1,16 @@
+/* eslint-disable no-shadow */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable consistent-return */
+const io = require('socket.io')(5001, {
+  cors: {
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+    credentials: true,
+  },
+});
 const Leave = require('../models/Leave');
 const Employee = require('../models/Employee');
 const getNumberOfDays = require('../utils/getNumberOfDays');
-
-// const io = new Server(5001);
-
-// const getSocketIdByUserId = (userId) => {
-//   const connectedClients = io.of('/').connected;
-//   for (const socketId in connectedClients) {
-//     if (connectedClients[socketId].userId === userId) {
-//       return socketId;
-//     }
-//   }
-//   return null;
-// };
 
 /* 
 ?@desc   Create a new leave request
@@ -35,6 +31,7 @@ const createLeaveRequest = async (req, res) => {
 
     // Create a new leave request object
     const leaveRequest = await Leave.create({
+      employee: employee._id,
       empNo,
       leaveType,
       startDate,
@@ -57,8 +54,8 @@ const createLeaveRequest = async (req, res) => {
 
 const getAllLeaveRequests = async (req, res) => {
   try {
-    const leaveRequest = await Leave.find();
-    res.status(200).json(leaveRequest);
+    const leaveRequests = await Leave.find().populate('employee', 'name');
+    res.status(200).json(leaveRequests);
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ message: 'Failed to fetch leave request' });
@@ -91,6 +88,7 @@ const getLeaveRequestById = async (req, res) => {
 const approveOrRejectLeave = async (req, res) => {
   const { empNo, id } = req.params;
   const { status } = req.body;
+
   try {
     const leave = await Leave.findById(id).where('empNo').equals(empNo);
     if (!leave) {
@@ -102,36 +100,55 @@ const approveOrRejectLeave = async (req, res) => {
 
     if (status === 'Approved') {
       const { leaveType, startDate, endDate } = leave;
-      console.log('leaveType:', leaveType);
       const numberOfDays = getNumberOfDays(startDate, endDate);
       const employee = await Employee.findOne({ empNo });
-      console.log('leaveBalance:', employee.leaveBalance[leaveType]);
       const leaveBalance = employee.leaveBalance[leaveType];
+
       if (leaveBalance < numberOfDays) {
         return res.status(400).json({ message: 'Insufficient leave balance' });
       }
 
       employee.leaveBalance[leaveType] -= numberOfDays;
-      console.log('updated leaveBalance:', employee.leaveBalance[leaveType]);
       await employee.save();
 
       leave.status = status;
       leave.approvedOn = new Date();
       leave.approvedBy = req.user.id;
+
+      // Notify employee about leave approval
+      const message = `Your leave request has been approved for ${numberOfDays} days from ${startDate} to ${endDate}.`;
+      const payload = { message };
+      const channel = `private-${empNo}`;
+      io.to(channel).emit('leave-approved', payload);
     } else {
       leave.status = status;
       leave.rejectedOn = new Date();
       leave.rejectedBy = req.user.id;
+
+      // Notify employee about leave rejection
+      const message = `Your leave request has been rejected.`;
+      const payload = { message };
+      const channel = `private-${empNo}`;
+      io.to(channel).emit('leave-rejected', payload);
     }
 
     const updatedLeave = await leave.save();
-    res.status(200).json(updatedLeave);
+    res.status(200).json({ updatedLeave, message: 'Leave request updated successfully' });
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ message: 'Failed to approve or reject leave request' });
   }
 };
 
+io.on('connection', (socket) => {
+  const { empNo } = socket.handshake.query;
+  const channel = `private-${empNo}`;
+  socket.join(channel);
+
+  socket.on('disconnect', () => {
+    socket.leave(channel);
+  });
+});
 
 // const approveOrRejectLeave = async (req, res) => {
 //   const { empNo, id } = req.params;

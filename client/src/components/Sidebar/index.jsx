@@ -7,6 +7,7 @@ import {
   faHome,
   faIdBadge,
   faMoneyBillAlt,
+  faPersonWalkingArrowRight,
   faUsers
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,19 +19,24 @@ function Sidebar({ user }) {
 
   const adminSidebarItems = [
     {
-      name: "People",
+      name: "Manage People",
       link: "/people",
       icon: faUsers,
     },
     {
-      name: "Projects",
+      name: "Manage Projects",
       link: "/projects",
       icon: faBriefcase,
     },
     {
-      name: "Payroll",
+      name: "Manage Payroll",
       link: "/payroll",
       icon: faMoneyBillAlt,
+    },
+    {
+      name: "Manage Leaves",
+      link: "/leaves",
+      icon: faPersonWalkingArrowRight,
     },
   ];
 
@@ -47,17 +53,17 @@ function Sidebar({ user }) {
       icon: faIdBadge,
     },
     {
-      name: "Board",
+      name: "Project Boards",
       link: "/board",
       icon: faColumns,
     },
     {
-      name: "Attendance",
+      name: "Attendance Sheet",
       link: "/attendance",
       icon: faIdBadge,
     },
     {
-      name: "Leave",
+      name: "Apply Leave",
       link: "/leave",
       icon: faArrowRightFromBracket,
     },

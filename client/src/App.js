@@ -5,6 +5,7 @@ import {
   Board,
   Dashboard,
   Layout,
+  Leaves,
   Login,
   Payroll,
   People,
@@ -34,6 +35,7 @@ function App() {
               <Route path="/people" element={<People />} />
               <Route path="/projects" element={<Projects />} />
               <Route path="/payroll" element={<Payroll />} />
+              <Route path="/leaves" element={<Leaves />} />
               <Route path="/register" element={<Register />} />
             </>
           )}

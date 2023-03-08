@@ -1,16 +1,17 @@
+/* eslint-disable no-shadow */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable no-underscore-dangle */
 
-import { faBell, faClock } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClock } from '@fortawesome/free-solid-svg-icons';
 import { Alert, FormControl, InputLabel, MenuItem, Select, Snackbar } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { markAttendance } from '../../redux/actions/attendanceActions';
 import { ProjectDetailsById } from '../../redux/actions/projectActions';
 import AccountMenu from '../AccountMenu';
 import Button from '../Button';
+import Notifications from '../Notifications';
 
 function Header() {
   const location = useLocation();
@@ -25,6 +26,9 @@ function Header() {
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
   const [project, setProject] = useState(projects.length > 0 ? projects[0]?._id : '');
 
+
+  const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+  const { empNo } = userInfo.employee;
 
   const handleMarkAttendance = () => {
     try {
@@ -55,25 +59,28 @@ function Header() {
       heading = 'Profile';
       break;
     case '/board':
-      heading = 'Board';
+      heading = 'Project Boards';
       break;
     case '/attendance':
-      heading = 'Attendance';
+      heading = 'Attendance Sheet';
       break;
     case '/leave':
-      heading = 'Leave';
+      heading = 'Apply Leave';
       break;
     case '/settings':
       heading = 'Settings';
       break;
     case '/people':
-      heading = 'People';
+      heading = 'Manage People';
       break;
     case '/payroll':
-      heading = 'Payroll';
+      heading = 'Manage Payroll';
       break;
     case '/projects':
-      heading = 'Projects';
+      heading = 'Manage Projects';
+      break;
+    case '/leaves':
+      heading = 'Manage Leaves';
       break;
     case '/register':
       heading = 'Register New Employee';
@@ -91,7 +98,7 @@ function Header() {
     <div className="flex items-center justify-between px-10 pt-2">
       <div className='flex gap-2 items-center'>
         <div className="text-3xl font-semibold">{heading}</div>
-        {heading === 'Board' && (
+        {heading === 'Project Boards' && (
           <div className="flex items-center">
             <FormControl sx={{ m: 1, minWidth: 150 }}>
               <InputLabel id="Select Project">Select Project</InputLabel>
@@ -111,8 +118,8 @@ function Header() {
         )}
       </div>
       <div className="flex items-center gap-10">
-        <Button title="Log Time" onClick={handleMarkAttendance} icon={faClock}/>
-        <FontAwesomeIcon icon={faBell} />
+        <Button title="Log Time" onClick={handleMarkAttendance} icon={faClock} />
+        <Notifications empNo={empNo}/>
         <AccountMenu />
       </div>
       <Snackbar open={alert?.open} autoHideDuration={5000} onClose={handleAlertClose}>
