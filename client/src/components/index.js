@@ -1,9 +1,11 @@
+/* eslint-disable import/no-cycle */
 export { default as AccountMenu } from './AccountMenu';
 export { default as AddTaskModal } from './AddTaskModal';
 export { default as ApplyLeave } from './ApplyLeave';
 export { default as Button } from './Button';
 export { default as Card } from './Card';
 export { default as CreateTaskForm } from './CreateTaskForm';
+export { default as CustomAvatar } from './CustomAvatar';
 export { default as DataTable } from './DataTable';
 export { default as DocumentUpload } from './DocumentUpload';
 export { default as EmployeeCard } from './EmployeeCard';
@@ -15,8 +17,8 @@ export { default as LeaveHistory } from './LeaveHistory';
 export { default as LeaveInformation } from './LeaveInformation';
 export { default as Loader } from './Loader';
 export { default as MenuButton } from './MenuButton';
+export { default as Notifications } from './Notifications';
 export { default as PersonalInfoForm } from './PersonalInfoForm';
 export { default as ProfessionalInfoForm } from './ProfessionalInfoForm';
 export { default as ReviewNewEmployee } from './ReviewNewEmployee';
 export { default as Sidebar } from './Sidebar';
-export { default as Notifications } from './Notifications';

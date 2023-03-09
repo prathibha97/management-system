@@ -138,7 +138,7 @@ const deleteTask = async (req, res) => {
 const getTasksByProject = async (req, res) => {
   const { id } = req.params;
   try {
-    const tasks = await Task.find({ project: id });
+    const tasks = await Task.find({ project: id })
     return res.status(200).json(tasks);
   } catch (err) {
     console.log(err);

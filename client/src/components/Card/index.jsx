@@ -8,7 +8,6 @@ import MenuButton from "../MenuButton";
 
 function Card({ task }) {
 
-
   return (
     <div className='p-1 rounded-lg' key={task._id}>
       <div className="flex justify-between items-center mb-2">
@@ -26,6 +25,7 @@ function Card({ task }) {
         <AvatarGroup max={4}>
           {task?.assignee?.map((assignee, index) => (
             <Avatar key={index} alt="Remy Sharp" sx={{ width: 24, height: 24 }} />
+            // <CustomAvatar key={index} name={`${assignee?.name?.first} ${assignee?.name?.last}`}/>
           ))}
         </AvatarGroup>
       </div>
