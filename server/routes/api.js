@@ -5,8 +5,8 @@ const departmentRouter = require('./department.routes');
 const empAuthRouter = require('./employee-auth.routes');
 const empRouter = require('./employee.routes');
 const leaveRouter = require('./leave.routes');
+const meetingsRouter = require('./meetings.routes');
 const projectRouter = require('./project.routes');
-// const pusherRouter = require('./pusher.routes');
 const taskRouter = require('./task.routes');
 
 const api = express.Router();
@@ -19,6 +19,6 @@ api.use('/leaves', leaveRouter);
 api.use('/projects', projectRouter);
 api.use('/tasks', taskRouter);
 api.use('/boards', boardRouter);
-// api.use('/pusher', pusherRouter);
+api.use('/meetings', meetingsRouter);
 
 module.exports = api;
