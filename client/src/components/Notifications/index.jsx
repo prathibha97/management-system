@@ -66,7 +66,7 @@ function Notifications({ empNo }) {
           horizontal: 'right',
         }}
         PaperProps={{
-          style: { minWidth: '20em', minHeight: '18em', overflowY: 'scroll' },
+          style: { minWidth: '20em', minHeight: '18em', overflowY: 'auto' },
         }}
       >
         {notifications.length === 0 ? (
