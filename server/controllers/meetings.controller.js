@@ -47,7 +47,6 @@ const createMeeting = async (req, res) => {
   }
 };
 
-
 /*
 ?@desc   Get meetings assigned to current logged in employee
 *@route  Get /api/meetings/my
@@ -57,8 +56,8 @@ const getMyMeetings = async (req, res) => {
   try {
     const employeeId = req.user._id;
     const meetings = await Meeting.find({ attendee: employeeId })
-    .populate('attendee', 'name')
-    .populate('creator', 'name');
+      .populate('attendee', 'name')
+      .populate('creator', 'name');
     return res.status(200).json(meetings);
   } catch (err) {
     console.log(err);
@@ -113,14 +112,14 @@ const cancelMeeting = async (req, res) => {
   const { id } = req.params;
   try {
     const meeting = await Meeting.findByIdAndDelete(id);
-    const attendee = meeting.attendee._id;
-    const { empNo } = await Employee.findById(attendee);
-
-   // Notify employee about meeting
+    const attendee = meeting?.attendee[0]?._id;
+    const employee = await Employee.findById(attendee);
+    
+    // Notify employee about meeting
 
     const message = `The meeting has been cancelled`;
     const payload = { message };
-    const channel = `private-${empNo}`;
+    const channel = `private-${employee.empNo}`;
     io.to(channel).emit('meeting-cancelled', payload);
 
     return res.status(200).json({ message: 'Meeting cancelled successfully' });
