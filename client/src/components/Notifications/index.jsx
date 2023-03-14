@@ -8,7 +8,6 @@ function Notifications({ empNo }) {
   const [notifications, setNotifications] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-
   useEffect(() => {
     const socket = io('http://localhost:5001', {
       query: { empNo },
@@ -23,12 +22,22 @@ function Notifications({ empNo }) {
     });
 
     socket.on('leave-approved', (data) => {
-      console.log(data);
       setNotifications((notifications) => [...notifications, data.message]);
     });
 
     socket.on('leave-rejected', (data) => {
-      console.log(data);
+      setNotifications((notifications) => [...notifications, data.message]);
+    });
+
+    socket.on('meeting-created', (data) => {
+      setNotifications((notifications) => [...notifications, data.message]);
+    });
+
+    socket.on('meeting-updated', (data) => {
+      setNotifications((notifications) => [...notifications, data.message]);
+    });
+
+    socket.on('meeting-cancelled', (data) => {
       setNotifications((notifications) => [...notifications, data.message]);
     });
 
@@ -66,7 +75,7 @@ function Notifications({ empNo }) {
           horizontal: 'right',
         }}
         PaperProps={{
-          style: { minWidth: '20em', minHeight: '18em', overflowY: 'scroll' },
+          style: { minWidth: '20em', minHeight: '18em', overflowY: 'auto' },
         }}
       >
         {notifications.length === 0 ? (

@@ -107,6 +107,7 @@ function Header() {
                 labelId="Select Project"
                 label="Select Project"
                 value={project?._id || ''}
+                renderValue={(value) => value ? value?.title : ''}
               >
                 {projects && projects.length > 0 ? projects.map((item) => (
                   <MenuItem key={item._id} value={item}>{item?.title}</MenuItem>
@@ -119,7 +120,7 @@ function Header() {
       </div>
       <div className="flex items-center gap-10">
         <Button title="Log Time" onClick={handleMarkAttendance} icon={faClock} />
-        <Notifications empNo={empNo}/>
+        <Notifications empNo={empNo} />
         <AccountMenu />
       </div>
       <Snackbar open={alert?.open} autoHideDuration={5000} onClose={handleAlertClose}>

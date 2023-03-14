@@ -1,7 +1,8 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import { faBriefcase, faEnvelope, faGift, faHouse, faHouseLaptop, faMars, faMobilePhone, faVenus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Avatar } from '@mui/material';
 import React from 'react';
+import CustomAvatar from '../CustomAvatar';
 
 function EmployeeCard({ employee }) {
 
@@ -50,6 +51,7 @@ function EmployeeCard({ employee }) {
       subtitle: 'Address',
     },
   ];
+
   return (
     <div className='bg-[#EEF2F5] h-[90%] w-[95%] rounded-xl m-auto'>
       <div className='flex flex-col mt-6 ml-[35px]'>
@@ -59,7 +61,8 @@ function EmployeeCard({ employee }) {
       <div className='flex flex-col items-center mt-4'>
         <div className='h-[90%] w-[95%] rounded-xl ml-12'>
           <div className='flex bg-white p-6 rounded-2xl w-[90%] justify-between px-[100px]'>
-            <Avatar src='https://www.pngarts.com/files/6/User-Avatar-in-Suit-PNG.png' />
+            {/* <Avatar {...stringAvatar('Kent Dodds')} /> */}
+            <CustomAvatar name={`${employee?.name?.first} ${employee?.name?.last}`} />
             <div>
               <h1 className='font-bold text-lg'>{employee?.name?.first} {employee?.name?.last}</h1>
               <p className='text-sm text-[#707070]'>{employee?.designation}</p>

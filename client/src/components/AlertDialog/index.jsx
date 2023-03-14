@@ -11,7 +11,6 @@ export default function AlertDialog({ open, handleClose, empNo, setAlert }) {
   const dispatch = useDispatch();
   const handleDelete = () => {
     try {
-      console.log(empNo);
       dispatch(removeEmployee(empNo))
       handleClose()
       setAlert({ open: true, message: 'Employee removed successfully', severity: 'success' });

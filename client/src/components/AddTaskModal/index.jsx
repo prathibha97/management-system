@@ -4,10 +4,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { createTask } from '../../redux/actions/taskActions';
 
 function AddTaskModal({ open, handleClose, boardId }) {
+  const user = JSON.parse(localStorage.getItem('user'));
+
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState('backlog');
-  const [assignee, setAssignee] = useState('')
+  const [assignee, setAssignee] = useState(user._id)
   const taskNameRef = useRef();
 
   const dispatch = useDispatch();
@@ -17,14 +19,6 @@ function AddTaskModal({ open, handleClose, boardId }) {
 
 
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
-
-  // useEffect(() => {
-  //   // Update the state of the component when the tasks state changes
-  //   setTitle('');
-  //   setDescription('');
-  //   setStatus('backlog');
-  //   setAssignee('');
-  // }, [tasks]);
 
   const handleTitleChange = (event) => {
     setTitle(event.target.value);
