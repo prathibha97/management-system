@@ -6,8 +6,9 @@ import {
 } from 'date-fns'
 
 import { Fragment } from 'react'
+import CustomAvatar from '../CustomAvatar'
 
-function Meeting({ meeting }) {
+function Meeting({ meeting, handleMeetingCancel }) {
   const startDateTime = parseISO(meeting.startDatetime)
   const endDateTime = parseISO(meeting.endDatetime)
 
@@ -15,15 +16,13 @@ function Meeting({ meeting }) {
     return classes.filter(Boolean).join(' ')
   }
 
+  // const isCreator = meeting?.creator?._id === currentUser?._id;
+
   return (
     <li className="flex items-center px-4 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100">
-      <img
-        src={meeting.imageUrl}
-        alt=""
-        className="flex-none w-10 h-10 rounded-full"
-      />
+      <CustomAvatar name={`${meeting?.creator?.name?.first} ${meeting?.creator?.name?.last}`} />
       <div className="flex-auto">
-        <p className="text-gray-900">{meeting.name}</p>
+        <p className="text-gray-900">{meeting?.creator?.name?.first} {meeting?.creator?.name?.last}</p>
         <p className="mt-0.5">
           <time dateTime={meeting.startDatetime}>
             {format(startDateTime, 'h:mm a')}
@@ -34,6 +33,14 @@ function Meeting({ meeting }) {
           </time>
         </p>
       </div>
+      {meeting?.attendee?.length > 0 && (
+        <div className="flex mt-2">
+          {meeting?.attendee?.map((attendee) => (
+            <CustomAvatar key={attendee._id} name={`${attendee.name.first} ${attendee.name.last}`} size={28} style={{ fontSize: 12 }} />
+          ))}
+        </div>
+      )}
+      {/* {isCreator && ( */}
       <Menu
         as="div"
         className="relative opacity-0 focus-within:opacity-100 group-hover:opacity-100"
@@ -58,34 +65,36 @@ function Meeting({ meeting }) {
             <div className="py-1">
               <Menu.Item>
                 {({ active }) => (
-                  <a
-                    href="/sample"
+                  <button
+                    type='button'
                     className={classNames(
-                      active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                      'block px-4 py-2 text-sm'
+                      active ? 'bg-gray-100  text-gray-900' : 'text-gray-700',
+                      'block px-4 py-2 text-sm w-full'
                     )}
                   >
                     Edit
-                  </a>
+                  </button>
                 )}
               </Menu.Item>
               <Menu.Item>
                 {({ active }) => (
-                  <a
-                    href="/sample"
+                  <button
+                    type='button'
                     className={classNames(
                       active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                      'block px-4 py-2 text-sm'
+                      'block px-4 py-2 text-sm w-full'
                     )}
+                    onClick={() => handleMeetingCancel(meeting?._id)}
                   >
                     Cancel
-                  </a>
+                  </button>
                 )}
               </Menu.Item>
             </div>
           </Menu.Items>
         </Transition>
       </Menu>
+      {/* )} */}
     </li>
   )
 }

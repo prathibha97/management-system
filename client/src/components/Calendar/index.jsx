@@ -1,5 +1,6 @@
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
+import { faChevronLeft, faChevronRight, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { Alert, IconButton, Snackbar } from '@mui/material'
 import {
   add,
   eachDayOfInterval,
@@ -14,61 +15,45 @@ import {
   parseISO,
   startOfToday
 } from 'date-fns'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { cancelMeeting, getMyMeetings } from '../../redux/actions/meetingActions'
+import Loader from '../Loader'
 import Meeting from '../Meetings'
-
-const meetings = [
-  {
-    id: 1,
-    name: 'Leslie Alexander',
-    imageUrl:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    startDatetime: '2023-03-11T13:00',
-    endDatetime: '2023-03-11T14:30',
-  },
-  {
-    id: 2,
-    name: 'Michael Foster',
-    imageUrl:
-      'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    startDatetime: '2023-03-20T09:00',
-    endDatetime: '2023-03-20T11:30',
-  },
-  {
-    id: 3,
-    name: 'Dries Vincent',
-    imageUrl:
-      'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    startDatetime: '2023-03-20T17:00',
-    endDatetime: '2023-03-20T18:30',
-  },
-  {
-    id: 4,
-    name: 'Leslie Alexander',
-    imageUrl:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    startDatetime: '2023-03-09T13:00',
-    endDatetime: '2023-03-09T14:30',
-  },
-  {
-    id: 5,
-    name: 'Michael Foster',
-    imageUrl:
-      'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    startDatetime: '2023-03-13T14:00',
-    endDatetime: '2023-03-13T14:30',
-  },
-]
+import ScheduleMeeting from '../ScheduleMeeting'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function Calendar() {
+function Calendar() {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
   const today = startOfToday()
   const [selectedDay, setSelectedDay] = useState(today)
+  const [isOpen, setIsOpen] = useState(false)
   const [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))
+  const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
   const firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date())
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin
+
+
+  const { meetings, loading } = useSelector((state) => state.myMeetings);
+  useEffect(() => {
+    if (!userInfo) {
+      navigate('/');
+    } else {
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+      if (!storedUser || storedUser.empNo !== userInfo.empNo) {
+        dispatch(getMyMeetings())
+      }
+    }
+  }, [userInfo])
+
+  if (loading) return <Loader />
 
   const days = eachDayOfInterval({
     start: firstDayCurrentMonth,
@@ -88,6 +73,19 @@ export default function Calendar() {
   const selectedDayMeetings = meetings.filter((meeting) =>
     isSameDay(parseISO(meeting.startDatetime), selectedDay)
   )
+
+  const handleAlertClose = () => {
+    setAlert({ ...alert, open: false });
+  };
+
+  const handleMeetingCancel = (id) => {
+    try {
+      dispatch(cancelMeeting(id));
+      setAlert({ open: true, message: 'Meeting Cancelled Successfully', severity: 'success' });
+    } catch (err) {
+      setAlert({ open: true, message: err.response.data.message, severity: 'error' });
+    }
+  }
 
   const colStartClasses = [
     '',
@@ -187,27 +185,41 @@ export default function Calendar() {
             </div>
           </div>
           <section className="mt-12 md:mt-0 md:pl-10">
-            <h2 className="font-semibold text-gray-900">
-              Schedule for{' '}
-              <time dateTime={format(selectedDay, 'yyyy-MM-dd')}>
-                {format(selectedDay, 'MMM dd, yyy')}
-              </time>
-            </h2>
-            <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
-              {selectedDayMeetings.length > 0 ? (
-                selectedDayMeetings.map((meeting) => (
-                  <Meeting meeting={meeting} key={meeting.id} />
-                ))
-              ) : (
-                <p>No meetings for today.</p>
-              )}
-            </ol>
+            <div className='flex items-center justify-between'>
+              <h2 className="font-semibold text-gray-900">
+                Schedule for{' '}
+                <time dateTime={format(selectedDay, 'yyyy-MM-dd')}>
+                  {format(selectedDay, 'MMM dd, yyy')}
+                </time>
+              </h2>
+              <IconButton onClick={() => setIsOpen(true)}>
+                <FontAwesomeIcon icon={faPlus} />
+              </IconButton>
+            </div>
+            {isOpen && (
+              <ScheduleMeeting isOpen={isOpen} setIsOpen={setIsOpen} />
+            )}
+            <div>
+              <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
+                {selectedDayMeetings.length > 0 ? (
+                  selectedDayMeetings.map((meeting) => (
+                    <Meeting meeting={meeting} key={meeting._id} handleMeetingCancel={handleMeetingCancel} currentUser={userInfo?.employee?._id} />
+                  ))
+                ) : (
+                  <p>No meetings for today.</p>
+                )}
+              </ol>
+            </div>
           </section>
         </div>
       </div>
+      <Snackbar open={alert?.open} autoHideDuration={5000} onClose={handleAlertClose}>
+        <Alert onClose={handleAlertClose} severity={alert?.severity}>
+          {alert?.message}
+        </Alert>
+      </Snackbar>
     </div>
   )
 }
 
-
-
+export default Calendar

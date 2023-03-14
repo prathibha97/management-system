@@ -18,11 +18,6 @@ const getMeetings = async (req, res) => {
   }
 };
 
-/*
-?@desc   Create a meeting
-*@route  Post /api/meetings
-*@access Private
-*/
 const createMeeting = async (req, res) => {
   const { attendee, startDatetime, endDatetime } = req.body;
   const start = Date.parse(startDatetime);
@@ -33,7 +28,7 @@ const createMeeting = async (req, res) => {
 
   try {
     const newMeeting = await Meeting.create({
-      attendee,
+      attendee: [attendee, creator], // add the creator to the attendees array
       startDatetime: start,
       endDatetime: end,
       creator,
@@ -52,6 +47,7 @@ const createMeeting = async (req, res) => {
   }
 };
 
+
 /*
 ?@desc   Get meetings assigned to current logged in employee
 *@route  Get /api/meetings/my
@@ -60,7 +56,9 @@ const createMeeting = async (req, res) => {
 const getMyMeetings = async (req, res) => {
   try {
     const employeeId = req.user._id;
-    const meetings = await Meeting.find({ attendee: employeeId }).populate('attendee', 'name');
+    const meetings = await Meeting.find({ attendee: employeeId })
+    .populate('attendee', 'name')
+    .populate('creator', 'name');
     return res.status(200).json(meetings);
   } catch (err) {
     console.log(err);

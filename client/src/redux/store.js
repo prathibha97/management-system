@@ -21,6 +21,10 @@ import {
   rejectLeaveReducer,
 } from './reducers/leaveReducer';
 import {
+  cancelMeetingReducer,
+  myMeetingsReducer,
+} from './reducers/meetingsReducer';
+import {
   projectDetailsByIdReducer,
   userProjectDetailsReducer,
 } from './reducers/projectReducer';
@@ -51,7 +55,7 @@ const reducer = combineReducers({
   leaveRequest: leaveRequestReducer,
   allLeaveDetails: allLeaveDetailsReducer,
   approveLeave: approveLeaveReducer,
-  rejectLeave:rejectLeaveReducer,
+  rejectLeave: rejectLeaveReducer,
   userProjectDetails: userProjectDetailsReducer,
   projectDetailsById: projectDetailsByIdReducer,
   projectBoardDetails: projectBoardDetailsReducer,
@@ -61,6 +65,8 @@ const reducer = combineReducers({
   deleteTask: deleteTaskReducer,
   employeeList: employeeListReducer,
   departmentDetails: departmentDetailsReducer,
+  myMeetings: myMeetingsReducer,
+  cancelMeeting: cancelMeetingReducer,
   // userUpdateProfile: userUpdateProfileReducer,
   // userList: userListReducer,
   // userDelete: userDeleteReducer,

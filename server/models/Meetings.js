@@ -2,11 +2,13 @@ const mongoose = require('mongoose');
 
 const meetingSchema = new mongoose.Schema(
   {
-    attendee: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Employee',
-      required: true,
-    },
+    attendee: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Employee',
+        required: true,
+      },
+    ],
     startDatetime: { type: Date, required: true },
     endDatetime: { type: Date, required: true },
     creator: {
