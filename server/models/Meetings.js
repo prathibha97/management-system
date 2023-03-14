@@ -9,6 +9,11 @@ const meetingSchema = new mongoose.Schema(
     },
     startDatetime: { type: Date, required: true },
     endDatetime: { type: Date, required: true },
+    creator: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Employee',
+      required: true,
+    },
   },
   {
     timestamps: true,

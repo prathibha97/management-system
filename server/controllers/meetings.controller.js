@@ -29,11 +29,14 @@ const createMeeting = async (req, res) => {
   const end = Date.parse(endDatetime);
 
   const { empNo } = await Employee.findById(attendee);
+  const creator = req.user._id;
+
   try {
     const newMeeting = await Meeting.create({
       attendee,
       startDatetime: start,
       endDatetime: end,
+      creator,
     });
 
     // Notify employee about meeting
