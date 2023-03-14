@@ -1,10 +1,12 @@
+const Employee = require('../models/Employee');
+const Meeting = require('../models/Meetings');
+const io = require('../services/socket');
+
 /*
 ?@desc   Get all meetings
 *@route  Get /api/meetings
 *@access Private
 */
-
-const Meeting = require('../models/Meetings');
 
 const getMeetings = async (req, res) => {
   try {
@@ -25,12 +27,21 @@ const createMeeting = async (req, res) => {
   const { attendee, startDatetime, endDatetime } = req.body;
   const start = Date.parse(startDatetime);
   const end = Date.parse(endDatetime);
+
+  const { empNo } = await Employee.findById(attendee);
   try {
     const newMeeting = await Meeting.create({
       attendee,
       startDatetime: start,
       endDatetime: end,
     });
+
+    // Notify employee about meeting
+    const message = `You have been added to a new scheduled meeting`;
+    const payload = { message };
+    const channel = `private-${empNo}`;
+    io.to(channel).emit('meeting-created', payload);
+
     return res.status(201).json(newMeeting);
   } catch (err) {
     console.log(err);
@@ -45,7 +56,7 @@ const createMeeting = async (req, res) => {
 */
 const getMyMeetings = async (req, res) => {
   try {
-    const employeeId = req.user._id; // assuming the employee ID is stored in the "id" field of the user object
+    const employeeId = req.user._id;
     const meetings = await Meeting.find({ attendee: employeeId }).populate('attendee', 'name');
     return res.status(200).json(meetings);
   } catch (err) {
@@ -64,6 +75,9 @@ const updateMeeting = async (req, res) => {
   const start = Date.parse(startDatetime);
   const end = Date.parse(endDatetime);
   const { id } = req.params;
+
+  const { empNo } = await Employee.findById(attendee);
+
   try {
     const meeting = await Meeting.findByIdAndUpdate(
       id,
@@ -74,6 +88,14 @@ const updateMeeting = async (req, res) => {
       },
       { new: true }
     ).populate('attendee', 'name');
+
+    // Notify employee about meeting
+
+    const message = `The meeting details have been updated`;
+    const payload = { message };
+    const channel = `private-${empNo}`;
+    io.to(channel).emit('meeting-updated', payload);
+
     return res.status(200).json({ meeting, message: 'Meeting updated successfully' });
   } catch (err) {
     console.log(err);
@@ -89,7 +111,17 @@ const updateMeeting = async (req, res) => {
 const cancelMeeting = async (req, res) => {
   const { id } = req.params;
   try {
-    await Meeting.findByIdAndDelete(id);
+    const meeting = await Meeting.findByIdAndDelete(id);
+    const attendee = meeting.attendee._id;
+    const { empNo } = await Employee.findById(attendee);
+
+   // Notify employee about meeting
+
+    const message = `The meeting has been cancelled`;
+    const payload = { message };
+    const channel = `private-${empNo}`;
+    io.to(channel).emit('meeting-cancelled', payload);
+
     return res.status(200).json({ message: 'Meeting cancelled successfully' });
   } catch (err) {
     console.log(err);

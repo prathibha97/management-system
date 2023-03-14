@@ -119,7 +119,7 @@ function Header() {
       </div>
       <div className="flex items-center gap-10">
         <Button title="Log Time" onClick={handleMarkAttendance} icon={faClock} />
-        <Notifications empNo={empNo}/>
+        <Notifications empNo={empNo} />
         <AccountMenu />
       </div>
       <Snackbar open={alert?.open} autoHideDuration={5000} onClose={handleAlertClose}>
