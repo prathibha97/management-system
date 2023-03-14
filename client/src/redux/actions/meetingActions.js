@@ -40,6 +40,39 @@ export const getMyMeetings = () => async (dispatch, getState) => {
   }
 };
 
+export const scheduleMeeting =
+  (attendee, startDatetime, endDatetime) => async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: CANCEL_MEETING_REQUEST,
+      });
+
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+
+      const { data } = await api.post(`/meetings/`, {attendee, startDatetime, endDatetime}, config);
+      dispatch({
+        type: CANCEL_MEETING_SUCCESS,
+        payload: data,
+      });
+    } catch (err) {
+      dispatch({
+        type: CANCEL_MEETING_FAIL,
+        payload:
+          err.response && err.response.data.message
+            ? err.response.data.message
+            : err.message,
+      });
+    }
+  };
+
 export const cancelMeeting = (id) => async (dispatch, getState) => {
   try {
     dispatch({

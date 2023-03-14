@@ -23,6 +23,7 @@ import {
 import {
   cancelMeetingReducer,
   myMeetingsReducer,
+  scheduleMeetingReducer,
 } from './reducers/meetingsReducer';
 import {
   projectDetailsByIdReducer,
@@ -66,6 +67,7 @@ const reducer = combineReducers({
   employeeList: employeeListReducer,
   departmentDetails: departmentDetailsReducer,
   myMeetings: myMeetingsReducer,
+  scheduleMeeting: scheduleMeetingReducer,
   cancelMeeting: cancelMeetingReducer,
   // userUpdateProfile: userUpdateProfileReducer,
   // userList: userListReducer,

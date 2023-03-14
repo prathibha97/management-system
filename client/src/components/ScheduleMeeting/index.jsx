@@ -1,6 +1,4 @@
 /* eslint-disable react/jsx-props-no-spreading */
-/* eslint-disable jsx-a11y/label-has-associated-control */
-/* eslint-disable no-shadow */
 import { faCalendarCheck } from '@fortawesome/free-solid-svg-icons';
 import { Dialog, Transition } from '@headlessui/react';
 import { InputLabel, MenuItem, Select, TextField } from '@mui/material';
@@ -10,27 +8,15 @@ import dayjs from 'dayjs';
 import { Fragment, useState } from 'react';
 import Button from '../Button';
 
-function ScheduleMeeting({ isOpen, setIsOpen }) {
+function ScheduleMeeting({ isOpen, setIsOpen, selectedDay, people, handleSubmit }) {
 
-  const people = [
-    { id: 1, name: 'Durward Reynolds' },
-    { id: 2, name: 'Kenton Towne' },
-    { id: 3, name: 'Therese Wunsch' },
-    { id: 4, name: 'Benedict Kessler' },
-    { id: 5, name: 'Katelyn Rohan' },
-  ]
-  const [selectedPerson, setSelectedPerson] = useState(people[0])
-  const [startValue, setStartValue] = useState(dayjs(Date.now()));
-  const [endValue, setEndValue] = useState(dayjs(Date.now()));
+  const [selectedPerson, setSelectedPerson] = useState(people[0] || {})
+  const [startValue, setStartValue] = useState(dayjs(selectedDay));
+  const [endValue, setEndValue] = useState(dayjs(selectedDay));
 
   const handleChange = (event) => {
     setSelectedPerson(event.target.value);
   };
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log(`meeting scheduled with ${selectedPerson.name} on ${startValue} to ${endValue}`);
-  }
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -74,10 +60,10 @@ function ScheduleMeeting({ isOpen, setIsOpen }) {
                       value={selectedPerson}
                       fullWidth
                       onChange={handleChange}
-                      renderValue={(value) => value.name}
+                      renderValue={(value) => `${value.name.first} ${value.name.last}`}
                     >
                       {people.map((person, personIdx) => (
-                        <MenuItem key={personIdx} value={person}>{person.name}</MenuItem>
+                        <MenuItem key={personIdx} value={person}>{`${person.name.first} ${person.name.last}`}</MenuItem>
                       ))}
                     </Select>
                     <div className='flex mt-8 mb-8 gap-2'>
@@ -98,7 +84,7 @@ function ScheduleMeeting({ isOpen, setIsOpen }) {
                         />
                       </LocalizationProvider>
                     </div>
-                    <Button title='Schedule Meeting' onClick={handleSubmit} icon={faCalendarCheck}/>
+                    <Button title='Schedule Meeting' onClick={() => handleSubmit(selectedPerson, startValue, endValue)} icon={faCalendarCheck} />
                   </div>
                 </div>
               </Dialog.Panel>

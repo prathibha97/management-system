@@ -18,7 +18,8 @@ import {
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { cancelMeeting, getMyMeetings } from '../../redux/actions/meetingActions'
+import { getEmployeeList } from '../../redux/actions/employeeActions'
+import { cancelMeeting, getMyMeetings, scheduleMeeting } from '../../redux/actions/meetingActions'
 import Loader from '../Loader'
 import Meeting from '../Meetings'
 import ScheduleMeeting from '../ScheduleMeeting'
@@ -40,6 +41,7 @@ function Calendar() {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin
 
+  const { employees } = useSelector((state) => state.employeeList);
 
   const { meetings, loading } = useSelector((state) => state.myMeetings);
   useEffect(() => {
@@ -49,6 +51,7 @@ function Calendar() {
       const storedUser = JSON.parse(localStorage.getItem('user'));
       if (!storedUser || storedUser.empNo !== userInfo.empNo) {
         dispatch(getMyMeetings())
+        dispatch(getEmployeeList())
       }
     }
   }, [userInfo])
@@ -78,6 +81,7 @@ function Calendar() {
     setAlert({ ...alert, open: false });
   };
 
+
   const handleMeetingCancel = (id) => {
     try {
       dispatch(cancelMeeting(id));
@@ -86,6 +90,18 @@ function Calendar() {
       setAlert({ open: true, message: err.response.data.message, severity: 'error' });
     }
   }
+
+  const handleSubmit = (selectedPerson, startValue, endValue) => {
+    try {
+      dispatch(scheduleMeeting(selectedPerson, startValue, endValue))
+      console.log(`meeting scheduled with ${selectedPerson?.name?.first} ${selectedPerson?.name?.last} on ${startValue} to ${endValue}`);
+      setAlert({ open: true, message: `meeting scheduled with ${selectedPerson?.name?.first} ${selectedPerson?.name?.last} on ${startValue} to ${endValue}`, severity: 'success' });
+    } catch (err) {
+      setAlert({ open: true, message: err?.response?.data?.message, severity: 'error' });
+    }
+    setIsOpen(false)
+  }
+
 
   const colStartClasses = [
     '',
@@ -197,7 +213,7 @@ function Calendar() {
               </IconButton>
             </div>
             {isOpen && (
-              <ScheduleMeeting isOpen={isOpen} setIsOpen={setIsOpen} />
+              <ScheduleMeeting isOpen={isOpen} setIsOpen={setIsOpen} selectedDay={selectedDay} people={employees} handleSubmit={handleSubmit} />
             )}
             <div>
               <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
