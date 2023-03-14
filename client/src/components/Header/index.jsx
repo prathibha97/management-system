@@ -107,6 +107,7 @@ function Header() {
                 labelId="Select Project"
                 label="Select Project"
                 value={project?._id || ''}
+                renderValue={(value) => value ? value?.title : ''}
               >
                 {projects && projects.length > 0 ? projects.map((item) => (
                   <MenuItem key={item._id} value={item}>{item?.title}</MenuItem>
