@@ -1,6 +1,7 @@
 export { default as Attendance } from './Attendance';
 export { default as Board } from './Board';
 export { default as Dashboard } from './Dashboard';
+export { default as EmpProfile } from './EmpProfile';
 export { default as Layout } from './layout';
 export { default as Leaves } from './Leaves';
 export { default as Login } from './Login';
