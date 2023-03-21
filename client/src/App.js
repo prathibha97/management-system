@@ -4,6 +4,7 @@ import {
   Attendance,
   Board,
   Dashboard,
+  EmpProfile,
   Layout,
   Leaves,
   Login,
@@ -33,6 +34,7 @@ function App() {
           {userInfo?.employee.isAdmin && (
             <>
               <Route path="/people" element={<People />} />
+              <Route path="/people/:empNo" element={<EmpProfile />} />
               <Route path="/projects" element={<Projects />} />
               <Route path="/payroll" element={<Payroll />} />
               <Route path="/leaves" element={<Leaves />} />

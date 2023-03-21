@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unstable-nested-components */
-import { faEdit, faTrash, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faEye, faTrash, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Alert, Paper, Snackbar, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@mui/material';
 import React, { useEffect, useState } from 'react';
@@ -125,8 +125,9 @@ function People() {
                   <TableCell align='center'>{row.department.name}</TableCell>
                   <TableCell align='center'>{row.phone}</TableCell>
                   <TableCell align='center'>
-                    <FontAwesomeIcon icon={faEdit} onClick={() => handleEdit(row)} className="mx-1 hover:text-[#1DB3AB]" />
-                    <FontAwesomeIcon icon={faTrash} onClick={() => setOpen(true)} className="mx-1 hover:text-[#FF6760]" />
+                    <FontAwesomeIcon icon={faEye} onClick={() => navigate(`${row.empNo}`)} className="mx-1 hover:text-[#1DB3AB] cursor-pointer" />
+                    <FontAwesomeIcon icon={faEdit} onClick={() => handleEdit(row)} className="mx-1 hover:text-[#1DB3AB] cursor-pointer" />
+                    <FontAwesomeIcon icon={faTrash} onClick={() => setOpen(true)} className="mx-1 hover:text-[#FF6760] cursor-pointer" />
                     {open && (
                       <AlertDialog open={open} handleClose={handleClose} setAlert={setAlert} empNo={row.empNo} />
                     )}

@@ -1,16 +1,11 @@
 /* eslint-disable no-shadow */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable consistent-return */
-const io = require('socket.io')(5001, {
-  cors: {
-    origin: 'http://localhost:3000',
-    methods: ['GET', 'POST'],
-    credentials: true,
-  },
-});
+
 const Leave = require('../models/Leave');
 const Employee = require('../models/Employee');
 const getNumberOfDays = require('../utils/getNumberOfDays');
+const io = require('../services/socket');
 
 /* 
 ?@desc   Create a new leave request
@@ -149,73 +144,6 @@ io.on('connection', (socket) => {
     socket.leave(channel);
   });
 });
-
-// const approveOrRejectLeave = async (req, res) => {
-//   const { empNo, id } = req.params;
-//   const { status } = req.body;
-//   try {
-//     const leave = await Leave.findById(id).where('empNo').equals(empNo);
-//     if (!leave) {
-//       return res.status(404).json({ message: 'Leave not found' });
-//     }
-//     if (leave.status !== 'Pending') {
-//       return res.status(400).json({ message: 'Leave request is already processed' });
-//     }
-
-//     if (status === 'Approved') {
-//       const { leaveType, startDate, endDate } = leave;
-//       const numberOfDays = getNumberOfDays(startDate, endDate);
-//       const employee = await Employee.findOne({ empNo });
-//       const leaveBalance = employee.leaveBalance[leaveType];
-//       if (leaveBalance < numberOfDays) {
-//         return res.status(400).json({ message: 'Insufficient leave balance' });
-//       }
-
-//       employee.leaveBalance[leaveType] -= numberOfDays;
-//       await employee.save();
-
-//       leave.status = status;
-//       leave.approvedOn = new Date();
-//       leave.approvedBy = req.user.id;
-
-//       // Notify employee
-//       const notification = new Notification({
-//         message: `Your leave request from ${startDate} to ${endDate} has been approved.`,
-//         receiver: empNo,
-//         type: 'Leave Approval',
-//       });
-//       await notification.save();
-//       const socketId = await getSocketIdByUserId(empNo);
-//       if (socketId) {
-//         io.to(socketId).emit('notification', notification);
-//         console.log(notification);
-//       }
-//     } else {
-//       leave.status = status;
-//       leave.rejectedOn = new Date();
-//       leave.rejectedBy = req.user.id;
-
-//       // Notify employee
-//       const notification = new Notification({
-//         message: `Your leave request from ${leave.startDate} to ${leave.endDate} has been rejected.`,
-//         receiver: empNo,
-//         type: 'Leave Rejection',
-//       });
-//       await notification.save();
-//       const socketId = await getSocketIdByUserId(empNo);
-//       if (socketId) {
-//         io.to(socketId).emit('notification', notification);
-//         console.log(notification);
-//       }
-//     }
-
-//     const updatedLeave = await leave.save();
-//     res.status(200).json(updatedLeave);
-//   } catch (err) {
-//     console.error(err.message);
-//     res.status(500).json({ message: 'Failed to approve or reject leave request' });
-//   }
-// };
 
 module.exports = {
   createLeaveRequest,

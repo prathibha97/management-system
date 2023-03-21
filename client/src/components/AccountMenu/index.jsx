@@ -11,6 +11,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../../redux/actions/userActions';
+import CustomAvatar from '../CustomAvatar';
 
 export default function AccountMenu() {
   const dispatch = useDispatch()
@@ -28,6 +29,7 @@ export default function AccountMenu() {
     dispatch(logout())
     navigate('/')
   }
+  const user = JSON.parse(localStorage.getItem('user'));
   return (
     <>
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
@@ -40,7 +42,7 @@ export default function AccountMenu() {
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
           >
-            <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+            <CustomAvatar name={`${user?.name?.first} ${user?.name?.last}`}/>
           </IconButton>
         </Tooltip>
       </Box>
