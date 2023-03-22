@@ -64,7 +64,17 @@ export const registerEmployee =
     isAdmin,
     idCardPath,
     bankPassPath,
-    resumePath
+    resumePath,
+    dateOfAppointment,
+    effectiveDate,
+    paymentModel,
+    basicSalary,
+    pf,
+    bank,
+    accNo,
+    advance,
+    maxAdvance,
+    noOfAdvances
   ) =>
   async (dispatch, getState) => {
     try {
@@ -106,6 +116,16 @@ export const registerEmployee =
           idCardPath,
           bankPassPath,
           resumePath,
+          dateOfAppointment,
+          effectiveDate,
+          paymentModel,
+          basicSalary,
+          pf,
+          bank,
+          accNo,
+          advance,
+          maxAdvance,
+          noOfAdvances,
         },
         config
       );

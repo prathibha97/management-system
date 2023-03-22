@@ -54,6 +54,17 @@ function ProfessionalInfoForm({ handleChange, values, nextStep, prevStep }) {
           </div>
           <div className='flex flex-col w-[45%]'>
             <InputLabel
+              labelid="emp-no-lable">
+              Date of Appointment
+            </InputLabel>
+            <TextField
+              type='date'
+              className='border rounded'
+              onChange={handleChange('dateOfAppointment')}
+              defaultValue={values.dateOfAppointment} />
+          </div>
+          <div className='flex flex-col w-[45%]'>
+            <InputLabel
               labelid="designation-lable">
               Designation
             </InputLabel>

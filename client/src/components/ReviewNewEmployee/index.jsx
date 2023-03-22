@@ -36,7 +36,17 @@ function ReviewNewEmployee({ prevStep, values }) {
     isAdmin,
     idCardPath,
     bankPassPath,
-    resumePath, } = values
+    resumePath,
+    dateOfAppointment,
+    effectiveDate,
+    paymentModel,
+    basicSalary,
+    pf,
+    bank,
+    accNo,
+    advance,
+    maxAdvance,
+    noOfAdvances, } = values
 
   const saveEmployee = () => {
     try {
@@ -62,7 +72,18 @@ function ReviewNewEmployee({ prevStep, values }) {
         isAdmin,
         idCardPath,
         bankPassPath,
-        resumePath,))
+        resumePath,
+        dateOfAppointment,
+        effectiveDate,
+        paymentModel,
+        basicSalary,
+        pf,
+        bank,
+        accNo,
+        advance,
+        maxAdvance,
+        noOfAdvances,
+      ))
       navigate('/people')
       setAlert({ open: true, message: 'Employee Added Successfully', severity: 'success' });
     } catch (err) {
@@ -155,23 +176,29 @@ function ReviewNewEmployee({ prevStep, values }) {
     {
       id: 2,
       icon: faBriefcase,
+      title: dateOfAppointment,
+      subtitle: 'Date of Appointment',
+    },
+    {
+      id: 3,
+      icon: faBriefcase,
       title: designation,
       subtitle: 'Designation',
     },
     {
-      id: 3,
+      id: 4,
       icon: faHouseLaptop,
       title: workType,
       subtitle: 'Work Type',
     },
     {
-      id: 4,
+      id: 5,
       icon: faBuilding,
       title: department,
       subtitle: 'Department',
     },
     {
-      id: 5,
+      id: 6,
       icon: faRightFromBracket,
       title: leaveAllocation,
       subtitle: 'Leave Allocation',
@@ -184,10 +211,67 @@ function ReviewNewEmployee({ prevStep, values }) {
     },
   ]
 
+  const salaryInfo = [
+    {
+      id: 1,
+      icon: faUser,
+      title: effectiveDate,
+      subtitle: 'Effective Date',
+    },
+    {
+      id: 2,
+      icon: faBriefcase,
+      title: paymentModel,
+      subtitle: 'Payment Model',
+    },
+    {
+      id: 3,
+      icon: faHouseLaptop,
+      title: basicSalary,
+      subtitle: 'Basic salary',
+    },
+    {
+      id: 4,
+      icon: faBuilding,
+      title: pf,
+      subtitle: 'Provident Fund',
+    },
+    {
+      id: 5,
+      icon: faRightFromBracket,
+      title: bank,
+      subtitle: 'Bank Name',
+    },
+    {
+      id: 6,
+      icon: faRightFromBracket,
+      title: accNo,
+      subtitle: 'Bank Account Number',
+    },
+    {
+      id: 7,
+      icon: faRightFromBracket,
+      title: advance,
+      subtitle: 'Salary Advance',
+    },
+    {
+      id: 8,
+      icon: faRightFromBracket,
+      title: maxAdvance,
+      subtitle: 'Maximum Advance Amount',
+    },
+    {
+      id: 9,
+      icon: faRightFromBracket,
+      title: noOfAdvances,
+      subtitle: 'Number of Advances',
+    },
+  ]
+
   return (
-    <div className='bg-[#EEF2F5] h-[90%] w-[95%] rounded-xl m-auto'>
-      <div className='flex flex-col mt-6 ml-[55px] overflow-y-auto'>
-        <h1 className='text-2xl font-bold mt-6'>Review Employee Details</h1>
+    <div className='bg-[#EEF2F5] mt-6 h-[95%] w-[95%] rounded-xl m-auto'>
+      <div className='flex flex-col mt-3 ml-[55px]'>
+        <h1 className='text-2xl font-bold mt-2'>Review Employee Details</h1>
         <p className='text-[#707070] text-sm'>Make user employee details are accurate before saving</p>
       </div>
       <h1 className='text-lg font-semibold mt-3 ml-[55px]'>Personal Infomation</h1>
@@ -196,7 +280,7 @@ function ReviewNewEmployee({ prevStep, values }) {
           {personalInfo.map((emp) => (
             <div
               key={emp.id}
-              className="flex items-center mb-5 gap-5"
+              className="flex items-center mb-5 gap-4"
             >
               {emp.subtitle === 'Gender' && (
                 <div className='flex items-center gap-5 mr-[75px]'>
@@ -225,7 +309,7 @@ function ReviewNewEmployee({ prevStep, values }) {
         </div>
       </div>
 
-      <h1 className='text-lg font-semibold mt-3 ml-[55px]'>Work Infomation</h1>
+      <h1 className='text-lg font-semibold mt-3 ml-[55px]'>Professional Infomation</h1>
       <div className='flex bg-white px-12 py-5 mt-5 justify-between items-center w-[90%] m-auto rounded-2xl'>
         <div className='flex flex-wrap justify-between gap-8'>
           {workInfo.map((emp) => (
@@ -233,21 +317,46 @@ function ReviewNewEmployee({ prevStep, values }) {
               key={emp.id}
               className="flex items-center mb-5 gap-5"
             >
-          
-                <div className='flex items-center gap-5 mr-[75px]'>
-                  <FontAwesomeIcon
-                    icon={emp.icon}
-                    className='text-[#707070]'
-                  />
-                  <div className='flex flex-col'>
-                    <h2>{emp.title}</h2>
-                    <p className='text-[#707070] text-xs'>{emp.subtitle}</p>
-                  </div>
+
+              <div className='flex items-center gap-5'>
+                <FontAwesomeIcon
+                  icon={emp.icon}
+                  className='text-[#707070]'
+                />
+                <div className='flex flex-col'>
+                  <h2>{emp.title}</h2>
+                  <p className='text-[#707070] text-xs'>{emp.subtitle}</p>
                 </div>
+              </div>
             </div>
           ))}
         </div>
       </div>
+
+      <h1 className='text-lg font-semibold mt-3 ml-[55px]'>Salary Structure</h1>
+      <div className='flex bg-white px-12 py-5 mt-5 justify-between items-center w-[90%] m-auto rounded-2xl'>
+        <div className='flex flex-wrap justify-between gap-8'>
+          {salaryInfo.map((emp) => (
+            <div
+              key={emp.id}
+              className="flex items-center mb-5 gap-5"
+            >
+
+              <div className='flex items-center gap-5 '>
+                <FontAwesomeIcon
+                  icon={emp.icon}
+                  className='text-[#707070]'
+                />
+                <div className='flex flex-col'>
+                  <h2>{emp.title}</h2>
+                  <p className='text-[#707070] text-xs'>{emp.subtitle}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <div className='flex justify-end py-10 gap-6 mr-[55px]'>
         <button type='button' className='bg-white text-[#707070] py-2 px-5 rounded' onClick={handlePrevStep}>Back</button>
         <button type='button' className='bg-[#1DB3AB] text-white py-2 px-5 rounded' onClick={saveEmployee}>Save</button>
