@@ -1,4 +1,7 @@
 import {
+  USER_DETAILS_ADMIN_FAIL,
+  USER_DETAILS_ADMIN_REQUEST,
+  USER_DETAILS_ADMIN_SUCCESS,
   USER_DETAILS_FAIL,
   USER_DETAILS_REQUEST,
   USER_DETAILS_RESET,
@@ -62,6 +65,32 @@ export const userDetailsReducer = (state = { user: {} }, action) => {
         user: {},
       };
 
+    default:
+      return state;
+  }
+};
+
+export const userDetailsAdminReducer = (state = { user: {} }, action) => {
+  const { type, payload } = action;
+
+  switch (type) {
+    case USER_DETAILS_ADMIN_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      };
+    case USER_DETAILS_ADMIN_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        user: payload,
+      };
+    case USER_DETAILS_ADMIN_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
     default:
       return state;
   }

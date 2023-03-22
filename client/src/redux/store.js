@@ -35,7 +35,7 @@ import {
   getTasksByProjectReducer,
   updateTaskReducer,
 } from './reducers/taskReducer';
-import { userDetailsReducer, userLoginReducer } from './reducers/userReducers';
+import { userDetailsAdminReducer, userDetailsReducer, userLoginReducer } from './reducers/userReducers';
 
 const userInfoFromStorage = localStorage.getItem('userInfo')
   ? JSON.parse(localStorage.getItem('userInfo'))
@@ -50,6 +50,7 @@ const reducer = combineReducers({
   registerEmployee: registerEmployeeReducer,
   removeEmployee: removeEmployeeReducer,
   userDetails: userDetailsReducer,
+  userDetailsAdmin:userDetailsAdminReducer,
   attendanceDetails: attendanceDetailsReducer,
   markAttendance: markAttendanceReducer,
   leaveDetails: leaveDetailsReducer,
