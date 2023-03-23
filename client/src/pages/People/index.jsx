@@ -127,7 +127,7 @@ function People() {
                 <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
                   <TableCell align='center'>{row.empNo}</TableCell>
                   <TableCell align='center'>{row.name.first} {row.name.last}</TableCell>
-                  <TableCell align='center'>{row.designation}</TableCell>
+                  <TableCell align='center'>{row.designation?.name}</TableCell>
                   <TableCell align='center'>{row.department.name}</TableCell>
                   <TableCell align='center'>{row.phone}</TableCell>
                   <TableCell align='center'>

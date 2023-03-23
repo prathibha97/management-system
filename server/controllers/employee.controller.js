@@ -13,8 +13,9 @@ const Employee = require("../models/Employee")
 const getAllEmployees = async (req, res) => {
   try {
     const employees = await Employee.find({})
-    .populate('department', 'name')
-    .select("-password")
+      .populate('department', 'name')
+      .populate('designation')
+      .select('-password');
     res.status(200).json(employees)
   } catch (err) {
     console.error(err.message)
@@ -137,7 +138,8 @@ const getEmployeeProfile = async (req, res) => {
   try {
     const employee = await Employee.findOne({ empNo: id })
       .select('-password')
-      .populate('department', 'name description');
+      .populate('department', 'name description')
+      .populate('designation', 'name');
     if (employee) {
       // *Check if the logged-in user is the same as the employee being viewed
       if (req.empNo !== employee.empNo) {

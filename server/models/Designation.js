@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const designationScheme = new mongoose.Schema({
-  designation: {
+  name: {
     type: String,
     required: true,
   },

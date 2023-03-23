@@ -11,7 +11,7 @@ const createDesignation = async (req, res) => {
     req.body;
   try {
     const newDesignation = await Designation.create({
-      designation,
+      name: designation,
       department,
       basicSalary,
       advance,

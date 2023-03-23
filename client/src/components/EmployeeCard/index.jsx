@@ -65,7 +65,7 @@ function EmployeeCard({ employee }) {
             <CustomAvatar name={`${employee?.name?.first} ${employee?.name?.last}`} />
             <div>
               <h1 className='font-bold text-lg'>{employee?.name?.first} {employee?.name?.last}</h1>
-              <p className='text-sm text-[#707070]'>{employee?.designation}</p>
+              <p className='text-sm text-[#707070]'>{employee?.designation?.name}</p>
               <p className='text-sm text-[#707070]'>Employee Id: {employee?.empNo}</p>
             </div>
           </div>

@@ -43,8 +43,8 @@ const empSchema = new mongoose.Schema(
       required: true,
     },
     designation: {
-      type: String,
-      required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Designation',
     },
     dateOfAppointment: {
       type: String,
