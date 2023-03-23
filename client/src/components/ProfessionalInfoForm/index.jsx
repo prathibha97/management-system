@@ -36,7 +36,6 @@ function ProfessionalInfoForm({ handleChange, values, nextStep, prevStep }) {
 
   const { departments } = useSelector((state) => state.departmentDetails)
   const { designations } = useSelector((state) => state.getDesignationsAdmin)
-  console.log(designations);
 
   return (
     <div className='bg-[#EEF2F5] h-[90%] w-[95%] rounded-xl m-auto'>
@@ -74,7 +73,7 @@ function ProfessionalInfoForm({ handleChange, values, nextStep, prevStep }) {
             </InputLabel>
             <Select labelid="designation-lable" id="designation-lable" onChange={handleChange('designation')} defaultValue={values.designation}>
               {designations.map((designation) => (
-                <MenuItem key={designation._id} value={designation._id}>{designation.designation}</MenuItem>
+                <MenuItem key={designation?._id} value={designation?._id}>{designation?.name}</MenuItem>
               ))}
             </Select>
           </div>

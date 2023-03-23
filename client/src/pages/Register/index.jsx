@@ -7,7 +7,7 @@ function Register() {
   const [lastName, setLastName] = useState('')
   const [birthDate, setBirthDate] = useState('')
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [password, setPassword] = useState('123456')
   const [phone, setPhone] = useState('')
   const [gender, setGender] = useState('')
   const [nic, setNic] = useState('')
