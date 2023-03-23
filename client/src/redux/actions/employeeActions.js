@@ -68,13 +68,13 @@ export const registerEmployee =
     dateOfAppointment,
     effectiveDate,
     paymentModel,
-    basicSalary,
-    pf,
+    // basicSalary,
+    // pf,
     bank,
     accNo,
-    advance,
-    maxAdvance,
-    noOfAdvances
+    // advance,
+    // maxAdvance,
+    // noOfAdvances
   ) =>
   async (dispatch, getState) => {
     try {
@@ -119,13 +119,13 @@ export const registerEmployee =
           dateOfAppointment,
           effectiveDate,
           paymentModel,
-          basicSalary,
-          pf,
+          // basicSalary,
+          // pf,
           bank,
           accNo,
-          advance,
-          maxAdvance,
-          noOfAdvances,
+          // advance,
+          // maxAdvance,
+          // noOfAdvances,
         },
         config
       );

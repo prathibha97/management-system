@@ -50,11 +50,11 @@ const empSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    basicSalary: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
+    // basicSalary: {
+    //   type: Number,
+    //   required: true,
+    //   default: 0,
+    // },
     effectiveDate: {
       type: String,
       required: true,
@@ -63,10 +63,10 @@ const empSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    providentFund: {
-      type: Boolean,
-      required: true,
-    },
+    // providentFund: {
+    //   type: Boolean,
+    //   required: true,
+    // },
     bank: {
       type: String,
       required: true,
@@ -75,20 +75,20 @@ const empSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    advance: {
-      type: Boolean,
-      required: true,
-    },
-    maxAdvance: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
-    noOfAdvances: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
+    // advance: {
+    //   type: Boolean,
+    //   required: true,
+    // },
+    // maxAdvance: {
+    //   type: Number,
+    //   required: true,
+    //   default: 0,
+    // },
+    // noOfAdvances: {
+    //   type: Number,
+    //   required: true,
+    //   default: 0,
+    // },
     isAdmin: {
       type: Boolean,
       default: false,

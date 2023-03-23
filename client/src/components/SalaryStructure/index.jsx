@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, TextField } from '@mui/material'
+import { InputLabel, MenuItem, Select, TextField } from '@mui/material'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -35,8 +35,8 @@ function SalaryStructure({ handleChange, values, nextStep, prevStep }) {
   return (
     <div className='bg-[#EEF2F5] h-[90%] w-[95%] rounded-xl m-auto'>
       <div className='flex flex-col mt-6 ml-[55px]'>
-        <h1 className='text-2xl font-bold mt-6'>Salary Structure</h1>
-        <p className='text-[#707070] text-sm'>Here you can add the salary structure of employee</p>
+        <h1 className='text-2xl font-bold mt-6'>Salary Details</h1>
+        <p className='text-[#707070] text-sm'>Here you can add the salary details of employee</p>
       </div>
       <div className='flex bg-white px-12 py-5 mt-5 justify-between items-center w-[90%] m-auto rounded-2xl'>
         <div className='flex flex-wrap justify-between gap-2'>
@@ -61,7 +61,7 @@ function SalaryStructure({ handleChange, values, nextStep, prevStep }) {
               <MenuItem value='Annual'>Annual</MenuItem>
             </Select>
           </div>
-          <div className='flex flex-col w-[45%]'>
+          {/* <div className='flex flex-col w-[45%]'>
             <InputLabel
               labelid="basic-lable">
               Basic Salary
@@ -70,8 +70,8 @@ function SalaryStructure({ handleChange, values, nextStep, prevStep }) {
               className='border rounded'
               onChange={handleChange('basicSalary')}
               defaultValue={values.basicSalary} />
-          </div>
-          <div className='flex flex-col w-[45%]'>
+          </div> */}
+          {/* <div className='flex flex-col w-[45%]'>
             <FormLabel id="demo-row-radio-buttons-group-label">P.F</FormLabel>
             <RadioGroup
               row
@@ -83,7 +83,7 @@ function SalaryStructure({ handleChange, values, nextStep, prevStep }) {
               <FormControlLabel value control={<Radio />} label="Yes" />
               <FormControlLabel value={false} control={<Radio />} label="No" />
             </RadioGroup>
-          </div>
+          </div> */}
           <div className='flex flex-col w-[45%]'>
             <InputLabel
               labelid="bank-lable">
@@ -104,7 +104,7 @@ function SalaryStructure({ handleChange, values, nextStep, prevStep }) {
               onChange={handleChange('accNo')}
               defaultValue={values.accNo} />
           </div>
-          <div className='flex flex-col w-[45%]'>
+          {/* <div className='flex flex-col w-[45%]'>
             <FormLabel id="demo-row-radio-buttons-group-label">Salary Advance</FormLabel>
             <RadioGroup
               row
@@ -136,7 +136,7 @@ function SalaryStructure({ handleChange, values, nextStep, prevStep }) {
               className='border rounded'
               onChange={handleChange('noOfAdvances')}
               defaultValue={values.noOfAdvances} />
-          </div>
+          </div> */}
         </div>
       </div>
       <div className='flex justify-end py-10 gap-6 mr-[55px]'>

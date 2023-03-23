@@ -13,7 +13,7 @@ function ReviewNewEmployee({ prevStep, values }) {
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
 
   const { error, loading } = useSelector((state) => state.registerEmployee);
-  console.log(values);
+
   const { firstName,
     lastName,
     birthDate,
@@ -40,13 +40,14 @@ function ReviewNewEmployee({ prevStep, values }) {
     dateOfAppointment,
     effectiveDate,
     paymentModel,
-    basicSalary,
-    pf,
+    // basicSalary,
+    // pf,
     bank,
     accNo,
-    advance,
-    maxAdvance,
-    noOfAdvances, } = values
+    // advance,
+    // maxAdvance,
+    // noOfAdvances, 
+  } = values
 
   const saveEmployee = () => {
     try {
@@ -76,13 +77,13 @@ function ReviewNewEmployee({ prevStep, values }) {
         dateOfAppointment,
         effectiveDate,
         paymentModel,
-        basicSalary,
-        pf,
+        // basicSalary,
+        // pf,
         bank,
         accNo,
-        advance,
-        maxAdvance,
-        noOfAdvances,
+        // advance,
+        // maxAdvance,
+        // noOfAdvances,
       ))
       navigate('/people')
       setAlert({ open: true, message: 'Employee Added Successfully', severity: 'success' });
@@ -224,18 +225,18 @@ function ReviewNewEmployee({ prevStep, values }) {
       title: paymentModel,
       subtitle: 'Payment Model',
     },
-    {
-      id: 3,
-      icon: faHouseLaptop,
-      title: basicSalary,
-      subtitle: 'Basic salary',
-    },
-    {
-      id: 4,
-      icon: faBuilding,
-      title: pf,
-      subtitle: 'Provident Fund',
-    },
+    // {
+    //   id: 3,
+    //   icon: faHouseLaptop,
+    //   title: basicSalary,
+    //   subtitle: 'Basic salary',
+    // },
+    // {
+    //   id: 4,
+    //   icon: faBuilding,
+    //   title: pf,
+    //   subtitle: 'Provident Fund',
+    // },
     {
       id: 5,
       icon: faRightFromBracket,
@@ -248,24 +249,24 @@ function ReviewNewEmployee({ prevStep, values }) {
       title: accNo,
       subtitle: 'Bank Account Number',
     },
-    {
-      id: 7,
-      icon: faRightFromBracket,
-      title: advance,
-      subtitle: 'Salary Advance',
-    },
-    {
-      id: 8,
-      icon: faRightFromBracket,
-      title: maxAdvance,
-      subtitle: 'Maximum Advance Amount',
-    },
-    {
-      id: 9,
-      icon: faRightFromBracket,
-      title: noOfAdvances,
-      subtitle: 'Number of Advances',
-    },
+    // {
+    //   id: 7,
+    //   icon: faRightFromBracket,
+    //   title: advance,
+    //   subtitle: 'Salary Advance',
+    // },
+    // {
+    //   id: 8,
+    //   icon: faRightFromBracket,
+    //   title: maxAdvance,
+    //   subtitle: 'Maximum Advance Amount',
+    // },
+    // {
+    //   id: 9,
+    //   icon: faRightFromBracket,
+    //   title: noOfAdvances,
+    //   subtitle: 'Number of Advances',
+    // },
   ]
 
   return (
@@ -333,7 +334,7 @@ function ReviewNewEmployee({ prevStep, values }) {
         </div>
       </div>
 
-      <h1 className='text-lg font-semibold mt-3 ml-[55px]'>Salary Structure</h1>
+      <h1 className='text-lg font-semibold mt-3 ml-[55px]'>Salary Infomation</h1>
       <div className='flex bg-white px-12 py-5 mt-5 justify-between items-center w-[90%] m-auto rounded-2xl'>
         <div className='flex flex-wrap justify-between gap-8'>
           {salaryInfo.map((emp) => (
