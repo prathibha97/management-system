@@ -8,6 +8,7 @@ import {
 } from './reducers/attendanceReducers';
 import { projectBoardDetailsReducer } from './reducers/boardReducer';
 import { departmentDetailsReducer } from './reducers/departmentReducer';
+import { getDesignationsAdminReducer } from './reducers/designationReducer';
 import {
   employeeListReducer,
   registerEmployeeReducer,
@@ -35,7 +36,11 @@ import {
   getTasksByProjectReducer,
   updateTaskReducer,
 } from './reducers/taskReducer';
-import { userDetailsAdminReducer, userDetailsReducer, userLoginReducer } from './reducers/userReducers';
+import {
+  userDetailsAdminReducer,
+  userDetailsReducer,
+  userLoginReducer,
+} from './reducers/userReducers';
 
 const userInfoFromStorage = localStorage.getItem('userInfo')
   ? JSON.parse(localStorage.getItem('userInfo'))
@@ -50,7 +55,7 @@ const reducer = combineReducers({
   registerEmployee: registerEmployeeReducer,
   removeEmployee: removeEmployeeReducer,
   userDetails: userDetailsReducer,
-  userDetailsAdmin:userDetailsAdminReducer,
+  userDetailsAdmin: userDetailsAdminReducer,
   attendanceDetails: attendanceDetailsReducer,
   markAttendance: markAttendanceReducer,
   leaveDetails: leaveDetailsReducer,
@@ -70,6 +75,7 @@ const reducer = combineReducers({
   myMeetings: myMeetingsReducer,
   scheduleMeeting: scheduleMeetingReducer,
   cancelMeeting: cancelMeetingReducer,
+  getDesignationsAdmin: getDesignationsAdminReducer,
   // userUpdateProfile: userUpdateProfileReducer,
   // userList: userListReducer,
   // userDelete: userDeleteReducer,

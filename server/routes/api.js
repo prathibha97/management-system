@@ -2,6 +2,7 @@ const express = require('express');
 const attendanceRouter = require('./attendance.routes');
 const boardRouter = require('./board.routes');
 const departmentRouter = require('./department.routes');
+const designationRouter = require('./designation.routes');
 const empAuthRouter = require('./employee-auth.routes');
 const empRouter = require('./employee.routes');
 const leaveRouter = require('./leave.routes');
@@ -20,5 +21,6 @@ api.use('/projects', projectRouter);
 api.use('/tasks', taskRouter);
 api.use('/boards', boardRouter);
 api.use('/meetings', meetingsRouter);
+api.use('/designations', designationRouter);
 
 module.exports = api;
