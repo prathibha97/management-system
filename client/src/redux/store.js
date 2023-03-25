@@ -3,6 +3,7 @@ import { applyMiddleware, combineReducers, legacy_createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 import {
+  adminAttendanceDetailsReducer,
   attendanceDetailsReducer,
   markAttendanceReducer,
 } from './reducers/attendanceReducers';
@@ -57,6 +58,7 @@ const reducer = combineReducers({
   userDetails: userDetailsReducer,
   userDetailsAdmin: userDetailsAdminReducer,
   attendanceDetails: attendanceDetailsReducer,
+  adminAttendanceDetails: adminAttendanceDetailsReducer,
   markAttendance: markAttendanceReducer,
   leaveDetails: leaveDetailsReducer,
   leaveRequest: leaveRequestReducer,

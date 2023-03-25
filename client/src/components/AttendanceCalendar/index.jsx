@@ -1,6 +1,5 @@
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Alert, Snackbar } from '@mui/material'
 import {
   add,
   eachDayOfInterval,
@@ -18,24 +17,22 @@ import {
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { getEmployeeList } from '../../redux/actions/employeeActions'
-import { cancelMeeting, getMyMeetings } from '../../redux/actions/meetingActions'
+import { getAttendanceDetailsbyIdAdmin } from '../../redux/actions/attendanceActions'
+import formatTime from '../../utils/formatTime'
 import Loader from '../Loader'
-import Meeting from '../Meetings'
 // import ScheduleMeeting from '../ScheduleMeeting'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-function AttendanceCalendar() {
+function AttendanceCalendar({ user }) {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const today = startOfToday()
   const [selectedDay, setSelectedDay] = useState(today)
   // const [isOpen, setIsOpen] = useState(false)
   const [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))
-  const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
   const firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date())
 
   const userLogin = useSelector((state) => state.userLogin);
@@ -43,15 +40,14 @@ function AttendanceCalendar() {
 
   // const { employees } = useSelector((state) => state.employeeList);
 
-  const { meetings, loading } = useSelector((state) => state.myMeetings);
+  const { attendanceInfo, loading } = useSelector((state) => state.adminAttendanceDetails);
   useEffect(() => {
     if (!userInfo) {
       navigate('/');
     } else {
       const storedUser = JSON.parse(localStorage.getItem('user'));
       if (!storedUser || storedUser.empNo !== userInfo.empNo) {
-        dispatch(getMyMeetings())
-        dispatch(getEmployeeList())
+        dispatch(getAttendanceDetailsbyIdAdmin(user.empNo))
       }
     }
   }, [userInfo])
@@ -73,35 +69,9 @@ function AttendanceCalendar() {
     setCurrentMonth(format(firstDayNextMonth, 'MMM-yyyy'))
   }
 
-  const selectedDayMeetings = meetings.filter((meeting) =>
-    isSameDay(parseISO(meeting.startDatetime), selectedDay)
+  const selectedDayAttendance = attendanceInfo.filter((attendance) =>
+    isSameDay(parseISO(attendance.inTime), selectedDay)
   )
-
-  const handleAlertClose = () => {
-    setAlert({ ...alert, open: false });
-  };
-
-
-  const handleMeetingCancel = (id) => {
-    try {
-      dispatch(cancelMeeting(id));
-      setAlert({ open: true, message: 'Meeting Cancelled Successfully', severity: 'success' });
-    } catch (err) {
-      setAlert({ open: true, message: err.response.data.message, severity: 'error' });
-    }
-  }
-
-  // const handleSubmit = (selectedPerson, startValue, endValue) => {
-  //   try {
-  //     dispatch(scheduleMeeting(selectedPerson, startValue, endValue))
-  //     console.log(`meeting scheduled with ${selectedPerson?.name?.first} ${selectedPerson?.name?.last} on ${startValue} to ${endValue}`);
-  //     setAlert({ open: true, message: `meeting scheduled with ${selectedPerson?.name?.first} ${selectedPerson?.name?.last} on ${startValue} to ${endValue}`, severity: 'success' });
-  //   } catch (err) {
-  //     setAlert({ open: true, message: err?.response?.data?.message, severity: 'error' });
-  //   }
-  //   setIsOpen(false)
-  // }
-
 
   const colStartClasses = [
     '',
@@ -112,6 +82,8 @@ function AttendanceCalendar() {
     'col-start-6',
     'col-start-7',
   ]
+
+  console.log(attendanceInfo);
 
   return (
     <div className="mt-2">
@@ -190,8 +162,8 @@ function AttendanceCalendar() {
                   </button>
 
                   <div className="w-1 h-1 mx-auto mt-1">
-                    {meetings.some((meeting) =>
-                      isSameDay(parseISO(meeting.startDatetime), day)
+                    {attendanceInfo.some((attendance) =>
+                      isSameDay(parseISO(attendance.inTime), day)
                     ) && (
                         <div className="w-1 h-1 rounded-full bg-sky-500" />
                       )}
@@ -208,18 +180,15 @@ function AttendanceCalendar() {
                   {format(selectedDay, 'MMM dd, yyy')}
                 </time>
               </h2>
-              {/* <IconButton onClick={() => setIsOpen(true)}>
-                <FontAwesomeIcon icon={faPlus} />
-              </IconButton> */}
             </div>
-            {/* {isOpen && (
-              <ScheduleMeeting isOpen={isOpen} setIsOpen={setIsOpen} selectedDay={selectedDay} people={employees} handleSubmit={handleSubmit} />
-            )} */}
             <div>
               <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
-                {selectedDayMeetings.length > 0 ? (
-                  selectedDayMeetings.map((meeting) => (
-                    <Meeting meeting={meeting} key={meeting._id} handleMeetingCancel={handleMeetingCancel} currentUser={userInfo?.employee?._id} />
+                {selectedDayAttendance.length > 0 ? (
+                  selectedDayAttendance.map((attendance) => (
+                    <div key={attendance._id}>
+                      <p>Log in time: {formatTime(attendance.inTime)}</p>
+                      <p>Log out time: {formatTime(attendance.outTime)}</p>
+                    </div>
                   ))
                 ) : (
                   <p>No events for today.</p>
@@ -229,11 +198,6 @@ function AttendanceCalendar() {
           </section>
         </div>
       </div>
-      <Snackbar open={alert?.open} autoHideDuration={5000} onClose={handleAlertClose}>
-        <Alert onClose={handleAlertClose} severity={alert?.severity}>
-          {alert?.message}
-        </Alert>
-      </Snackbar>
     </div>
   )
 }
