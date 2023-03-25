@@ -4,6 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const path = require('path');
+const fs = require('fs');
 const api = require('./routes/api');
 const { errorHandler, notFound } = require('./middleware/error.middleware');
 // const setCache = require('./middleware/cache.middleware');
@@ -18,8 +19,26 @@ app.use(morgan('dev'));
 
 app.use('/api', api);
 
-if (process.env.NODE_ENV !== 'development') {
+// Serve the PDF files from the uploads folder
+app.use('/uploads', express.static(path.join(__dirname, '..', 'server', 'uploads')));
 
+// API endpoint to get the URL of a PDF file
+app.get('/pdf', (req, res) => {
+  const { filepath } = req.query;
+  // res.json({ filepath });
+  const stat = fs.statSync(filepath);
+
+  res.writeHead(200, {
+    'Content-Type': 'application/pdf',
+    'Content-Length': stat.size,
+    'Content-Disposition': `attachment; filename=${filepath}`,
+  });
+
+  const readStream = fs.createReadStream(filepath);
+  readStream.pipe(res);
+});
+
+if (process.env.NODE_ENV !== 'development') {
   Sentry.init({
     dsn: 'https://605eff850d6848a2bc09a83d90748969@o4504854230007808.ingest.sentry.io/4504854244360192',
     integrations: [
@@ -34,7 +53,7 @@ if (process.env.NODE_ENV !== 'development') {
     // We recommend adjusting this value in production
     tracesSampleRate: 1.0,
   });
-  
+
   // RequestHandler creates a separate execution context using domains, so that every
   // transaction/span/breadcrumb is attached to its own Hub instance
   app.use(Sentry.Handlers.requestHandler());
