@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 /* eslint-disable react/no-unstable-nested-components */
 import { faEdit, faEye, faTrash, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -52,6 +53,11 @@ function People() {
     // handle edit action here
     console.log(`Edit row ${row.empNo}`);
   };
+
+  const handleView = (row) => {
+    navigate(`${row.empNo}`)
+    location.reload();
+  }
 
   const handleClose = () => {
     setOpen(false);
@@ -121,11 +127,11 @@ function People() {
                 <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
                   <TableCell align='center'>{row.empNo}</TableCell>
                   <TableCell align='center'>{row.name.first} {row.name.last}</TableCell>
-                  <TableCell align='center'>{row.designation}</TableCell>
+                  <TableCell align='center'>{row.designation?.name}</TableCell>
                   <TableCell align='center'>{row.department.name}</TableCell>
                   <TableCell align='center'>{row.phone}</TableCell>
                   <TableCell align='center'>
-                    <FontAwesomeIcon icon={faEye} onClick={() => navigate(`${row.empNo}`)} className="mx-1 hover:text-[#1DB3AB] cursor-pointer" />
+                    <FontAwesomeIcon icon={faEye} onClick={() => handleView(row)} className="mx-1 hover:text-[#1DB3AB] cursor-pointer" />
                     <FontAwesomeIcon icon={faEdit} onClick={() => handleEdit(row)} className="mx-1 hover:text-[#1DB3AB] cursor-pointer" />
                     <FontAwesomeIcon icon={faTrash} onClick={() => setOpen(true)} className="mx-1 hover:text-[#FF6760] cursor-pointer" />
                     {open && (

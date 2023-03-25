@@ -4,6 +4,7 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { getDepartmentDetails } from '../../redux/actions/departmentActions'
+import { getDesignationListAdmin } from '../../redux/actions/designationActions'
 
 function ProfessionalInfoForm({ handleChange, values, nextStep, prevStep }) {
   const navigate = useNavigate()
@@ -28,11 +29,13 @@ function ProfessionalInfoForm({ handleChange, values, nextStep, prevStep }) {
       const storedUser = JSON.parse(localStorage.getItem('user'));
       if (!storedUser || storedUser.empNo !== userInfo.empNo) {
         dispatch(getDepartmentDetails())
+        dispatch(getDesignationListAdmin())
       }
     }
   }, [userInfo])
-  const departmentDetails = useSelector((state) => state.departmentDetails)
-  const { departments } = departmentDetails
+
+  const { departments } = useSelector((state) => state.departmentDetails)
+  const { designations } = useSelector((state) => state.getDesignationsAdmin)
 
   return (
     <div className='bg-[#EEF2F5] h-[90%] w-[95%] rounded-xl m-auto'>
@@ -54,13 +57,25 @@ function ProfessionalInfoForm({ handleChange, values, nextStep, prevStep }) {
           </div>
           <div className='flex flex-col w-[45%]'>
             <InputLabel
+              labelid="emp-no-lable">
+              Date of Appointment
+            </InputLabel>
+            <TextField
+              type='date'
+              className='border rounded'
+              onChange={handleChange('dateOfAppointment')}
+              defaultValue={values.dateOfAppointment} />
+          </div>
+          <div className='flex flex-col w-[45%]'>
+            <InputLabel
               labelid="designation-lable">
               Designation
             </InputLabel>
-            <TextField
-              className='border rounded'
-              onChange={handleChange('designation')}
-              defaultValue={values.designation} />
+            <Select labelid="designation-lable" id="designation-lable" onChange={handleChange('designation')} defaultValue={values.designation}>
+              {designations.map((designation) => (
+                <MenuItem key={designation?._id} value={designation?._id}>{designation?.name}</MenuItem>
+              ))}
+            </Select>
           </div>
           <div className='flex flex-col w-[45%]'>
             <InputLabel
