@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Loader } from '../../components';
+import { AttendanceCalendar, EmployeeDetails, LeaveBalance, Loader, SalaryDetails } from '../../components';
 
 function EmpProfile() {
   const navigate = useNavigate()
@@ -24,10 +24,16 @@ function EmpProfile() {
     }
   }, [userInfo, user])
 
-
-  if(loading) return <Loader/>
+  if (loading) return <Loader />
   return (
-    <div>{user?.name?.first}</div>
+    <div className='h-[90%]'>
+      <div className='bg-[#EEF2F5]  w-[95%] rounded-xl mt-6 m-auto overflow-y-auto'>
+        <EmployeeDetails user={user} />
+        <AttendanceCalendar />
+        <LeaveBalance user={user}/>
+        <SalaryDetails />
+      </div>
+    </div>
   )
 }
 
