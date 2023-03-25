@@ -2,7 +2,7 @@
 // getUserProfile   private,
 // updateUserProfile private,
 
-const Employee = require("../models/Employee")
+const Employee = require('../models/Employee');
 
 /*
 ?@desc   Get all employees
@@ -16,12 +16,12 @@ const getAllEmployees = async (req, res) => {
       .populate('department', 'name')
       .populate('designation')
       .select('-password');
-    res.status(200).json(employees)
+    res.status(200).json(employees);
   } catch (err) {
-    console.error(err.message)
-    res.status(500).json({ message: 'Failed to get employee list' })
+    console.error(err.message);
+    res.status(500).json({ message: 'Failed to get employee list' });
   }
-}
+};
 
 /*
 ?@desc   Get employee by id
@@ -30,19 +30,22 @@ const getAllEmployees = async (req, res) => {
 */
 
 const getEmployeeById = async (req, res) => {
-  const { id } = req.params
+  const { id } = req.params;
   try {
-    const employee = await Employee.findOne({ empNo: id }).select('-password')
+    const employee = await Employee.findOne({ empNo: id })
+      .populate('designation')
+      .populate('department')
+      .select('-password');
     if (employee) {
-      res.status(200).json(employee)
+      res.status(200).json(employee);
     } else {
-      res.status(404).json({ message: 'Employee not found' })
+      res.status(404).json({ message: 'Employee not found' });
     }
   } catch (err) {
-    console.error(err.message)
-    res.status(500).json({ message: 'Failed to get employee details' })
+    console.error(err.message);
+    res.status(500).json({ message: 'Failed to get employee details' });
   }
-}
+};
 
 /*
 ?@desc   Update employee details
@@ -51,7 +54,7 @@ const getEmployeeById = async (req, res) => {
 */
 
 const updateEmployee = async (req, res) => {
-  const { id } = req.params
+  const { id } = req.params;
   const {
     empNo,
     firstName,
@@ -71,44 +74,43 @@ const updateEmployee = async (req, res) => {
     idPath,
     bankSlipPath,
     resumePath,
-    department
-  } = req.body
+    department,
+  } = req.body;
 
   try {
-    const employee = await Employee.findOne({ empNo: id })
+    const employee = await Employee.findOne({ empNo: id });
     if (employee) {
-      employee.empNo = empNo || employee.empNo
-      employee.name.first = firstName || employee.name.first
-      employee.name.last = lastName || employee.name.last
-      employee.address.street = street || employee.address.street
-      employee.address.city = city || employee.address.city
-      employee.address.state = state || employee.address.state
-      employee.address.zip = zip || employee.address.zip
-      employee.birthDate = birthDate || employee.birthDate
-      employee.gender = gender || employee.gender
-      employee.email = email || employee.email
-      employee.designation = designation || employee.designation
-      employee.phone = phone || employee.phone
-      employee.isAdmin = isAdmin
-      employee.employmentHistory = employmentHistory || employee.employmentHistory
-      employee.projectHistory = projectHistory || employee.projectHistory
-      employee.idPath = idPath || employee.idPath
-      employee.bankSlipPath = bankSlipPath || employee.bankSlipPath
-      employee.resumePath = resumePath || employee.resumePath
+      employee.empNo = empNo || employee.empNo;
+      employee.name.first = firstName || employee.name.first;
+      employee.name.last = lastName || employee.name.last;
+      employee.address.street = street || employee.address.street;
+      employee.address.city = city || employee.address.city;
+      employee.address.state = state || employee.address.state;
+      employee.address.zip = zip || employee.address.zip;
+      employee.birthDate = birthDate || employee.birthDate;
+      employee.gender = gender || employee.gender;
+      employee.email = email || employee.email;
+      employee.designation = designation || employee.designation;
+      employee.phone = phone || employee.phone;
+      employee.isAdmin = isAdmin;
+      employee.employmentHistory = employmentHistory || employee.employmentHistory;
+      employee.projectHistory = projectHistory || employee.projectHistory;
+      employee.idPath = idPath || employee.idPath;
+      employee.bankSlipPath = bankSlipPath || employee.bankSlipPath;
+      employee.resumePath = resumePath || employee.resumePath;
       employee.department = department || employee.department;
     } else {
-      res.status(404).json({ message: 'Employee not found' })
+      res.status(404).json({ message: 'Employee not found' });
     }
 
-    const updatedEmployee = await employee.save()
+    const updatedEmployee = await employee.save();
 
-    res.status(200).json(updatedEmployee)
-
+    res.status(200).json(updatedEmployee);
   } catch (err) {
-    console.error(err.message)
-    res.status(500).json({ message: 'Failed to update employee details' })
+    console.error(err.message);
+    res.status(500).json({ message: 'Failed to update employee details' });
   }
-}
+};
 
 /*
 ?@desc   Remove employee
@@ -117,15 +119,15 @@ const updateEmployee = async (req, res) => {
 */
 
 const removeEmployee = async (req, res) => {
-  const { id } = req.params
+  const { id } = req.params;
   try {
-    await Employee.findOneAndDelete({ empNo: id })
-    res.status(200).json({ message: 'Employee removed successfully' })
+    await Employee.findOneAndDelete({ empNo: id });
+    res.status(200).json({ message: 'Employee removed successfully' });
   } catch (err) {
-    console.error(err.message)
-    res.status(500).json({ message: 'Failed to remove employee' })
+    console.error(err.message);
+    res.status(500).json({ message: 'Failed to remove employee' });
   }
-}
+};
 
 /*
 ?@desc   Get employee profile
@@ -133,8 +135,8 @@ const removeEmployee = async (req, res) => {
 *@access Private
 */
 
-const getEmployeeProfile = async (req, res) => { 
-  const { id } = req.params
+const getEmployeeProfile = async (req, res) => {
+  const { id } = req.params;
   try {
     const employee = await Employee.findOne({ empNo: id })
       .select('-password')
@@ -143,18 +145,19 @@ const getEmployeeProfile = async (req, res) => {
     if (employee) {
       // *Check if the logged-in user is the same as the employee being viewed
       if (req.empNo !== employee.empNo) {
-        return res.status(403).json({ message: 'You are not authorized to view this employee profile' })
+        return res
+          .status(403)
+          .json({ message: 'You are not authorized to view this employee profile' });
       }
-      res.status(200).json(employee)
+      res.status(200).json(employee);
     } else {
-      res.status(404).json({ message: 'Employee not found' })
+      res.status(404).json({ message: 'Employee not found' });
     }
   } catch (err) {
-    console.error(err.message)
-    res.status(500).json({ message: 'Failed to get employee details' })
+    console.error(err.message);
+    res.status(500).json({ message: 'Failed to get employee details' });
   }
-}
-
+};
 
 /*
 ?@desc   Get employee profile
@@ -163,7 +166,7 @@ const getEmployeeProfile = async (req, res) => {
 */
 
 const updateEmployeeProfile = async (req, res) => {
-  const { id } = req.params
+  const { id } = req.params;
   const {
     firstName,
     lastName,
@@ -176,40 +179,40 @@ const updateEmployeeProfile = async (req, res) => {
     gender,
     phone,
     employmentHistory,
-  } = req.body
+  } = req.body;
 
   try {
-    const employee = await Employee.findOne({ empNo: id })
+    const employee = await Employee.findOne({ empNo: id });
     if (employee) {
       // *Check if the logged-in user is the same as the employee being updated
       if (req.empNo !== employee.empNo) {
-        return res.status(403).json({ message: 'You are not authorized to update this employee profile' })
+        return res
+          .status(403)
+          .json({ message: 'You are not authorized to update this employee profile' });
       }
-      employee.name.first = firstName || employee.name.first
-      employee.name.last = lastName || employee.name.last
-      if (password) employee.password = password
-      employee.address.street = street || employee.address.street
-      employee.address.city = city || employee.address.city
-      employee.address.state = state || employee.address.state
-      employee.address.zip = zip || employee.address.zip
-      employee.birthDate = birthDate || employee.birthDate
-      employee.gender = gender || employee.gender
-      employee.phone = phone || employee.phone
-      employee.employmentHistory = employmentHistory || employee.employmentHistory
+      employee.name.first = firstName || employee.name.first;
+      employee.name.last = lastName || employee.name.last;
+      if (password) employee.password = password;
+      employee.address.street = street || employee.address.street;
+      employee.address.city = city || employee.address.city;
+      employee.address.state = state || employee.address.state;
+      employee.address.zip = zip || employee.address.zip;
+      employee.birthDate = birthDate || employee.birthDate;
+      employee.gender = gender || employee.gender;
+      employee.phone = phone || employee.phone;
+      employee.employmentHistory = employmentHistory || employee.employmentHistory;
     } else {
-      res.status(404).json({ message: 'Employee not found' })
+      res.status(404).json({ message: 'Employee not found' });
     }
 
-    const updatedEmployee = await employee.save()
-    employee.password = undefined
-    res.status(200).json(updatedEmployee)
-
+    const updatedEmployee = await employee.save();
+    employee.password = undefined;
+    res.status(200).json(updatedEmployee);
   } catch (err) {
-    console.error(err.message)
-    res.status(500).json({ message: 'Failed to update employee details' })
+    console.error(err.message);
+    res.status(500).json({ message: 'Failed to update employee details' });
   }
-}
-
+};
 
 module.exports = {
   getAllEmployees,
@@ -217,5 +220,5 @@ module.exports = {
   updateEmployee,
   removeEmployee,
   getEmployeeProfile,
-  updateEmployeeProfile
-}
+  updateEmployeeProfile,
+};
