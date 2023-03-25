@@ -191,7 +191,11 @@ function AttendanceCalendar({ user }) {
                     </div>
                   ))
                 ) : (
-                  <p>No events for today.</p>
+                  <p>No events for{' '}
+                      <time dateTime={format(selectedDay, 'yyyy-MM-dd')}>
+                        {format(selectedDay, 'MMM dd, yyy')}
+                      </time>
+                  .</p>
                 )}
               </ol>
             </div>
