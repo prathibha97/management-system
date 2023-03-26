@@ -69,8 +69,8 @@ function AttendanceCalendar({ user }) {
     setCurrentMonth(format(firstDayNextMonth, 'MMM-yyyy'))
   }
 
-  const selectedDayAttendance = attendanceInfo.filter((attendance) =>
-    isSameDay(parseISO(attendance.inTime), selectedDay)
+  const selectedDayAttendance = attendanceInfo?.filter((attendance) =>
+    isSameDay(parseISO(attendance?.inTime), selectedDay)
   )
 
   const colStartClasses = [
