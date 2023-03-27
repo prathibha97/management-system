@@ -16,6 +16,7 @@ import {
   removeEmployeeReducer,
 } from './reducers/employeeReducer';
 import {
+  adminLeaveDetailsReducer,
   allLeaveDetailsReducer,
   approveLeaveReducer,
   leaveDetailsReducer,
@@ -61,6 +62,7 @@ const reducer = combineReducers({
   adminAttendanceDetails: adminAttendanceDetailsReducer,
   markAttendance: markAttendanceReducer,
   leaveDetails: leaveDetailsReducer,
+  adminLeaveDetails:adminLeaveDetailsReducer,
   leaveRequest: leaveRequestReducer,
   allLeaveDetails: allLeaveDetailsReducer,
   approveLeave: approveLeaveReducer,

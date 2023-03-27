@@ -30,7 +30,7 @@ function EmpProfile() {
       <div className='bg-[#EEF2F5]  w-[95%] rounded-xl mt-6 m-auto overflow-y-auto'>
         <EmployeeDetails user={user} />
         <AttendanceCalendar user={user} />
-        <LeaveBalance user={user}/>
+        <LeaveBalance user={user} />
         <SalaryDetails />
       </div>
     </div>

@@ -1,4 +1,7 @@
 import {
+  ADMIN_LEAVE_DETAILS_FAIL,
+  ADMIN_LEAVE_DETAILS_REQUEST,
+  ADMIN_LEAVE_DETAILS_SUCCESS,
   APPROVE_LEAVE_FAIL,
   APPROVE_LEAVE_REQUEST,
   APPROVE_LEAVE_SUCCESS,
@@ -139,6 +142,32 @@ export const rejectLeaveReducer = (state = { leave: {} }, action) => {
         ...state,
         loading: false,
         errorReject: payload,
+      };
+    default:
+      return state;
+  }
+};
+
+export const adminLeaveDetailsReducer = (state = { leaves: [] }, action) => {
+  const { type, payload } = action;
+
+  switch (type) {
+    case ADMIN_LEAVE_DETAILS_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      };
+    case ADMIN_LEAVE_DETAILS_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        leaves: payload,
+      };
+    case ADMIN_LEAVE_DETAILS_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
       };
     default:
       return state;
