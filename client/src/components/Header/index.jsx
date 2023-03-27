@@ -9,7 +9,7 @@ import { Alert, FormControl, InputLabel, MenuItem, Select, Snackbar } from '@mui
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
-import { AccountMenu, Button, Notifications } from '../../components';
+import { AccountMenu, Button, Loader, Notifications } from '../../components';
 import { markAttendance } from '../../redux/actions/attendanceActions';
 import { ProjectDetailsById } from '../../redux/actions/projectActions';
 import { getUserDetailsAdmin } from '../../redux/actions/userActions';
@@ -28,7 +28,7 @@ function Header() {
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
   const [project, setProject] = useState(projects.length > 0 ? projects[0]?._id : '');
 
-  const { user } = useSelector((state) => state.userDetailsAdmin);
+  const { user, loading } = useSelector((state) => state.userDetailsAdmin);
 
   const userInfo = JSON.parse(localStorage.getItem('userInfo'));
   const { empNo } = userInfo.employee;
@@ -46,7 +46,7 @@ function Header() {
     if (error) {
       setAlert({ open: true, message: error, severity: 'error' });
     }
-  }, [error]);
+  }, [error,id]);
 
   const handleProjectChange = (event) => {
     const selectedProject = event.target.value;
@@ -100,6 +100,8 @@ function Header() {
   const handleAlertClose = () => {
     setAlert({ ...alert, open: false });
   };
+
+  if(loading) return <Loader/>
 
   return (
     <div className="flex items-center justify-between px-10 pt-2">
