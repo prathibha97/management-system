@@ -55,9 +55,7 @@ function AttendanceCalendar({ user }) {
   const { attendanceInfo, loading } = useSelector((state) => state.adminAttendanceDetails);
   const { leaves } = useSelector((state) => state.adminLeaveDetails);
 
-
   if (loading) return <Loader />
-
 
   const days = eachDayOfInterval({
     start: firstDayCurrentMonth,
@@ -74,11 +72,11 @@ function AttendanceCalendar({ user }) {
     setCurrentMonth(format(firstDayNextMonth, 'MMM-yyyy'))
   }
 
-  const selectedDayAttendance = attendanceInfo?.filter((attendance) =>
-    isSameDay(parseISO(attendance?.inTime), selectedDay)
+  const selectedDayAttendance = Array.from(attendanceInfo)?.filter((attendance) =>
+    isSameDay(parseISO(attendance.inTime), selectedDay)
   )
 
-  const selectedDayLeaves = leaves.filter((leave) =>
+  const selectedDayLeaves = Array.from(leaves)?.filter((leave) =>
     isSameDay(parseISO(leave.startDate), selectedDay)
   )
 
