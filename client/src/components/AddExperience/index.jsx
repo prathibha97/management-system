@@ -65,7 +65,7 @@ function AddExperience({ isOpen, setIsOpen, setAlert }) {
                   <div className="fixed top-18 w-[400px]">
                     <InputLabel id="demo-simple-select-label" className='mb-2'>Position</InputLabel>
                     <TextField value={position} onChange={(e) => setPosition(e.target.value)} fullWidth />
-                    <InputLabel id="demo-simple-select-label" className='mb-2'>Company</InputLabel>
+                    <InputLabel id="demo-simple-select-label" className='mt-2 mb-2'>Company</InputLabel>
                     <TextField value={company} onChange={(e) => setCompany(e.target.value)} fullWidth />
                     <div className='flex mt-8 mb-8 gap-2'>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -78,7 +78,7 @@ function AddExperience({ isOpen, setIsOpen, setAlert }) {
                       </LocalizationProvider>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
-                          label="End Date & Time"
+                          label="End Date"
                           value={endDate}
                           onChange={(newValue) => setEndDate(newValue)}
                           renderInput={(params) => <TextField {...params} />}
