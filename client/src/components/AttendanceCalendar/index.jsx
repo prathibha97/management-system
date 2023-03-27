@@ -119,7 +119,7 @@ function AttendanceCalendar({ user }) {
 
               </button>
             </div>
-            <div className="grid grid-cols-7 mt-10 text-xs leading-6 text-center text-gray-500">
+            <div className="grid grid-cols-7 mt-4 text-xs leading-6 text-center text-gray-500">
               <div>S</div>
               <div>M</div>
               <div>T</div>
@@ -212,18 +212,12 @@ function AttendanceCalendar({ user }) {
                 )}
               </ol>
               <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
-                {selectedDayLeaves.length > 0 ? (
+                {selectedDayLeaves.length > 0 && (
                   selectedDayLeaves.map((leave) => (
                     <div key={leave._id}>
                       <p>Leave from {formatDateShort(leave.startDate)} to {formatDateShort(leave.endDate)} approved by {leave.approvedBy.name.first}</p>
                     </div>
                   ))
-                ) : (
-                  <p>No events for{' '}
-                    <time dateTime={format(selectedDay, 'yyyy-MM-dd')}>
-                      {format(selectedDay, 'MMM dd, yyy')}
-                    </time>
-                    .</p>
                 )}
               </ol>
             </div>
