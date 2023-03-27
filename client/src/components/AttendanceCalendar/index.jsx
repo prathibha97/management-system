@@ -167,12 +167,12 @@ function AttendanceCalendar({ user }) {
                   </button>
 
                   <div className="flex items-center justify-center w-2 h-2 mx-auto gap-1">
-                    {attendanceInfo.some((attendance) =>
+                    {attendanceInfo?.some((attendance) =>
                       isSameDay(parseISO(attendance.inTime), day)
                     ) && (
                         <div className="w-1 h-1 rounded-full bg-sky-500" />
                       )}
-                    {leaves.some((leave) =>
+                    {leaves?.some((leave) =>
                       isSameDay(parseISO(leave.startDate), day)
                     ) && (
                         <div className="w-1 h-1 rounded-full bg-orange-400" />
