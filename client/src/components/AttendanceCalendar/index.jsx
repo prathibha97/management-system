@@ -18,9 +18,10 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { getAttendanceDetailsbyIdAdmin } from '../../redux/actions/attendanceActions'
+import { getAdminLeaveDetails } from '../../redux/actions/leaveActions'
+import { formatDateShort } from '../../utils/formatDate'
 import formatTime from '../../utils/formatTime'
 import Loader from '../Loader'
-// import ScheduleMeeting from '../ScheduleMeeting'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -31,7 +32,6 @@ function AttendanceCalendar({ user }) {
   const navigate = useNavigate()
   const today = startOfToday()
   const [selectedDay, setSelectedDay] = useState(today)
-  // const [isOpen, setIsOpen] = useState(false)
   const [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))
   const firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date())
 
@@ -40,7 +40,6 @@ function AttendanceCalendar({ user }) {
 
   // const { employees } = useSelector((state) => state.employeeList);
 
-  const { attendanceInfo, loading } = useSelector((state) => state.adminAttendanceDetails);
   useEffect(() => {
     if (!userInfo) {
       navigate('/');
@@ -48,11 +47,17 @@ function AttendanceCalendar({ user }) {
       const storedUser = JSON.parse(localStorage.getItem('user'));
       if (!storedUser || storedUser.empNo !== userInfo.empNo) {
         dispatch(getAttendanceDetailsbyIdAdmin(user.empNo))
+        dispatch(getAdminLeaveDetails(user.empNo))
       }
     }
   }, [userInfo])
 
+  const { attendanceInfo, loading } = useSelector((state) => state.adminAttendanceDetails);
+  const { leaves } = useSelector((state) => state.adminLeaveDetails);
+
+
   if (loading) return <Loader />
+
 
   const days = eachDayOfInterval({
     start: firstDayCurrentMonth,
@@ -73,6 +78,10 @@ function AttendanceCalendar({ user }) {
     isSameDay(parseISO(attendance?.inTime), selectedDay)
   )
 
+  const selectedDayLeaves = leaves.filter((leave) =>
+    isSameDay(parseISO(leave.startDate), selectedDay)
+  )
+
   const colStartClasses = [
     '',
     'col-start-2',
@@ -82,8 +91,6 @@ function AttendanceCalendar({ user }) {
     'col-start-6',
     'col-start-7',
   ]
-
-  console.log(attendanceInfo);
 
   return (
     <div className="mt-2">
@@ -112,7 +119,7 @@ function AttendanceCalendar({ user }) {
 
               </button>
             </div>
-            <div className="grid grid-cols-7 mt-10 text-xs leading-6 text-center text-gray-500">
+            <div className="grid grid-cols-7 mt-4 text-xs leading-6 text-center text-gray-500">
               <div>S</div>
               <div>M</div>
               <div>T</div>
@@ -161,15 +168,21 @@ function AttendanceCalendar({ user }) {
                     </time>
                   </button>
 
-                  <div className="w-1 h-1 mx-auto mt-1">
+                  <div className="flex items-center justify-center w-2 h-2 mx-auto gap-1">
                     {attendanceInfo.some((attendance) =>
                       isSameDay(parseISO(attendance.inTime), day)
                     ) && (
                         <div className="w-1 h-1 rounded-full bg-sky-500" />
                       )}
+                    {leaves.some((leave) =>
+                      isSameDay(parseISO(leave.startDate), day)
+                    ) && (
+                        <div className="w-1 h-1 rounded-full bg-orange-400" />
+                      )}
                   </div>
                 </div>
               ))}
+
             </div>
           </div>
           <section className="mt-12 md:mt-0 md:pl-10">
@@ -192,10 +205,19 @@ function AttendanceCalendar({ user }) {
                   ))
                 ) : (
                   <p>No events for{' '}
-                      <time dateTime={format(selectedDay, 'yyyy-MM-dd')}>
-                        {format(selectedDay, 'MMM dd, yyy')}
-                      </time>
-                  .</p>
+                    <time dateTime={format(selectedDay, 'yyyy-MM-dd')}>
+                      {format(selectedDay, 'MMM dd, yyy')}
+                    </time>
+                    .</p>
+                )}
+              </ol>
+              <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
+                {selectedDayLeaves.length > 0 && (
+                  selectedDayLeaves.map((leave) => (
+                    <div key={leave._id}>
+                      <p>Leave from {formatDateShort(leave.startDate)} to {formatDateShort(leave.endDate)} approved by {leave.approvedBy.name.first}</p>
+                    </div>
+                  ))
                 )}
               </ol>
             </div>

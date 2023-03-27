@@ -146,7 +146,7 @@ io.on('connection', (socket) => {
 });
 
 /* 
-?@desc   Get all leave requests of a specific employee
+?@desc   Get all approved leave requests of a specific employee
 *@route  Get /api/leaves/:id
 *@access Private/Admin
 */
@@ -154,7 +154,10 @@ io.on('connection', (socket) => {
 const getLeaveRequestByIdAdmin = async (req, res) => {
   const { id } = req.params;
   try {
-    const leaveRequest = await Leave.find({ empNo: id });
+    const leaveRequest = await Leave.find({ empNo: id, status: 'Approved' }).populate(
+      'approvedBy',
+      'name'
+    );
     res.status(200).json(leaveRequest);
   } catch (err) {
     console.error(err.message);
