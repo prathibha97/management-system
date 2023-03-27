@@ -5,6 +5,7 @@ const departmentRouter = require('./department.routes');
 const designationRouter = require('./designation.routes');
 const empAuthRouter = require('./employee-auth.routes');
 const empRouter = require('./employee.routes');
+const experienceRouter = require('./experience.routes');
 const leaveRouter = require('./leave.routes');
 const meetingsRouter = require('./meetings.routes');
 const projectRouter = require('./project.routes');
@@ -22,5 +23,6 @@ api.use('/tasks', taskRouter);
 api.use('/boards', boardRouter);
 api.use('/meetings', meetingsRouter);
 api.use('/designations', designationRouter);
+api.use('/experiences', experienceRouter);
 
 module.exports = api;
