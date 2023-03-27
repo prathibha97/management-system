@@ -168,7 +168,7 @@ function AttendanceCalendar({ user }) {
                     </time>
                   </button>
 
-                  <div className="w-1 h-1 mx-auto mt-1">
+                  <div className="flex items-center justify-center w-2 h-2 mx-auto gap-1">
                     {attendanceInfo.some((attendance) =>
                       isSameDay(parseISO(attendance.inTime), day)
                     ) && (
