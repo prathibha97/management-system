@@ -69,7 +69,7 @@ if (process.env.NODE_ENV !== 'development') {
   //   res.statusCode = 500;
   //   res.end(`${res.sentry}\n`);
   // });
-
+  app.use(cors());
   app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
   app.use('/uploads', express.static(path.join(__dirname, '..', 'server', 'uploads')));
 
