@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { logout } from '../../redux/actions/userActions';
 import CustomAvatar from '../CustomAvatar';
 
-export default function AccountMenu() {
+export default function AccountMenu({ userInfo }) {
   const dispatch = useDispatch()
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -29,7 +29,7 @@ export default function AccountMenu() {
     dispatch(logout())
     navigate('/')
   }
-  const user = JSON.parse(localStorage.getItem('user'));
+  
   return (
     <>
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
@@ -42,7 +42,7 @@ export default function AccountMenu() {
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
           >
-            <CustomAvatar name={`${user?.name?.first} ${user?.name?.last}`}/>
+            <CustomAvatar name={`${userInfo?.employee?.name?.first} ${userInfo?.employee?.name?.last}`}/>
           </IconButton>
         </Tooltip>
       </Box>
