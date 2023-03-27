@@ -91,7 +91,7 @@ function AttendanceCalendar({ user }) {
   ]
 
   return (
-    <div className="mt-2">
+    <div className="mt-2 xl:ml-[80px]">
       <div className="max-w-md px-4 sm:px-7 md:max-w-4xl md:px-6">
         <div className="md:grid md:grid-cols-2 md:divide-x md:divide-gray-200 bg-white rounded-lg">
           <div className="md:pr-14">
@@ -180,7 +180,6 @@ function AttendanceCalendar({ user }) {
                   </div>
                 </div>
               ))}
-
             </div>
           </div>
           <section className="mt-12 md:mt-0 md:pl-10">
