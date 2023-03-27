@@ -52,10 +52,10 @@ function AttendanceCalendar({ user }) {
     }
   }, [userInfo])
 
-  const { attendanceInfo, loading } = useSelector((state) => state.adminAttendanceDetails);
-  const { leaves } = useSelector((state) => state.adminLeaveDetails);
+  const { attendanceInfo, loading:attendanceLoading } = useSelector((state) => state.adminAttendanceDetails);
+  const { leaves, loading:leavesLoading } = useSelector((state) => state.adminLeaveDetails);
 
-  if (loading) return <Loader />
+  if (attendanceLoading || leavesLoading) return <Loader />
 
   const days = eachDayOfInterval({
     start: firstDayCurrentMonth,
@@ -73,11 +73,11 @@ function AttendanceCalendar({ user }) {
   }
 
   const selectedDayAttendance = Array.from(attendanceInfo)?.filter((attendance) =>
-    isSameDay(parseISO(attendance.inTime), selectedDay)
+    isSameDay(parseISO(attendance?.inTime), selectedDay)
   )
 
   const selectedDayLeaves = Array.from(leaves)?.filter((leave) =>
-    isSameDay(parseISO(leave.startDate), selectedDay)
+    isSameDay(parseISO(leave?.startDate), selectedDay)
   )
 
   const colStartClasses = [
@@ -167,12 +167,12 @@ function AttendanceCalendar({ user }) {
                   </button>
 
                   <div className="flex items-center justify-center w-2 h-2 mx-auto gap-1">
-                    {attendanceInfo.some((attendance) =>
+                    {attendanceInfo?.some((attendance) =>
                       isSameDay(parseISO(attendance.inTime), day)
                     ) && (
                         <div className="w-1 h-1 rounded-full bg-sky-500" />
                       )}
-                    {leaves.some((leave) =>
+                    {leaves?.some((leave) =>
                       isSameDay(parseISO(leave.startDate), day)
                     ) && (
                         <div className="w-1 h-1 rounded-full bg-orange-400" />
@@ -194,11 +194,11 @@ function AttendanceCalendar({ user }) {
             </div>
             <div>
               <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
-                {selectedDayAttendance.length > 0 ? (
-                  selectedDayAttendance.map((attendance) => (
-                    <div key={attendance._id}>
-                      <p>Log in time: {formatTime(attendance.inTime)}</p>
-                      <p>Log out time: {formatTime(attendance.outTime)}</p>
+                {selectedDayAttendance?.length > 0 ? (
+                  selectedDayAttendance?.map((attendance) => (
+                    <div key={attendance?._id}>
+                      <p>Log in time: {formatTime(attendance?.inTime)}</p>
+                      <p>Log out time: {formatTime(attendance?.outTime)}</p>
                     </div>
                   ))
                 ) : (
@@ -210,10 +210,10 @@ function AttendanceCalendar({ user }) {
                 )}
               </ol>
               <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
-                {selectedDayLeaves.length > 0 && (
-                  selectedDayLeaves.map((leave) => (
-                    <div key={leave._id}>
-                      <p>Leave from {formatDateShort(leave.startDate)} to {formatDateShort(leave.endDate)} approved by {leave.approvedBy.name.first}</p>
+                {selectedDayLeaves?.length > 0 && (
+                  selectedDayLeaves?.map((leave) => (
+                    <div key={leave?._id}>
+                      <p>Leave from {formatDateShort(leave?.startDate)} to {formatDateShort(leave?.endDate)} approved by {leave?.approvedBy?.name?.first}</p>
                     </div>
                   ))
                 )}

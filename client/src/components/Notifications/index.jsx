@@ -9,7 +9,7 @@ function Notifications({ empNo }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   useEffect(() => {
-    const socket = io('http://35.89.15.70:5001', {
+    const socket = io('http://localhost:5001', {
       query: { empNo },
     });
 
