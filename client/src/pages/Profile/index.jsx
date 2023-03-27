@@ -13,6 +13,9 @@ function Profile() {
   const userLogin = useSelector((state) => state.userLogin)
   const { userInfo } = userLogin
 
+  const { experiences, loading } = useSelector((state) => state.getExperience)
+
+
   useEffect(() => {
     if (!userInfo) {
       navigate('/')
@@ -22,9 +25,10 @@ function Profile() {
         dispatch(getUserDetails(userInfo?.employee?.empNo));
       }
     }
-  }, [userInfo])
+  }, [userInfo, experiences])
 
-  if (!user) {
+
+  if (!user || loading) {
     return <Loader />
   }
 

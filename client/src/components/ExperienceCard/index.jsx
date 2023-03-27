@@ -2,12 +2,10 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Alert, IconButton, Snackbar } from '@mui/material';
 import React, { useState } from 'react';
-// import { useDispatch } from 'react-redux';
 import AddExperience from '../AddExperience';
 
 function ExperienceCard({ employee }) {
 
-  // const dispatch = useDispatch()
   const [isOpen, setIsOpen] = useState(false)
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
 

@@ -16,6 +16,10 @@ import {
   removeEmployeeReducer,
 } from './reducers/employeeReducer';
 import {
+  addExperienceReducer,
+  getExperienceReducer,
+} from './reducers/experienceReducers';
+import {
   adminLeaveDetailsReducer,
   allLeaveDetailsReducer,
   approveLeaveReducer,
@@ -58,11 +62,13 @@ const reducer = combineReducers({
   removeEmployee: removeEmployeeReducer,
   userDetails: userDetailsReducer,
   userDetailsAdmin: userDetailsAdminReducer,
+  addExperience: addExperienceReducer,
+  getExperience: getExperienceReducer,
   attendanceDetails: attendanceDetailsReducer,
   adminAttendanceDetails: adminAttendanceDetailsReducer,
   markAttendance: markAttendanceReducer,
   leaveDetails: leaveDetailsReducer,
-  adminLeaveDetails:adminLeaveDetailsReducer,
+  adminLeaveDetails: adminLeaveDetailsReducer,
   leaveRequest: leaveRequestReducer,
   allLeaveDetails: allLeaveDetailsReducer,
   approveLeave: approveLeaveReducer,

@@ -2,14 +2,16 @@
 import { faUserTie } from '@fortawesome/free-solid-svg-icons';
 import { Dialog, Transition } from '@headlessui/react';
 import { InputLabel, TextField } from '@mui/material';
+import { useDispatch } from 'react-redux';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Fragment, useState } from 'react';
 import Button from '../Button';
+import { addExperience } from '../../redux/actions/experienceActions';
 
 function AddExperience({ isOpen, setIsOpen, setAlert }) {
 
-  // const dispatch = useDispatch()
+  const dispatch = useDispatch()
   const [position, setPosition] = useState('')
   const [company, setCompany] = useState('')
   const [startDate, setStartDate] = useState('')
@@ -18,8 +20,7 @@ function AddExperience({ isOpen, setIsOpen, setAlert }) {
 
   const handleSubmit = () => {
     try {
-      // dispatch(scheduleMeeting(position, company, startDate, endDate))
-      console.log('success');
+      dispatch(addExperience(position, company, startDate, endDate))
       setAlert({ open: true, message: `Experience added successfully`, severity: 'success' });
     } catch (err) {
       setAlert({ open: true, message: err?.response?.data?.message, severity: 'error' });
