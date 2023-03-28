@@ -1,5 +1,6 @@
 /* eslint-disable import/no-cycle */
 export { default as AccountMenu } from './AccountMenu';
+export { default as AddExperience } from './AddExperience';
 export { default as AddTaskModal } from './AddTaskModal';
 export { default as ApplyLeave } from './ApplyLeave';
 export { default as AttendanceCalendar } from './AttendanceCalendar';
@@ -26,7 +27,7 @@ export { default as Notifications } from './Notifications';
 export { default as PersonalInfoForm } from './PersonalInfoForm';
 export { default as ProfessionalInfoForm } from './ProfessionalInfoForm';
 export { default as ReviewNewEmployee } from './ReviewNewEmployee';
+export { default as SalaryDetails } from './SalaryDetails';
 export { default as SalaryStructure } from './SalaryStructure';
 export { default as ScheduleMeeting } from './ScheduleMeeting';
 export { default as Sidebar } from './Sidebar';
-export { default as SalaryDetails } from './SalaryDetails';

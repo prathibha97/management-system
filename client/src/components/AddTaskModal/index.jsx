@@ -3,13 +3,12 @@ import React, { useRef, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { createTask } from '../../redux/actions/taskActions';
 
-function AddTaskModal({ open, handleClose, boardId }) {
-  const user = JSON.parse(localStorage.getItem('user'));
-
+function AddTaskModal({ open, handleClose, boardId, setNumTasks }) {
+  const user = JSON.parse(localStorage.getItem('userInfo'));
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState('backlog');
-  const [assignee, setAssignee] = useState(user._id)
+  const [assignee, setAssignee] = useState(user?.employee?._id)
   const taskNameRef = useRef();
 
   const dispatch = useDispatch();
@@ -40,7 +39,7 @@ function AddTaskModal({ open, handleClose, boardId }) {
     try {
       // Add the task and close the dialog
       dispatch(createTask(boardId, projectId, title, description, status, assignee));
-
+      setNumTasks(1);
       setAlert({ open: true, message: 'Attendance marked successfully', severity: 'success' });
       handleClose();
     } catch (err) {

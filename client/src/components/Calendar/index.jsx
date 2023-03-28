@@ -38,12 +38,16 @@ function Calendar() {
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
   const firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date())
 
+  // Define a state variable to keep track of whether new meetings have been added or removed
+  const [meetingChangeCount, setMeetingChangeCount] = useState(0);
+
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin
 
   const { employees } = useSelector((state) => state.employeeList);
-
   const { meetings, loading } = useSelector((state) => state.myMeetings);
+
+  // First useEffect hook to get employee list and meetings
   useEffect(() => {
     if (!userInfo) {
       navigate('/');
@@ -54,7 +58,13 @@ function Calendar() {
         dispatch(getEmployeeList())
       }
     }
-  }, [userInfo])
+  }, [userInfo, meetingChangeCount])
+
+  // Second useEffect hook to get meetings again and reset meetingChangeCount
+  useEffect(() => {
+    dispatch(getMyMeetings())
+    setMeetingChangeCount(0);
+  }, [dispatch, meetingChangeCount])
 
   if (loading) return <Loader />
 
@@ -85,6 +95,7 @@ function Calendar() {
   const handleMeetingCancel = (id) => {
     try {
       dispatch(cancelMeeting(id));
+      setMeetingChangeCount(1);
       setAlert({ open: true, message: 'Meeting Cancelled Successfully', severity: 'success' });
     } catch (err) {
       setAlert({ open: true, message: err.response.data.message, severity: 'error' });
@@ -95,6 +106,7 @@ function Calendar() {
     try {
       dispatch(scheduleMeeting(selectedPerson, startValue, endValue))
       console.log(`meeting scheduled with ${selectedPerson?.name?.first} ${selectedPerson?.name?.last} on ${startValue} to ${endValue}`);
+      setMeetingChangeCount(1);
       setAlert({ open: true, message: `meeting scheduled with ${selectedPerson?.name?.first} ${selectedPerson?.name?.last} on ${startValue} to ${endValue}`, severity: 'success' });
     } catch (err) {
       setAlert({ open: true, message: err?.response?.data?.message, severity: 'error' });

@@ -141,7 +141,8 @@ const getEmployeeProfile = async (req, res) => {
     const employee = await Employee.findOne({ empNo: id })
       .select('-password')
       .populate('department', 'name description')
-      .populate('designation', 'name');
+      .populate('designation', 'name')
+      .populate('employmentHistory');
     if (employee) {
       // *Check if the logged-in user is the same as the employee being viewed
       if (req.empNo !== employee.empNo) {
