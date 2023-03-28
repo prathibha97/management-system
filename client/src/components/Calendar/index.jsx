@@ -66,11 +66,6 @@ function Calendar() {
     setMeetingChangeCount(0);
   }, [dispatch, meetingChangeCount])
 
-  // const refreshMeetings = () => {
-  //   dispatch(getMyMeetings())
-  // }
-
-
   if (loading) return <Loader />
 
   const days = eachDayOfInterval({

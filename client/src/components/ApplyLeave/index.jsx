@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createLeaveRequest } from '../../redux/actions/leaveActions';
 import Button from '../Button';
 
-function ApplyLeave({ user }) {
+function ApplyLeave({ user, setLeaveChangeCount }) {
   const [leaveType, setLeaveType] = useState('')
   const [startDate, setStartDate] = useState(moment().format())
   const [endDate, setEndDate] = useState(moment().format())
@@ -25,6 +25,7 @@ function ApplyLeave({ user }) {
     e.preventDefault()
     try {
       dispatch(createLeaveRequest(leaveType, startDate, endDate, reason))
+      setLeaveChangeCount(1)
       setAlert({ open: true, message: 'Leave reaquest created successfully', severity: 'success' });
     } catch (err) {
       setAlert({ open: true, message: err.response.data.message, severity: 'error' });

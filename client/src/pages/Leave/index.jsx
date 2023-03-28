@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { ApplyLeave, LeaveInformation, Loader } from '../../components';
@@ -16,6 +16,8 @@ function Leave() {
   const leaveDetails = useSelector((state) => state.leaveDetails)
   const { leaves , loading} = leaveDetails
 
+  const [leaveChangeCount, setLeaveChangeCount] = useState(0);
+
   useEffect(() => {
     if (!userInfo) {
       navigate('/')
@@ -28,6 +30,12 @@ function Leave() {
     }
   }, [userInfo, leaves])
 
+  // Second useEffect hook to get meetings again and reset meetingChangeCount
+  useEffect(() => {
+    dispatch(getUserLeaveDetails(userInfo?.employee.empNo))
+    setLeaveChangeCount(0);
+  }, [dispatch, leaveChangeCount])
+
   if (!user || loading) {
     return <Loader />
   }
@@ -38,7 +46,7 @@ function Leave() {
         <LeaveInformation user={user} leaves={leaves}/>
       </div>
       <div className="flex flex-col flex-1">
-        <ApplyLeave user={user}/>
+        <ApplyLeave user={user} setLeaveChangeCount={setLeaveChangeCount}/>
       </div>
     </div>
   )
