@@ -37,7 +37,6 @@ export const getUserLeaveDetails = (empNo) => async (dispatch, getState) => {
       type: USER_LEAVE_DETAILS_SUCCESS,
       payload: data,
     });
-    localStorage.setItem('user', JSON.stringify(data));
   } catch (err) {
     dispatch({
       type: USER_LEAVE_DETAILS_FAIL,

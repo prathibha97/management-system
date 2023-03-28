@@ -28,7 +28,7 @@ function Leave() {
         dispatch(getUserLeaveDetails(userInfo?.employee.empNo));
       }
     }
-  }, [userInfo, leaves])
+  }, [userInfo])
 
   // Second useEffect hook to get meetings again and reset meetingChangeCount
   useEffect(() => {

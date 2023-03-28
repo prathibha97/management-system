@@ -9,7 +9,7 @@ import { Fragment, useState } from 'react';
 import Button from '../Button';
 import { addExperience } from '../../redux/actions/experienceActions';
 
-function AddExperience({ isOpen, setIsOpen, setAlert }) {
+function AddExperience({ isOpen, setIsOpen, setAlert, setExperienceChangeCount }) {
 
   const dispatch = useDispatch()
   const [position, setPosition] = useState('')
@@ -21,6 +21,7 @@ function AddExperience({ isOpen, setIsOpen, setAlert }) {
   const handleSubmit = () => {
     try {
       dispatch(addExperience(position, company, startDate, endDate))
+      setExperienceChangeCount(1)
       setAlert({ open: true, message: `Experience added successfully`, severity: 'success' });
     } catch (err) {
       setAlert({ open: true, message: err?.response?.data?.message, severity: 'error' });

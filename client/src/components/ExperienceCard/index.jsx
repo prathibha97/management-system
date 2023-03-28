@@ -32,6 +32,7 @@ function ExperienceCard({ employee }) {
         </div>
         <p className='text-[#707070] text-sm'>Here you can edit your work experience</p>
       </div>
+      <div className='h-[550px] overflow-y-auto'>
       {isOpen && (
         <AddExperience isOpen={isOpen} setIsOpen={setIsOpen} setAlert={setAlert} />
       )}
@@ -47,6 +48,7 @@ function ExperienceCard({ employee }) {
           </div>
         </div>
       ))}
+      </div>
       <Snackbar open={alert?.open} autoHideDuration={5000} onClose={handleAlertClose}>
         <Alert onClose={handleAlertClose} severity={alert?.severity}>
           {alert?.message}
