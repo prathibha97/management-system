@@ -17,7 +17,7 @@ import AddTaskModal from '../AddTaskModal'
 import Card from '../Card'
 import Loader from '../Loader'
 
-function Kanban() {
+function Kanban({ numTasks, setNumTasks }) {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -37,8 +37,6 @@ function Kanban() {
 
   const [showCreateForms, setShowCreateForms] = useState([]);
   const [isBoardHovered, setIsBoardHovered] = useState(false);
-  // const [numTasks, setNumTasks] = useState(0);
-
 
   useEffect(() => {
     if (!userInfo) {
@@ -60,13 +58,9 @@ function Kanban() {
   }, [boards]);
 
   // Track changes in the number of tasks
-  // useEffect(() => {
-  //   let count = 0;
-  //   boards.forEach((board) => {
-  //     count += board.tasks.length;
-  //   });
-  //   setNumTasks(count);
-  // }, [boards]);
+  useEffect(() => {
+    setNumTasks(0);
+  }, [numTasks]);
 
   if (!user || !project || loading) {
     return <Loader />
@@ -188,6 +182,7 @@ function Kanban() {
                           newState[index] = false;
                           return newState;
                         })}
+                        setNumTasks={setNumTasks}
                       />
                     )}
                   </div>
