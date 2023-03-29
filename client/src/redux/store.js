@@ -32,6 +32,7 @@ import {
   myMeetingsReducer,
   scheduleMeetingReducer,
 } from './reducers/meetingsReducer';
+import passwordRecoveryReducer from './reducers/passwordRecoveryReducer';
 import {
   projectDetailsByIdReducer,
   userProjectDetailsReducer,
@@ -59,6 +60,7 @@ const initialState = {
 const reducer = combineReducers({
   userLogin: userLoginReducer,
   registerEmployee: registerEmployeeReducer,
+  passwordRecovery:passwordRecoveryReducer,
   removeEmployee: removeEmployeeReducer,
   userDetails: userDetailsReducer,
   userDetailsAdmin: userDetailsAdminReducer,

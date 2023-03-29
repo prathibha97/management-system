@@ -39,13 +39,8 @@ const registerEmployee = async (req, res) => {
     effectiveDate,
     dateOfAppointment,
     paymentModel,
-    // basicSalary,
-    // pf,
     bank,
     accNo,
-    // advance,
-    // maxAdvance,
-    // noOfAdvances,
   } = req.body;
 
   const salt = await bcrypt.genSalt(10);
@@ -85,13 +80,8 @@ const registerEmployee = async (req, res) => {
       effectiveDate,
       dateOfAppointment,
       paymentModel,
-      // basicSalary,
-      // providentFund: pf,
       bank,
       accountNo: accNo,
-      // advance,
-      // maxAdvance,
-      // noOfAdvances,
     });
 
     const dept = await Department.findById(department);
