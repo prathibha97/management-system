@@ -7,6 +7,7 @@ const path = require('path');
 const fs = require('fs');
 const api = require('./routes/api');
 const { errorHandler, notFound } = require('./middleware/error.middleware');
+const sendEmail = require('./services/sendEmail');
 // const setCache = require('./middleware/cache.middleware');
 
 const app = express();
@@ -35,6 +36,14 @@ app.get('/pdf', (req, res) => {
 
   const readStream = fs.createReadStream(filepath);
   readStream.pipe(res);
+});
+
+app.post('/send_recovery_email', (req, res) => {
+  console.log(req.body);
+  const { OTP, email } = req.body;
+  sendEmail({OTP, email})
+    .then((response) => res.send(response.message))
+    .catch((error) => res.status(500).send(error.message));
 });
 
 if (process.env.NODE_ENV !== 'development') {

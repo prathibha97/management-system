@@ -2,12 +2,12 @@ import { useSelector } from 'react-redux';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import {
   Attendance,
+  Auth,
   Board,
   Dashboard,
   EmpProfile,
   Layout,
   Leaves,
-  Login,
   Payroll,
   People,
   Profile,
@@ -23,7 +23,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Auth />} />
         <Route element={<Layout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
