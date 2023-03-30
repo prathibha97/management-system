@@ -12,11 +12,10 @@ function ResetPassword({ setPage }) {
 
   async function handlePasswordChange() {
     try {
-      console.log(email, newPassword, confirmPassword);
       await api.post('/emp/auth/reset-password', { email, password: newPassword })
       setConfirmPassword("");
       setNewPassword("");
-      setPage("recovered");
+      setPage("login");
     } catch (err) {
       console.log(err.message);
     }
