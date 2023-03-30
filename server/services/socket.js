@@ -1,6 +1,6 @@
 const io = require('socket.io')(5001, {
   cors: {
-    origin: 'http://localhost:5000',
+    origin: 'https://management-system-b022.onrender.com',
     methods: ['GET', 'POST'],
     credentials: true,
   },
