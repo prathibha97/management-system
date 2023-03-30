@@ -14,7 +14,7 @@ function Attendance() {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin
 
-  const { attendanceInfo } = useSelector((state) => state.attendanceDetails);
+  const { attendanceInfo ,loading} = useSelector((state) => state.attendanceDetails);
 
   const { user } = useSelector((state) => state.userDetails) || {}
   useEffect(() => {
@@ -29,7 +29,7 @@ function Attendance() {
     }
   }, [userInfo])
 
-  if (!user) {
+  if (!user || loading) {
     return <Loader />
   }
 

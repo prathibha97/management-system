@@ -15,72 +15,6 @@ const unlinkAsync = promisify(fs.unlink);
 */
 // TODO: Error handling
 
-// const registerEmployee = async (req, res) => {
-//   const {
-//     empNo,
-//     firstName,
-//     lastName,
-//     street,
-//     city,
-//     state,
-//     zip,
-//     birthDate,
-//     gender,
-//     email,
-//     password,
-//     phone,
-//     designation,
-//     isAdmin,
-//     employmentHistory,
-//     projectHistory,
-//     idPath,
-//     nic,
-//     bankSlipPath,
-//     resumePath,
-//     department,
-//     workType,
-//   } = req.body;
-
-//   const salt = await bcrypt.genSalt(10);
-//   const hashedPassword = await bcrypt.hash(password, salt);
-
-//   try {
-//     const employeeExist = await Employee.findOne({ email });
-//     if (employeeExist) {
-//       return res.status(400).json({ message: 'Employee already exists' });
-//     }
-//     // Create a new employee object
-//     const newEmployee = await Employee.create({
-//       empNo,
-//       name: { first: firstName, last: lastName },
-//       address: { street, city, state, zip },
-//       email,
-//       birthDate,
-//       gender,
-//       password: hashedPassword,
-//       phone,
-//       nic,
-//       designation,
-//       isAdmin,
-//       employmentHistory,
-//       projectHistory,
-//       idCardPath: idPath,
-//       bankPassPath: bankSlipPath,
-//       resumePath,
-//       department,
-//       workType,
-//     });
-
-//     const dept = await Department.findById(department);
-//     dept.employees.push(newEmployee.depId);
-//     await dept.save();
-//     res.status(201).json(newEmployee);
-//   } catch (err) {
-//     console.error(err.message);
-//     res.status(500).json({ message: 'Failed to register employee' });
-//   }
-// };
-
 const registerEmployee = async (req, res) => {
   const {
     empNo,
@@ -102,6 +36,11 @@ const registerEmployee = async (req, res) => {
     nic,
     department,
     workType,
+    effectiveDate,
+    dateOfAppointment,
+    paymentModel,
+    bank,
+    accNo,
   } = req.body;
 
   const salt = await bcrypt.genSalt(10);
@@ -138,13 +77,18 @@ const registerEmployee = async (req, res) => {
       resumePath,
       department,
       workType,
+      effectiveDate,
+      dateOfAppointment,
+      paymentModel,
+      bank,
+      accountNo: accNo,
     });
 
     const dept = await Department.findById(department);
     dept.employees.push(newEmployee.depId);
     await dept.save();
 
-    res.status(201).json({newEmployee, message: 'Employee created successfully'});
+    res.status(201).json({ newEmployee, message: 'Employee created successfully' });
   } catch (err) {
     console.error(err.message);
 
@@ -175,7 +119,7 @@ const loginEmployee = async (req, res) => {
   const { email, password } = req.body;
   try {
     const employee = await Employee.findOne({ email });
-    if (!employee) return res.status(404).json({ message: 'User does not exists' });
+    if (!employee) return res.status(404).json({ message: 'Employee does not exists' });
     const isMatch = await bcrypt.compare(password, employee.password);
     if (!isMatch) return res.status(403).json({ message: 'Invalid password' });
     employee.password = undefined;
@@ -186,7 +130,35 @@ const loginEmployee = async (req, res) => {
   }
 };
 
+/* 
+?@desc   Reset password
+*@route  Post /api/emp/auth/reset-password
+*@access Private
+*/
+
+const resetPassword = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const employee = await Employee.findOne({ email });
+    if (!employee) return res.status(404).json({ message: 'User does not exists' });
+
+    // generate salt and hash password using bcrypt
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // update user's password in database
+    employee.password = hashedPassword;
+    await employee.save();
+
+    res.status(200).json({ message: 'Password reset successful' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ message: 'Error occured while reseting the password' });
+  }
+};
+
 module.exports = {
   registerEmployee,
   loginEmployee,
+  resetPassword,
 };

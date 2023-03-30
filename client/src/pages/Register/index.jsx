@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { DocumentUpload, PersonalInfoForm, ProfessionalInfoForm, ReviewNewEmployee } from '../../components'
+import { DocumentUpload, PersonalInfoForm, ProfessionalInfoForm, ReviewNewEmployee, SalaryStructure } from '../../components'
 
 function Register() {
   const [step, setStep] = useState(1)
@@ -7,7 +7,7 @@ function Register() {
   const [lastName, setLastName] = useState('')
   const [birthDate, setBirthDate] = useState('')
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [password, setPassword] = useState('123456')
   const [phone, setPhone] = useState('')
   const [gender, setGender] = useState('')
   const [nic, setNic] = useState('')
@@ -16,6 +16,7 @@ function Register() {
   const [state, setState] = useState('')
   const [zip, setZip] = useState('')
   const [empNo, setEmpNo] = useState('')
+  const [dateOfAppointment, setDateOfAppointment] = useState('')
   const [designation, setDesignation] = useState('')
   const [workType, setWorkType] = useState('')
   const [department, setDepartment] = useState('')
@@ -24,6 +25,15 @@ function Register() {
   const [idCardPath, setIdCardPath] = useState(null)
   const [bankPassPath, setBankPassPath] = useState(null)
   const [resumePath, setResumePath] = useState(null)
+  const [effectiveDate, setEffectiveDate] = useState('')
+  const [paymentModel, setPaymentModel] = useState('')
+  const [basicSalary, setBasicSalary] = useState(0)
+  const [pf, setPf] = useState(false)
+  const [bank, setBank] = useState('')
+  const [accNo, setAccNo] = useState('')
+  const [advance, setAdvance] = useState(false)
+  const [maxAdvance, setMaxAdvance] = useState(0)
+  const [noOfAdvances, setNoOfAdvances] = useState(0)
 
   const nextStep = () => {
     setStep(step + 1);
@@ -74,6 +84,9 @@ function Register() {
       case 'empNo':
         setEmpNo(e.target.value);
         break;
+      case 'dateOfAppointment':
+        setDateOfAppointment(e.target.value);
+        break;
       case 'designation':
         setDesignation(e.target.value);
         break;
@@ -85,6 +98,33 @@ function Register() {
         break;
       case 'leaveAllocation':
         setLeaveAllocation(e.target.value);
+        break;
+      case 'effectiveDate':
+        setEffectiveDate(e.target.value);
+        break;
+      case 'paymentModel':
+        setPaymentModel(e.target.value);
+        break;
+      case 'basicSalary':
+        setBasicSalary(e.target.value);
+        break;
+      case 'pf':
+        setPf(e.target.value);
+        break;
+      case 'bank':
+        setBank(e.target.value);
+        break;
+      case 'accNo':
+        setAccNo(e.target.value);
+        break;
+      case 'advance':
+        setAdvance(e.target.value);
+        break;
+      case 'maxAdvance':
+        setMaxAdvance(e.target.value);
+        break;
+      case 'noOfAdvances':
+        setNoOfAdvances(e.target.value);
         break;
       case 'admin':
         setIsAdmin(e.target.checked);
@@ -112,7 +152,7 @@ function Register() {
   };
 
 
-  const values = { firstName, lastName, email, password, birthDate, phone, gender, nic, street, city, state, zip, empNo, designation, workType, department, leaveAllocation, isAdmin, idCardPath, bankPassPath, resumePath };
+  const values = { firstName, lastName, email, password, birthDate, phone, gender, nic, street, city, state, zip, empNo, dateOfAppointment, designation, workType, department, leaveAllocation, isAdmin, idCardPath, bankPassPath, resumePath, effectiveDate, paymentModel, basicSalary, pf, bank, accNo, advance, maxAdvance, noOfAdvances };
   switch (step) {
     case 1:
       return (
@@ -133,7 +173,7 @@ function Register() {
       )
     case 3:
       return (
-        <DocumentUpload
+        <SalaryStructure
           nextStep={nextStep}
           prevStep={prevStep}
           handleChange={handleChange}
@@ -141,6 +181,15 @@ function Register() {
         />
       )
     case 4:
+      return (
+        <DocumentUpload
+          nextStep={nextStep}
+          prevStep={prevStep}
+          handleChange={handleChange}
+          values={values}
+        />
+      )
+    case 5:
       return (
         <ReviewNewEmployee
           nextStep={nextStep}

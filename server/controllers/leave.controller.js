@@ -145,9 +145,31 @@ io.on('connection', (socket) => {
   });
 });
 
+/* 
+?@desc   Get all approved leave requests of a specific employee
+*@route  Get /api/leaves/:id
+*@access Private/Admin
+*/
+
+const getLeaveRequestByIdAdmin = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const leaveRequest = await Leave.find({ empNo: id, status: 'Approved' }).populate(
+      'approvedBy',
+      'name'
+    );
+    res.status(200).json(leaveRequest);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ message: 'Failed to fetch leave request' });
+  }
+};
+
+
 module.exports = {
   createLeaveRequest,
   getAllLeaveRequests,
   getLeaveRequestById,
   approveOrRejectLeave,
+  getLeaveRequestByIdAdmin,
 };

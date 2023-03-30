@@ -1,3 +1,5 @@
+/* eslint-disable import/no-useless-path-segments */
+/* eslint-disable import/no-cycle */
 /* eslint-disable no-shadow */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable no-underscore-dangle */
@@ -6,16 +8,16 @@ import { faClock } from '@fortawesome/free-solid-svg-icons';
 import { Alert, FormControl, InputLabel, MenuItem, Select, Snackbar } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
+import { AccountMenu, Button, Loader, Notifications } from '../../components';
 import { markAttendance } from '../../redux/actions/attendanceActions';
 import { ProjectDetailsById } from '../../redux/actions/projectActions';
-import AccountMenu from '../AccountMenu';
-import Button from '../Button';
-import Notifications from '../Notifications';
+import { getUserDetailsAdmin } from '../../redux/actions/userActions';
 
 function Header() {
   const location = useLocation();
   const dispatch = useDispatch()
+  const { empNo: id } = useParams()
   // Get attendanceMark state from the Redux store
   const attendanceMark = useSelector((state) => state.markAttendance);
   const { error } = attendanceMark;
@@ -26,6 +28,7 @@ function Header() {
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
   const [project, setProject] = useState(projects.length > 0 ? projects[0]?._id : '');
 
+  const { user, loading } = useSelector((state) => state.userDetailsAdmin);
 
   const userInfo = JSON.parse(localStorage.getItem('userInfo'));
   const { empNo } = userInfo.employee;
@@ -39,10 +42,11 @@ function Header() {
     }
   };
   useEffect(() => {
+    dispatch(getUserDetailsAdmin(id));
     if (error) {
       setAlert({ open: true, message: error, severity: 'error' });
     }
-  }, [error]);
+  }, [error,id]);
 
   const handleProjectChange = (event) => {
     const selectedProject = event.target.value;
@@ -73,6 +77,9 @@ function Header() {
     case '/people':
       heading = 'Manage People';
       break;
+    case `/people/${id}`:
+      heading = `${user?.name?.first}'s Profile`;
+      break;
     case '/payroll':
       heading = 'Manage Payroll';
       break;
@@ -94,6 +101,8 @@ function Header() {
     setAlert({ ...alert, open: false });
   };
 
+  if(loading) return <Loader/>
+
   return (
     <div className="flex items-center justify-between px-10 pt-2">
       <div className='flex gap-2 items-center'>
@@ -109,7 +118,7 @@ function Header() {
                 value={project?._id || ''}
                 renderValue={(value) => value ? value?.title : ''}
               >
-                {projects && projects.length > 0 ? projects.map((item) => (
+                {projects && projects?.length > 0 ? projects?.map((item) => (
                   <MenuItem key={item._id} value={item}>{item?.title}</MenuItem>
                 )) : <MenuItem disabled>No Projects Found</MenuItem>}
               </Select>
@@ -121,7 +130,7 @@ function Header() {
       <div className="flex items-center gap-10">
         <Button title="Log Time" onClick={handleMarkAttendance} icon={faClock} />
         <Notifications empNo={empNo} />
-        <AccountMenu />
+        <AccountMenu userInfo={userInfo}/>
       </div>
       <Snackbar open={alert?.open} autoHideDuration={5000} onClose={handleAlertClose}>
         <Alert onClose={handleAlertClose} severity={alert?.severity}>

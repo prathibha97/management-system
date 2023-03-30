@@ -62,10 +62,10 @@ function EmployeeCard({ employee }) {
         <div className='h-[90%] w-[95%] rounded-xl ml-12'>
           <div className='flex bg-white p-6 rounded-2xl w-[90%] justify-between px-[100px]'>
             {/* <Avatar {...stringAvatar('Kent Dodds')} /> */}
-            <CustomAvatar name={`${employee?.name?.first} ${employee?.name?.last}`} />
+            <CustomAvatar name={`${employee?.name?.first} ${employee?.name?.last}`} size={60}/>
             <div>
               <h1 className='font-bold text-lg'>{employee?.name?.first} {employee?.name?.last}</h1>
-              <p className='text-sm text-[#707070]'>{employee?.designation}</p>
+              <p className='text-sm text-[#707070]'>{employee?.designation?.name}</p>
               <p className='text-sm text-[#707070]'>Employee Id: {employee?.empNo}</p>
             </div>
           </div>

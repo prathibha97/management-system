@@ -1,6 +1,19 @@
-import { USER_ATTENDANCE_DETAILS_FAIL, USER_ATTENDANCE_DETAILS_REQUEST, USER_ATTENDANCE_DETAILS_SUCCESS, USER_ATTENDANCE_MARK_FAIL, USER_ATTENDANCE_MARK_REQUEST, USER_ATTENDANCE_MARK_SUCCESS } from '../constants/attendanceConstants'
+import {
+  ADMIN_ATTENDANCE_DETAILS_FAIL,
+  ADMIN_ATTENDANCE_DETAILS_REQUEST,
+  ADMIN_ATTENDANCE_DETAILS_SUCCESS,
+  USER_ATTENDANCE_DETAILS_FAIL,
+  USER_ATTENDANCE_DETAILS_REQUEST,
+  USER_ATTENDANCE_DETAILS_SUCCESS,
+  USER_ATTENDANCE_MARK_FAIL,
+  USER_ATTENDANCE_MARK_REQUEST,
+  USER_ATTENDANCE_MARK_SUCCESS,
+} from '../constants/attendanceConstants';
 
-export const attendanceDetailsReducer = (state = { attendanceInfo: [] }, action) => {
+export const attendanceDetailsReducer = (
+  state = { attendanceInfo: [] },
+  action
+) => {
   const { type, payload } = action;
 
   switch (type) {
@@ -26,7 +39,7 @@ export const attendanceDetailsReducer = (state = { attendanceInfo: [] }, action)
   }
 };
 
-export const markAttendanceReducer = (state = {attendance:{}}, action) => {
+export const markAttendanceReducer = (state = { attendance: {} }, action) => {
   const { type, payload } = action;
 
   switch (type) {
@@ -42,6 +55,35 @@ export const markAttendanceReducer = (state = {attendance:{}}, action) => {
         attendance: payload,
       };
     case USER_ATTENDANCE_MARK_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+    default:
+      return state;
+  }
+};
+
+export const adminAttendanceDetailsReducer = (
+  state = { attendanceInfo: [] },
+  action
+) => {
+  const { type, payload } = action;
+
+  switch (type) {
+    case ADMIN_ATTENDANCE_DETAILS_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      };
+    case ADMIN_ATTENDANCE_DETAILS_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        attendanceInfo: payload,
+      };
+    case ADMIN_ATTENDANCE_DETAILS_FAIL:
       return {
         ...state,
         loading: false,

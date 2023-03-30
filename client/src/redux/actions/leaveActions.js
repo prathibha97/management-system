@@ -1,5 +1,8 @@
 import api from '../../utils/api';
 import {
+  ADMIN_LEAVE_DETAILS_FAIL,
+  ADMIN_LEAVE_DETAILS_REQUEST,
+  ADMIN_LEAVE_DETAILS_SUCCESS,
   APPROVE_LEAVE_FAIL,
   APPROVE_LEAVE_REQUEST,
   APPROVE_LEAVE_SUCCESS,
@@ -34,7 +37,6 @@ export const getUserLeaveDetails = (empNo) => async (dispatch, getState) => {
       type: USER_LEAVE_DETAILS_SUCCESS,
       payload: data,
     });
-    localStorage.setItem('user', JSON.stringify(data));
   } catch (err) {
     dispatch({
       type: USER_LEAVE_DETAILS_FAIL,
@@ -151,37 +153,66 @@ export const approveLeaveRequest =
     }
   };
 
-  export const rejectLeaveRequest =
-    ({ leaveId, empNo, status }) =>
-    async (dispatch, getState) => {
-      try {
-        dispatch({
-          type: REJECT_LEAVE_REQUEST,
-        });
-        const {
-          userLogin: { userInfo },
-        } = getState();
-        const config = {
-          headers: {
-            Authorization: `Bearer ${userInfo.token}`,
-          },
-        };
-        const { data } = await api.put(
-          `/leaves/${empNo}/approval/${leaveId}`,
-          { status },
-          config
-        );
-        dispatch({
-          type: REJECT_LEAVE_SUCCESS,
-          payload: data,
-        });
-      } catch (err) {
-        dispatch({
-          type: REJECT_LEAVE_FAIL,
-          payload:
-            err.response && err.response.data.message
-              ? err.response.data.message
-              : err.message,
-        });
-      }
+export const rejectLeaveRequest =
+  ({ leaveId, empNo, status }) =>
+  async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: REJECT_LEAVE_REQUEST,
+      });
+      const {
+        userLogin: { userInfo },
+      } = getState();
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const { data } = await api.put(
+        `/leaves/${empNo}/approval/${leaveId}`,
+        { status },
+        config
+      );
+      dispatch({
+        type: REJECT_LEAVE_SUCCESS,
+        payload: data,
+      });
+    } catch (err) {
+      dispatch({
+        type: REJECT_LEAVE_FAIL,
+        payload:
+          err.response && err.response.data.message
+            ? err.response.data.message
+            : err.message,
+      });
+    }
+  };
+
+export const getAdminLeaveDetails = (empNo) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: ADMIN_LEAVE_DETAILS_REQUEST,
+    });
+    const {
+      userLogin: { userInfo },
+    } = getState();
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
     };
+    const { data } = await api.get(`/leaves/emp/${empNo}`, config);
+    dispatch({
+      type: ADMIN_LEAVE_DETAILS_SUCCESS,
+      payload: data,
+    });
+  } catch (err) {
+    dispatch({
+      type: ADMIN_LEAVE_DETAILS_FAIL,
+      payload:
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message,
+    });
+  }
+};

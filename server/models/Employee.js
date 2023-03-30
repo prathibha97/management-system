@@ -43,6 +43,26 @@ const empSchema = new mongoose.Schema(
       required: true,
     },
     designation: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Designation',
+    },
+    dateOfAppointment: {
+      type: String,
+      required: true,
+    },
+    effectiveDate: {
+      type: String,
+      required: true,
+    },
+    paymentModel: {
+      type: String,
+      required: true,
+    },
+    bank: {
+      type: String,
+      required: true,
+    },
+    accountNo: {
       type: String,
       required: true,
     },
@@ -56,10 +76,8 @@ const empSchema = new mongoose.Schema(
     },
     employmentHistory: [
       {
-        company: { type: String },
-        position: { type: String },
-        startDate: { type: Date },
-        endDate: { type: Date },
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Experience',
       },
     ],
     projectHistory: [

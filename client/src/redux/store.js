@@ -3,17 +3,24 @@ import { applyMiddleware, combineReducers, legacy_createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 import {
+  adminAttendanceDetailsReducer,
   attendanceDetailsReducer,
   markAttendanceReducer,
 } from './reducers/attendanceReducers';
 import { projectBoardDetailsReducer } from './reducers/boardReducer';
 import { departmentDetailsReducer } from './reducers/departmentReducer';
+import { getDesignationsAdminReducer } from './reducers/designationReducer';
 import {
   employeeListReducer,
   registerEmployeeReducer,
   removeEmployeeReducer,
 } from './reducers/employeeReducer';
 import {
+  addExperienceReducer,
+  getExperienceReducer,
+} from './reducers/experienceReducers';
+import {
+  adminLeaveDetailsReducer,
   allLeaveDetailsReducer,
   approveLeaveReducer,
   leaveDetailsReducer,
@@ -25,6 +32,7 @@ import {
   myMeetingsReducer,
   scheduleMeetingReducer,
 } from './reducers/meetingsReducer';
+import passwordRecoveryReducer from './reducers/passwordRecoveryReducer';
 import {
   projectDetailsByIdReducer,
   userProjectDetailsReducer,
@@ -35,7 +43,11 @@ import {
   getTasksByProjectReducer,
   updateTaskReducer,
 } from './reducers/taskReducer';
-import { userDetailsReducer, userLoginReducer } from './reducers/userReducers';
+import {
+  userDetailsAdminReducer,
+  userDetailsReducer,
+  userLoginReducer,
+} from './reducers/userReducers';
 
 const userInfoFromStorage = localStorage.getItem('userInfo')
   ? JSON.parse(localStorage.getItem('userInfo'))
@@ -48,11 +60,17 @@ const initialState = {
 const reducer = combineReducers({
   userLogin: userLoginReducer,
   registerEmployee: registerEmployeeReducer,
+  passwordRecovery:passwordRecoveryReducer,
   removeEmployee: removeEmployeeReducer,
   userDetails: userDetailsReducer,
+  userDetailsAdmin: userDetailsAdminReducer,
+  addExperience: addExperienceReducer,
+  getExperience: getExperienceReducer,
   attendanceDetails: attendanceDetailsReducer,
+  adminAttendanceDetails: adminAttendanceDetailsReducer,
   markAttendance: markAttendanceReducer,
   leaveDetails: leaveDetailsReducer,
+  adminLeaveDetails: adminLeaveDetailsReducer,
   leaveRequest: leaveRequestReducer,
   allLeaveDetails: allLeaveDetailsReducer,
   approveLeave: approveLeaveReducer,
@@ -69,6 +87,7 @@ const reducer = combineReducers({
   myMeetings: myMeetingsReducer,
   scheduleMeeting: scheduleMeetingReducer,
   cancelMeeting: cancelMeetingReducer,
+  getDesignationsAdmin: getDesignationsAdminReducer,
   // userUpdateProfile: userUpdateProfileReducer,
   // userList: userListReducer,
   // userDelete: userDeleteReducer,

@@ -1,5 +1,8 @@
 import api from '../../utils/api';
 import {
+  USER_DETAILS_ADMIN_FAIL,
+  USER_DETAILS_ADMIN_REQUEST,
+  USER_DETAILS_ADMIN_SUCCESS,
   USER_DETAILS_FAIL,
   USER_DETAILS_REQUEST,
   USER_DETAILS_SUCCESS,
@@ -52,10 +55,38 @@ export const getUserDetails = (empNo) => async (dispatch, getState) => {
       type: USER_DETAILS_SUCCESS,
       payload: data,
     });
-    localStorage.setItem('user', JSON.stringify(data));
   } catch (err) {
     dispatch({
       type: USER_DETAILS_FAIL,
+      payload:
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message,
+    });
+  }
+};
+
+export const getUserDetailsAdmin = (empNo) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: USER_DETAILS_ADMIN_REQUEST,
+    });
+    const {
+      userLogin: { userInfo },
+    } = getState();
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    const { data } = await api.get(`/emp/${empNo}`, config);
+    dispatch({
+      type: USER_DETAILS_ADMIN_SUCCESS,
+      payload: data,
+    });
+  } catch (err) {
+    dispatch({
+      type: USER_DETAILS_ADMIN_FAIL,
       payload:
         err.response && err.response.data.message
           ? err.response.data.message

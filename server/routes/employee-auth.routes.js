@@ -1,5 +1,9 @@
 const express = require('express');
-const { registerEmployee, loginEmployee } = require('../controllers/employee-auth.controller');
+const {
+  registerEmployee,
+  loginEmployee,
+  resetPassword,
+} = require('../controllers/employee-auth.controller');
 const upload = require('../services/fileUpload');
 
 const empAuthRouter = express.Router();
@@ -14,6 +18,7 @@ empAuthRouter
     ]),
     registerEmployee
   )
-  .post('/login', loginEmployee);
+  .post('/login', loginEmployee)
+  .post('/reset-password', resetPassword);
 
 module.exports = empAuthRouter;
