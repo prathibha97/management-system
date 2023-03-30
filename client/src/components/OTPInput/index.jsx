@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-expressions */
+import { Alert } from '@mui/material';
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -18,7 +19,7 @@ function OTPInput({ setPage }) {
         recipient_email: email,
       })
       .then(() => setDisable(true))
-      .then(() => alert("A new OTP has succesfully been sent to your email."))
+      .then(() => <Alert severity="error" > A new OTP has succesfully been sent to your email.</Alert>)
       .then(() => setTimer(60))
       .catch(console.log);
   }
@@ -26,11 +27,8 @@ function OTPInput({ setPage }) {
   function verfiyOTP() {
     if (parseInt(OTPinput.join(""), 10) === otp) {
       setPage("reset");
-      return;
     }
-    alert(
-      "The code you have entered is not correct, try again or re-send the link"
-    );
+    return <Alert severity="error">The code you have entered is not correct, try again or re-send the link!</Alert>
   }
 
   useEffect(() => {

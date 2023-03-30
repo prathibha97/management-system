@@ -119,7 +119,7 @@ const loginEmployee = async (req, res) => {
   const { email, password } = req.body;
   try {
     const employee = await Employee.findOne({ email });
-    if (!employee) return res.status(404).json({ message: 'User does not exists' });
+    if (!employee) return res.status(404).json({ message: 'Employee does not exists' });
     const isMatch = await bcrypt.compare(password, employee.password);
     if (!isMatch) return res.status(403).json({ message: 'Invalid password' });
     employee.password = undefined;
@@ -130,7 +130,35 @@ const loginEmployee = async (req, res) => {
   }
 };
 
+/* 
+?@desc   Reset password
+*@route  Post /api/emp/auth/reset-password
+*@access Private
+*/
+
+const resetPassword = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const employee = await Employee.findOne({ email });
+    if (!employee) return res.status(404).json({ message: 'User does not exists' });
+
+    // generate salt and hash password using bcrypt
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // update user's password in database
+    employee.password = hashedPassword;
+    await employee.save();
+
+    res.status(200).json({ message: 'Password reset successful' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ message: 'Error occured while reseting the password' });
+  }
+};
+
 module.exports = {
   registerEmployee,
   loginEmployee,
+  resetPassword,
 };

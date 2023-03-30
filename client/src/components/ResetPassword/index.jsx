@@ -1,9 +1,25 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React from "react";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import api from "../../utils/api";
 
-function ResetPassword({setPage}) {
-  function changePassword() {
-    setPage("recovered");
+function ResetPassword({ setPage }) {
+
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("")
+
+  const { email } = useSelector((state) => state.passwordRecovery);
+
+  async function handlePasswordChange() {
+    try {
+      console.log(email, newPassword, confirmPassword);
+      await api.post('/emp/auth/reset-password', { email, password: newPassword })
+      setConfirmPassword("");
+      setNewPassword("");
+      setPage("recovered");
+    } catch (err) {
+      console.log(err.message);
+    }
   }
 
   return (
@@ -14,7 +30,7 @@ function ResetPassword({setPage}) {
             <h2 className="mb-1 text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
               Change Password
             </h2>
-            <form className="mt-4 space-y-4 lg:mt-5 md:space-y-5">
+            <form onSubmit={handlePasswordChange} className="mt-4 space-y-4 lg:mt-5 md:space-y-5">
               <div>
                 <label
                   htmlFor="password"
@@ -27,9 +43,11 @@ function ResetPassword({setPage}) {
                   name="password"
                   id="password"
                   placeholder="••••••••"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#1DB3AB] focus:border-[#1DB3AB] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#1DB3AB] dark:focus:border-[#1DB3AB]"
                   required=""
-                 />
+                />
               </div>
               <div>
                 <label
@@ -43,9 +61,11 @@ function ResetPassword({setPage}) {
                   name="confirm-password"
                   id="confirm-password"
                   placeholder="••••••••"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#1DB3AB] focus:border-[#1DB3AB] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#1DB3AB] dark:focus:border-[#1DB3AB]"
                   required=""
-                 />
+                />
               </div>
               <div className="flex items-start">
                 <div className="flex items-center h-5">
@@ -53,9 +73,9 @@ function ResetPassword({setPage}) {
                     id="newsletter"
                     aria-describedby="newsletter"
                     type="checkbox"
-                    className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
+                    className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-[#1DB3AB] dark:ring-offset-gray-800"
                     required=""
-                   />
+                  />
                 </div>
                 <div className="ml-3 text-sm">
                   <label
@@ -64,7 +84,7 @@ function ResetPassword({setPage}) {
                   >
                     I accept the{" "}
                     <a
-                      className="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                      className="font-medium text-[#1DB3AB] hover:underline dark:text-primary-500"
                       href="/"
                     >
                       Terms and Conditions
@@ -74,9 +94,9 @@ function ResetPassword({setPage}) {
               </div>
             </form>
             <button
-              onClick={() => changePassword()}
+              onClick={() => handlePasswordChange()}
               type='button'
-              className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+              className="w-full mt-5 text-white bg-[#1DB3AB] hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-[#1DB3AB] dark:hover:bg-primary-700 dark:focus:ring-primary-800"
             >
               Reset passwod
             </button>
