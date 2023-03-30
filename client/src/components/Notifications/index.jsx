@@ -9,7 +9,7 @@ function Notifications({ empNo }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   useEffect(() => {
-    const socket = io('http://localhost:5001', {
+    const socket = io('https://management-system-b022.onrender.com:5001', {
       query: { empNo },
     });
 
