@@ -6,6 +6,9 @@ import {
   GET_USER_EXPERIENCES_FAIL,
   GET_USER_EXPERIENCES_REQUEST,
   GET_USER_EXPERIENCES_SUCCESS,
+  REMOVE_EXPERIENCE_FAIL,
+  REMOVE_EXPERIENCE_REQUEST,
+  REMOVE_EXPERIENCE_SUCCESS,
 } from '../constants/experienceConstants';
 
 export const addExperience =
@@ -63,6 +66,35 @@ export const getExperiences = (empNo) => async (dispatch, getState) => {
   } catch (err) {
     dispatch({
       type: GET_USER_EXPERIENCES_FAIL,
+      payload:
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message,
+    });
+  }
+};
+
+export const removeExperience = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: REMOVE_EXPERIENCE_REQUEST,
+    });
+    const {
+      userLogin: { userInfo },
+    } = getState();
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    const { data } = await api.delete(`/experiences/${id}`, config);
+    dispatch({
+      type: REMOVE_EXPERIENCE_SUCCESS,
+      payload: data,
+    });
+  } catch (err) {
+    dispatch({
+      type: REMOVE_EXPERIENCE_FAIL,
       payload:
         err.response && err.response.data.message
           ? err.response.data.message

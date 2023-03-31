@@ -18,6 +18,7 @@ import {
 import {
   addExperienceReducer,
   getExperienceReducer,
+  removeExperienceReducer,
 } from './reducers/experienceReducers';
 import {
   adminLeaveDetailsReducer,
@@ -60,12 +61,13 @@ const initialState = {
 const reducer = combineReducers({
   userLogin: userLoginReducer,
   registerEmployee: registerEmployeeReducer,
-  passwordRecovery:passwordRecoveryReducer,
+  passwordRecovery: passwordRecoveryReducer,
   removeEmployee: removeEmployeeReducer,
   userDetails: userDetailsReducer,
   userDetailsAdmin: userDetailsAdminReducer,
   addExperience: addExperienceReducer,
   getExperience: getExperienceReducer,
+  removeExperience: removeExperienceReducer,
   attendanceDetails: attendanceDetailsReducer,
   adminAttendanceDetails: adminAttendanceDetailsReducer,
   markAttendance: markAttendanceReducer,

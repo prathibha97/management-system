@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { EmployeeCard, ExperienceCard, Loader } from '../../components';
@@ -8,6 +8,9 @@ import { getUserDetails } from '../../redux/actions/userActions';
 function Profile() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const [experienceChangeCount, setExperienceChangeCount] = useState(0)
+
   const { user } = useSelector((state) => state.userDetails) || {}
 
   const userLogin = useSelector((state) => state.userLogin)
@@ -25,7 +28,7 @@ function Profile() {
         dispatch(getUserDetails(userInfo?.employee?.empNo));
       }
     }
-  }, [userInfo, experiences])
+  }, [userInfo, experiences, experienceChangeCount])
 
 
   if (!user || loading) {
@@ -38,7 +41,7 @@ function Profile() {
         <EmployeeCard employee={user} />
       </div>
       <div className="flex flex-col flex-1">
-        <ExperienceCard employee={user} />
+        <ExperienceCard employee={user} setExperienceChangeCount={setExperienceChangeCount}/>
       </div>
     </div>
   );

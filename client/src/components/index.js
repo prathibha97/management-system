@@ -13,6 +13,7 @@ export { default as DataTable } from './DataTable';
 export { default as DocumentUpload } from './DocumentUpload';
 export { default as EmployeeCard } from './EmployeeCard';
 export { default as EmployeeDetails } from './EmployeeDetails';
+export { default as Experience } from './Experience';
 export { default as ExperienceCard } from './ExperienceCard';
 export { default as FilePreview } from './FilePreview';
 export { default as Header } from './Header';
