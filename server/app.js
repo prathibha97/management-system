@@ -10,15 +10,9 @@ const { errorHandler, notFound } = require('./middleware/error.middleware');
 const sendEmail = require('./services/sendEmail');
 // const setCache = require('./middleware/cache.middleware');
 
-
 const app = express();
 
-const corsOptions = {
-  origin: 'https://52.88.221.122:5000', // replace with your React app's URL
-  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-};
-
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(morgan('dev'));
