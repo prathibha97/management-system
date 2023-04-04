@@ -56,7 +56,6 @@ function People() {
 
   const handleView = (row) => {
     navigate(row.empNo)
-    // location.reload();
   }
 
   const handleClose = () => {

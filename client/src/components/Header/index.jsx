@@ -16,6 +16,7 @@ import { ProjectDetailsById } from '../../redux/actions/projectActions';
 function Header() {
   const location = useLocation();
   const dispatch = useDispatch()
+  const id = location.pathname.split('/')[2];
   // Get attendanceMark state from the Redux store
   const attendanceMark = useSelector((state) => state.markAttendance);
   const { error } = attendanceMark;
@@ -72,7 +73,7 @@ function Header() {
     case '/people':
       heading = 'Manage People';
       break;
-    case `/people/:id`:
+    case `/people/${id}`:
       heading = `Employee Profile`;
       break;
     case '/payroll':
