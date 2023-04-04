@@ -29,7 +29,7 @@ import Calendar from '../../components/Calendar';
 function Dashboard() {
 
   const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:5000/api/google';
+    window.location.href = 'http://52.88.221.122:5000/api/google';
   };
 
   return (
