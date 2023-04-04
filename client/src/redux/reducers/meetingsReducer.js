@@ -2,6 +2,9 @@ import {
   CANCEL_MEETING_FAIL,
   CANCEL_MEETING_REQUEST,
   CANCEL_MEETING_SUCCESS,
+  EDIT_MEETING_FAIL,
+  EDIT_MEETING_REQUEST,
+  EDIT_MEETING_SUCCESS,
   MY_MEETINGS_FAIL,
   MY_MEETINGS_REQUEST,
   MY_MEETINGS_SUCCESS,
@@ -52,6 +55,32 @@ export const scheduleMeetingReducer = (state = { meeting: {} }, action) => {
         meeting: payload,
       };
     case SCHEDULE_MEETING_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+    default:
+      return state;
+  }
+};
+
+export const editMeetingReducer = (state = { meeting: {} }, action) => {
+  const { type, payload } = action;
+
+  switch (type) {
+    case EDIT_MEETING_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      };
+    case EDIT_MEETING_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        meeting: payload,
+      };
+    case EDIT_MEETING_FAIL:
       return {
         ...state,
         loading: false,

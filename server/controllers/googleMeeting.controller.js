@@ -42,7 +42,6 @@ const googleRedirect = async (req, res) => {
 
 const scheduleMeeting = async (req, res) => {
   const { summary, attendee, startDatetime, endDatetime } = req.body;
-
   const refresh_token = await Token.findOne({ name: 'refresh_token' });
   const access_token = await Token.findOne({ name: 'access_token' });
 
@@ -121,11 +120,47 @@ const cancelEvent = async (req, res) => {
   }
 }
 
+const editEvent = async (req, res) => {
+  const { id } = req.params;
+  const { summary, attendee, startDatetime, endDatetime } = req.body;
+
+  try {
+    const {data}  = await calendar.events.update({
+      calendarId: 'primary',
+      eventId:id,
+      auth: oauth2Client,
+      requestBody: {
+        summary,
+        description: 'This is a test event',
+        start: {
+          dateTime: startDatetime,
+          timeZone: 'Asia/Colombo',
+        },
+        end: {
+          dateTime: endDatetime,
+          timeZone: 'Asia/Colombo',
+        },
+        conferenceData: {
+          createRequest: {
+            requestId: uuid(),
+          },
+        },
+        attendees: [{ email: attendee }],
+      },
+    });
+    res.status(200).json( data );
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: 'Unable to edit event' });
+  }
+}
+
 module.exports = {
   googleAuthenticate,
   googleRedirect,
   scheduleMeeting,
   getEvents,
   cancelEvent,
+  editEvent,
 };
 

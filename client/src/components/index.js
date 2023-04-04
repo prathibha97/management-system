@@ -11,6 +11,7 @@ export { default as CreateTaskForm } from './CreateTaskForm';
 export { default as CustomAvatar } from './CustomAvatar';
 export { default as DataTable } from './DataTable';
 export { default as DocumentUpload } from './DocumentUpload';
+export { default as EditMeeting } from './EditMeeting';
 export { default as EmployeeCard } from './EmployeeCard';
 export { default as EmployeeDetails } from './EmployeeDetails';
 export { default as Experience } from './Experience';
