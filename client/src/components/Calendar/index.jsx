@@ -206,7 +206,7 @@ function Calendar() {
                   </button>
 
                   <div className="w-1 h-1 mx-auto mt-1">
-                    {meetings.some((meeting) => isSameDay(parseISO(meeting.start.dateTime), selectedDay)) ? (
+                    {meetings.some((meeting) => isSameDay(parseISO(meeting.start.dateTime), day)) ? (
                       <div className="w-1 h-1 rounded-full bg-sky-500" />
                     ): null}
                   </div>
