@@ -24,7 +24,7 @@ export const getMyMeetings = () => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await api.get(`/meetings/my`, config);
+    const { data } = await api.get(`/google/get_events`, config);
     dispatch({
       type: MY_MEETINGS_SUCCESS,
       payload: data,
@@ -41,7 +41,8 @@ export const getMyMeetings = () => async (dispatch, getState) => {
 };
 
 export const scheduleMeeting =
-  (attendee, startDatetime, endDatetime) => async (dispatch, getState) => {
+  (summary, attendee, startDatetime, endDatetime) =>
+  async (dispatch, getState) => {
     try {
       dispatch({
         type: CANCEL_MEETING_REQUEST,
@@ -57,7 +58,11 @@ export const scheduleMeeting =
         },
       };
 
-      const { data } = await api.post(`/meetings/`, {attendee, startDatetime, endDatetime}, config);
+      const { data } = await api.post(
+        `/google/schedule_event`,
+        { summary, attendee, startDatetime, endDatetime },
+        config
+      );
       dispatch({
         type: CANCEL_MEETING_SUCCESS,
         payload: data,

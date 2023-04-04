@@ -30,7 +30,7 @@ function CustomAvatar({ name, size = 42, style = {} }) {
         height: size,
         ...style,
       },
-      children: `${str?.split(' ')[0][0]}${str?.split(' ')[1][0]}`,
+      children: `${str?.split(' ')[0][0]}${str?.split(' ')[1][0]}` || `${str?.split(' ')[0][0]}`,
     };
   }
 

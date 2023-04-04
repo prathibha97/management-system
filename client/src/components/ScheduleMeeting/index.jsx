@@ -10,12 +10,14 @@ import Button from '../Button';
 
 function ScheduleMeeting({ isOpen, setIsOpen, selectedDay, people, handleSubmit }) {
 
-  const [selectedPerson, setSelectedPerson] = useState(people[0] || {})
+  const [summary, setSummary] = useState('')
   const [startValue, setStartValue] = useState(dayjs(selectedDay));
   const [endValue, setEndValue] = useState(dayjs(selectedDay));
+  const [selectedPeople, setSelectedPeople] = useState([people[0]]);
 
   const handleChange = (event) => {
-    setSelectedPerson(event.target.value);
+    const {value} = event.target;
+    setSelectedPeople(value);
   };
 
   return (
@@ -44,7 +46,7 @@ function ScheduleMeeting({ isOpen, setIsOpen, selectedDay, people, handleSubmit 
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-[600px] h-[350px] max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+              <Dialog.Panel className="w-[600px] h-[450px] max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                 <Dialog.Title
                   as="h3"
                   className="text-lg font-medium leading-6 text-gray-900"
@@ -53,17 +55,26 @@ function ScheduleMeeting({ isOpen, setIsOpen, selectedDay, people, handleSubmit 
                 </Dialog.Title>
                 <div className="mt-2">
                   <div className="fixed top-18 w-[400px]">
-                    <InputLabel id="demo-simple-select-label" className='mb-2'>Select Attendee</InputLabel>
+                    <InputLabel id="demo-simple-select-label" className='mb-2'>Meeting Summary</InputLabel>
+                    <TextField fullWidth value={summary} onChange={(e) => setSummary(e.target.value)} />
+                    <InputLabel id="demo-simple-select-label" className='mb-2'>Select Attendees</InputLabel>
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
-                      value={selectedPerson}
+                      multiple
                       fullWidth
+                      value={selectedPeople}
                       onChange={handleChange}
-                      renderValue={(value) => `${value.name.first} ${value.name.last}`}
+                      renderValue={(selected) =>
+                        selected
+                          .map((person) => `${person.name.first} ${person.name.last}`)
+                          .join(", ")
+                      }
                     >
                       {people.map((person, personIdx) => (
-                        <MenuItem key={personIdx} value={person}>{`${person.name.first} ${person.name.last}`}</MenuItem>
+                        <MenuItem key={personIdx} value={person}>
+                          {`${person.name.first} ${person.name.last}`}
+                        </MenuItem>
                       ))}
                     </Select>
                     <div className='flex mt-8 mb-8 gap-2'>
@@ -84,7 +95,7 @@ function ScheduleMeeting({ isOpen, setIsOpen, selectedDay, people, handleSubmit 
                         />
                       </LocalizationProvider>
                     </div>
-                    <Button title='Schedule Meeting' onClick={() => handleSubmit(selectedPerson, startValue, endValue)} icon={faCalendarCheck} />
+                    <Button title='Schedule Meeting' onClick={() => handleSubmit(summary, selectedPeople, startValue, endValue)} icon={faCalendarCheck} />
                   </div>
                 </div>
               </Dialog.Panel>

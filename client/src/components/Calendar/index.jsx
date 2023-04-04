@@ -84,8 +84,12 @@ function Calendar() {
   }
 
   const selectedDayMeetings = meetings.filter((meeting) =>
-    isSameDay(parseISO(meeting.startDatetime), selectedDay)
+    isSameDay(parseISO(meeting?.start?.dateTime), selectedDay)
   )
+  console.log(selectedDayMeetings);
+
+  // console.log(meetings[0]?.items[0]?.start?.dateTime);
+  meetings.filter((meeting) => isSameDay(parseISO(meeting?.start?.dateTime), selectedDay))
 
   const handleAlertClose = () => {
     setAlert({ ...alert, open: false });
@@ -102,9 +106,9 @@ function Calendar() {
     }
   }
 
-  const handleSubmit = (selectedPerson, startValue, endValue) => {
+  const handleSubmit = (summary, selectedPerson, startValue, endValue) => {
     try {
-      dispatch(scheduleMeeting(selectedPerson, startValue, endValue))
+      dispatch(scheduleMeeting(summary, selectedPerson.email, startValue, endValue))
       console.log(`meeting scheduled with ${selectedPerson?.name?.first} ${selectedPerson?.name?.last} on ${startValue} to ${endValue}`);
       setMeetingChangeCount(1);
       setAlert({ open: true, message: `meeting scheduled with ${selectedPerson?.name?.first} ${selectedPerson?.name?.last} on ${startValue} to ${endValue}`, severity: 'success' });
@@ -202,11 +206,9 @@ function Calendar() {
                   </button>
 
                   <div className="w-1 h-1 mx-auto mt-1">
-                    {meetings.some((meeting) =>
-                      isSameDay(parseISO(meeting.startDatetime), day)
-                    ) && (
-                        <div className="w-1 h-1 rounded-full bg-sky-500" />
-                      )}
+                    {meetings.some((meeting) => isSameDay(parseISO(meeting.start.dateTime), selectedDay)) ? (
+                      <div className="w-1 h-1 rounded-full bg-sky-500" />
+                    ): null}
                   </div>
                 </div>
               ))}
@@ -231,7 +233,7 @@ function Calendar() {
               <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
                 {selectedDayMeetings.length > 0 ? (
                   selectedDayMeetings.map((meeting) => (
-                    <Meeting meeting={meeting} key={meeting._id} handleMeetingCancel={handleMeetingCancel} currentUser={userInfo?.employee?._id} />
+                    <Meeting meeting={meeting} key={meeting.id} handleMeetingCancel={handleMeetingCancel} currentUser={userInfo?.employee} />
                   ))
                 ) : (
                   <p>No meetings for today.</p>
