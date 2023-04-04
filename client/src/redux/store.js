@@ -18,6 +18,7 @@ import {
 import {
   addExperienceReducer,
   getExperienceReducer,
+  removeExperienceReducer,
 } from './reducers/experienceReducers';
 import {
   adminLeaveDetailsReducer,
@@ -29,6 +30,7 @@ import {
 } from './reducers/leaveReducer';
 import {
   cancelMeetingReducer,
+  editMeetingReducer,
   myMeetingsReducer,
   scheduleMeetingReducer,
 } from './reducers/meetingsReducer';
@@ -66,6 +68,7 @@ const reducer = combineReducers({
   userDetailsAdmin: userDetailsAdminReducer,
   addExperience: addExperienceReducer,
   getExperience: getExperienceReducer,
+  removeExperience: removeExperienceReducer,
   attendanceDetails: attendanceDetailsReducer,
   adminAttendanceDetails: adminAttendanceDetailsReducer,
   markAttendance: markAttendanceReducer,
@@ -86,6 +89,7 @@ const reducer = combineReducers({
   departmentDetails: departmentDetailsReducer,
   myMeetings: myMeetingsReducer,
   scheduleMeeting: scheduleMeetingReducer,
+  editMeeting: editMeetingReducer,
   cancelMeeting: cancelMeetingReducer,
   getDesignationsAdmin: getDesignationsAdminReducer,
   // userUpdateProfile: userUpdateProfileReducer,

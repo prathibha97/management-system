@@ -4,19 +4,18 @@ import { Dialog, Transition } from '@headlessui/react';
 import { InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
 import { Fragment, useState } from 'react';
 import Button from '../Button';
 
-function ScheduleMeeting({ isOpen, setIsOpen, selectedDay, people, handleSubmit }) {
-
-  const [summary, setSummary] = useState('')
-  const [startValue, setStartValue] = useState(dayjs(selectedDay));
-  const [endValue, setEndValue] = useState(dayjs(selectedDay));
+function EditMeeting({ isOpen, setIsOpen, people, handleMeetingEdit, meeting }) {
+  console.log(meeting.start.dateTime);
+  const [summary, setSummary] = useState(meeting?.summary)
+  const [startValue, setStartValue] = useState(meeting?.start?.dateTime);
+  const [endValue, setEndValue] = useState(meeting?.end?.dateTime);
   const [selectedPeople, setSelectedPeople] = useState([people[0]]);
 
   const handleChange = (event) => {
-    const {value} = event.target;
+    const { value } = event.target;
     setSelectedPeople(value);
   };
 
@@ -51,7 +50,7 @@ function ScheduleMeeting({ isOpen, setIsOpen, selectedDay, people, handleSubmit 
                   as="h3"
                   className="text-lg font-medium leading-6 text-gray-900"
                 >
-                  Schedule a Meeting
+                  Edit Meeting
                 </Dialog.Title>
                 <div className="mt-2">
                   <div className="fixed top-18 w-[400px]">
@@ -95,7 +94,7 @@ function ScheduleMeeting({ isOpen, setIsOpen, selectedDay, people, handleSubmit 
                         />
                       </LocalizationProvider>
                     </div>
-                    <Button title='Schedule Meeting' onClick={() => handleSubmit(summary, selectedPeople, startValue, endValue)} icon={faCalendarCheck} />
+                    <Button title='Edit Meeting' onClick={() => handleMeetingEdit(meeting?.id, summary, selectedPeople, startValue, endValue)} icon={faCalendarCheck} />
                   </div>
                 </div>
               </Dialog.Panel>
@@ -107,4 +106,4 @@ function ScheduleMeeting({ isOpen, setIsOpen, selectedDay, people, handleSubmit 
   )
 }
 
-export default ScheduleMeeting
+export default EditMeeting

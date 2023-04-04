@@ -19,9 +19,9 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { getEmployeeList } from '../../redux/actions/employeeActions'
-import { cancelMeeting, getMyMeetings, scheduleMeeting } from '../../redux/actions/meetingActions'
+import { cancelMeeting, editMeeting, getMyMeetings, scheduleMeeting } from '../../redux/actions/meetingActions'
 import Loader from '../Loader'
-import Meeting from '../Meetings'
+import Meetings from '../Meetings'
 import ScheduleMeeting from '../ScheduleMeeting'
 
 function classNames(...classes) {
@@ -84,7 +84,7 @@ function Calendar() {
   }
 
   const selectedDayMeetings = meetings.filter((meeting) =>
-    isSameDay(parseISO(meeting.startDatetime), selectedDay)
+    isSameDay(parseISO(meeting?.start?.dateTime), selectedDay)
   )
 
   const handleAlertClose = () => {
@@ -102,18 +102,27 @@ function Calendar() {
     }
   }
 
-  const handleSubmit = (selectedPerson, startValue, endValue) => {
+  const handleMeetingEdit = (id, summary, selectedPeople, startValue, endValue) => {
     try {
-      dispatch(scheduleMeeting(selectedPerson, startValue, endValue))
-      console.log(`meeting scheduled with ${selectedPerson?.name?.first} ${selectedPerson?.name?.last} on ${startValue} to ${endValue}`);
+      dispatch(editMeeting(id, summary, selectedPeople.map((person) => person.email), startValue, endValue));
       setMeetingChangeCount(1);
-      setAlert({ open: true, message: `meeting scheduled with ${selectedPerson?.name?.first} ${selectedPerson?.name?.last} on ${startValue} to ${endValue}`, severity: 'success' });
+      setAlert({ open: true, message: 'Meeting Edited Successfully', severity: 'success' });
+    } catch (err) {
+      setAlert({ open: true, message: err.response.data.message, severity: 'error' });
+    }
+  }
+
+  const handleSubmit = (summary, selectedPeople, startValue, endValue) => {
+    try {
+      dispatch(scheduleMeeting(summary, selectedPeople.map((person) => person.email), startValue, endValue))
+      console.log(`meeting scheduled with ${selectedPeople?.map((person) => person?.name?.first)} ${selectedPeople?.map((person) => person?.name?.last)} on ${startValue} to ${endValue}`);
+      setMeetingChangeCount(1);
+      setAlert({ open: true, message: `meeting scheduled with ${selectedPeople?.map((person) => person?.name?.first)} ${selectedPeople?.map((person) => person?.name?.last)} on ${startValue} to ${endValue}`, severity: 'success' });
     } catch (err) {
       setAlert({ open: true, message: err?.response?.data?.message, severity: 'error' });
     }
     setIsOpen(false)
   }
-
 
   const colStartClasses = [
     '',
@@ -202,11 +211,9 @@ function Calendar() {
                   </button>
 
                   <div className="w-1 h-1 mx-auto mt-1">
-                    {meetings.some((meeting) =>
-                      isSameDay(parseISO(meeting.startDatetime), day)
-                    ) && (
-                        <div className="w-1 h-1 rounded-full bg-sky-500" />
-                      )}
+                    {meetings.some((meeting) => isSameDay(parseISO(meeting.start.dateTime), day)) ? (
+                      <div className="w-1 h-1 rounded-full bg-sky-500" />
+                    ) : null}
                   </div>
                 </div>
               ))}
@@ -231,7 +238,7 @@ function Calendar() {
               <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
                 {selectedDayMeetings.length > 0 ? (
                   selectedDayMeetings.map((meeting) => (
-                    <Meeting meeting={meeting} key={meeting._id} handleMeetingCancel={handleMeetingCancel} currentUser={userInfo?.employee?._id} />
+                    <Meetings meeting={meeting} key={meeting.id} handleMeetingCancel={handleMeetingCancel} currentUser={userInfo?.employee} handleMeetingEdit={handleMeetingEdit} people={employees}  />
                   ))
                 ) : (
                   <p>No meetings for today.</p>

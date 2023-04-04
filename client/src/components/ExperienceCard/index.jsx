@@ -3,12 +3,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Alert, IconButton, Snackbar } from '@mui/material';
 import React, { useState } from 'react';
 import AddExperience from '../AddExperience';
+import Experience from '../Experience';
 
-function ExperienceCard({ employee }) {
+function ExperienceCard({ employee, setExperienceChangeCount }) {
 
   const [isOpen, setIsOpen] = useState(false)
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
-
 
   const formatDate = (date) => {
     const isoDate = date;
@@ -33,21 +33,12 @@ function ExperienceCard({ employee }) {
         <p className='text-[#707070] text-sm'>Here you can edit your work experience</p>
       </div>
       <div className='h-[550px] overflow-y-auto'>
-      {isOpen && (
-        <AddExperience isOpen={isOpen} setIsOpen={setIsOpen} setAlert={setAlert} />
-      )}
-      {employee.employmentHistory?.map((item, index) => (
-        <div className='flex bg-white px-12 py-5 mt-5 justify-between items-center w-[90%] m-auto rounded-2xl' key={index}>
-          <div>
-            <h2 className='font-bold text-lg'>{item.position}</h2>
-            <p className='text-sm text-[#707070]'>{item.company}</p>
-          </div>
-          <div className='mr-[60px]'>
-            <p className='text-xs text-[#707070]'>Start date: {formatDate(item.startDate)}</p>
-            <p className='text-xs text-[#707070]'>End date: {formatDate(item.endDate)}</p>
-          </div>
-        </div>
-      ))}
+        {isOpen && (
+          <AddExperience isOpen={isOpen} setIsOpen={setIsOpen} setAlert={setAlert} />
+        )}
+        {employee.employmentHistory?.map((item, index) => (
+          <Experience key={index} item={item} formatDate={formatDate} setAlert={setAlert} setExperienceChangeCount={setExperienceChangeCount} />
+        ))}
       </div>
       <Snackbar open={alert?.open} autoHideDuration={5000} onClose={handleAlertClose}>
         <Alert onClose={handleAlertClose} severity={alert?.severity}>
