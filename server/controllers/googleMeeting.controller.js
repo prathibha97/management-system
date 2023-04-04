@@ -37,7 +37,7 @@ const googleRedirect = async (req, res) => {
   const access_token = new Token({ name: 'access_token', value: tokens.access_token });
   await access_token.save();
 
-  res.redirect('https://management-system-b022.onrender.com/dashboard'); // Redirect to the React app
+  res.redirect('http://52.88.221.122/dashboard'); // Redirect to the React app
 };
 
 const scheduleMeeting = async (req, res) => {
