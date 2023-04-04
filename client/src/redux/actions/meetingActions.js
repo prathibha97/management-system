@@ -94,7 +94,7 @@ export const cancelMeeting = (id) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await api.delete(`/meetings/${id}`, config);
+    const { data } = await api.delete(`/google/${id}`, config);
     dispatch({
       type: CANCEL_MEETING_SUCCESS,
       payload: data,

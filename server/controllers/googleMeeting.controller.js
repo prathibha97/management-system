@@ -106,10 +106,26 @@ const getEvents = async (req, res) => {
   }
 };
 
+const cancelEvent = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const {data}  = await calendar.events.delete({
+      calendarId: 'primary',
+      eventId:id,
+      auth: oauth2Client,
+    });
+    res.status(200).json( data );
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: 'Unable to cancel event' });
+  }
+}
+
 module.exports = {
   googleAuthenticate,
   googleRedirect,
   scheduleMeeting,
   getEvents,
+  cancelEvent,
 };
 

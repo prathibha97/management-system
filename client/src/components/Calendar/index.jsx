@@ -86,10 +86,6 @@ function Calendar() {
   const selectedDayMeetings = meetings.filter((meeting) =>
     isSameDay(parseISO(meeting?.start?.dateTime), selectedDay)
   )
-  console.log(selectedDayMeetings);
-
-  // console.log(meetings[0]?.items[0]?.start?.dateTime);
-  meetings.filter((meeting) => isSameDay(parseISO(meeting?.start?.dateTime), selectedDay))
 
   const handleAlertClose = () => {
     setAlert({ ...alert, open: false });
