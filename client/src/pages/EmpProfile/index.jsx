@@ -11,19 +11,18 @@ function EmpProfile() {
   const { userInfo } = userLogin
   const { empNo } = useParams();
 
-
   useEffect(() => {
     if (!userInfo) {
       navigate('/');
     } else {
-      const storedUser = JSON.parse(localStorage.getItem('user'));
-      if (!storedUser || storedUser.empNo !== userInfo.empNo) {
+      const storedUser = JSON.parse(localStorage.getItem('userInfo'));
+      if (storedUser.employee.isAdmin) {
         dispatch(getUserDetailsAdmin(empNo))
       }
     }
   }, [userInfo])
 
-  const { user, loading} = useSelector((state) => state.userDetailsAdmin);
+  const { user, loading } = useSelector((state) => state.userDetailsAdmin);
   console.log(user);
 
   if (loading) return <Loader />
