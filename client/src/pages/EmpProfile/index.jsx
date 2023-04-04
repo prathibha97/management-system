@@ -23,7 +23,7 @@ function EmpProfile() {
     }
   }, [userInfo])
 
-  const { user, loading } = useSelector((state) => state.userDetailsAdmin);
+  const { user, loading} = useSelector((state) => state.userDetailsAdmin);
   console.log(user);
 
   if (loading) return <Loader />
