@@ -1,15 +1,15 @@
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
 import { AttendanceCalendar, EmployeeDetails, LeaveBalance, Loader, SalaryDetails } from '../../components';
+import { getUserDetailsAdmin } from '../../redux/actions/userActions';
 
 function EmpProfile() {
   const navigate = useNavigate()
-  // const dispatch = useDispatch()
+  const dispatch = useDispatch()
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin
-  // const { empNo } = useParams();
-
+  const { empNo } = useParams();
   const { user, loading } = useSelector((state) => state.userDetailsAdmin);
 
 
@@ -19,10 +19,10 @@ function EmpProfile() {
     } else {
       const storedUser = JSON.parse(localStorage.getItem('user'));
       if (!storedUser || storedUser.empNo !== userInfo.empNo) {
-        // dispatch(getUserDetailsAdmin(empNo))
+        dispatch(getUserDetailsAdmin(empNo))
       }
     }
-  }, [userInfo, user])
+  }, [userInfo])
 
   if (loading) return <Loader />
   return (
