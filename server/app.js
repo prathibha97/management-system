@@ -14,7 +14,7 @@ const sendEmail = require('./services/sendEmail');
 const app = express();
 
 const corsOptions = {
-  origin: 'https://management-system-b022.onrender.com', // replace with your React app's URL
+  origin: 'https://52.88.221.122:5000', // replace with your React app's URL
   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
