@@ -10,8 +10,6 @@ function EmpProfile() {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin
   const { empNo } = useParams();
-  const { user, loading } = useSelector((state) => state.userDetailsAdmin);
-
 
   useEffect(() => {
     if (!userInfo) {
@@ -23,6 +21,9 @@ function EmpProfile() {
       }
     }
   }, [userInfo])
+
+  const { user, loading } = useSelector((state) => state.userDetailsAdmin);
+  console.log(user);
 
   if (loading) return <Loader />
   return (
