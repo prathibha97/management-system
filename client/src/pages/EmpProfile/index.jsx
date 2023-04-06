@@ -25,9 +25,6 @@ function EmpProfile() {
     }
   }, [userInfo, id])
 
-  console.log(user);
-
-
   if (loading) return <Loader />
   return (
     <div className='h-[90%]'>
