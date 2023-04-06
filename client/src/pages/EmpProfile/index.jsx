@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -9,7 +10,9 @@ function EmpProfile() {
   const dispatch = useDispatch()
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin
-  const { empNo } = useParams();
+  const { user, loading } = useSelector((state) => state.userDetailsAdmin);
+
+  const { id } = useParams();
 
   useEffect(() => {
     if (!userInfo) {
@@ -17,19 +20,19 @@ function EmpProfile() {
     } else {
       const storedUser = JSON.parse(localStorage.getItem('userInfo'));
       if (storedUser.employee.isAdmin) {
-        dispatch(getUserDetailsAdmin(empNo))
+        dispatch(getUserDetailsAdmin(id))
       }
     }
-  }, [userInfo])
+  }, [userInfo, id])
 
-  const { user, loading } = useSelector((state) => state.userDetailsAdmin);
   console.log(user);
+
 
   if (loading) return <Loader />
   return (
     <div className='h-[90%]'>
       <div className='bg-[#EEF2F5]  w-[95%] rounded-xl mt-6 m-auto overflow-y-auto'>
-        <EmployeeDetails user={user} />
+        <EmployeeDetails user={ user } />
         <AttendanceCalendar user={user} />
         <LeaveBalance user={user} />
         <SalaryDetails />

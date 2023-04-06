@@ -55,7 +55,7 @@ function People() {
   };
 
   const handleView = (row) => {
-    navigate(row.empNo)
+    navigate(`/people/${row.empNo}`)
   }
 
   const handleClose = () => {

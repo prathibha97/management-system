@@ -44,8 +44,8 @@ function AttendanceCalendar({ user }) {
     if (!userInfo) {
       navigate('/');
     } else {
-      const storedUser = JSON.parse(localStorage.getItem('user'));
-      if (!storedUser || storedUser.empNo !== userInfo.empNo) {
+      const storedUser = JSON.parse(localStorage.getItem('userInfo'));
+      if (storedUser.employee.isAdmin) {
         dispatch(getAttendanceDetailsbyIdAdmin(user.empNo))
         dispatch(getAdminLeaveDetails(user.empNo))
       }
