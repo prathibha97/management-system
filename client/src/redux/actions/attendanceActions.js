@@ -92,7 +92,10 @@ export const getAttendanceDetailsbyIdAdmin =
         },
       };
 
-      const { data } = await api.get(`http://localhost:5000/api/attendance/emp/${empNo}`, config);
+      const { data } = await api.get(
+        `http://52.88.221.122:5000/api/attendance/emp/${empNo}`,
+        config
+      );
 
       dispatch({
         type: ADMIN_ATTENDANCE_DETAILS_SUCCESS,

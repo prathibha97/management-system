@@ -201,7 +201,10 @@ export const getAdminLeaveDetails = (empNo) => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.token}`,
       },
     };
-    const { data } = await api.get(`http://localhost:5000/api/leaves/emp/${empNo}`, config);
+    const { data } = await api.get(
+      `http://52.88.221.122:5000/api/leaves/emp/${empNo}`,
+      config
+    );
     dispatch({
       type: ADMIN_LEAVE_DETAILS_SUCCESS,
       payload: data,
