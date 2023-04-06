@@ -167,6 +167,21 @@ const getLeaveRequestByIdAdmin = async (req, res) => {
   }
 };
 
+const deleteLeaveRequest = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const leaveRequest = await Leave.findById(id);
+    if (!leaveRequest) {
+      return res.status(404).json({ message: 'Leave request not found' });
+    }
+    await leaveRequest.remove();
+    res.status(200).json({ message: 'Leave request deleted successfully' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ message: 'Failed to delete leave request' });
+  }
+}
+
 
 module.exports = {
   createLeaveRequest,
@@ -174,4 +189,5 @@ module.exports = {
   getLeaveRequestById,
   approveOrRejectLeave,
   getLeaveRequestByIdAdmin,
+  deleteLeaveRequest,
 };

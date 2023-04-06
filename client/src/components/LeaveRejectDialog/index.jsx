@@ -16,7 +16,7 @@ function LeaveRejectDialog({ open, onClose, onReject }) {
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Reject Leave Request</DialogTitle>
-      <DialogContent sx={{ width: '500px' }}>
+      <DialogContent sx={{ width: '500px'}}>
         <TextField
           label="Reason for Rejection"
           fullWidth
@@ -24,6 +24,7 @@ function LeaveRejectDialog({ open, onClose, onReject }) {
           rows={4}
           value={reason}
           onChange={handleReasonChange}
+          sx={{ marginTop: 1 }}
         />
       </DialogContent>
       <DialogActions>

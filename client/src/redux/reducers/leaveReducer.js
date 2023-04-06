@@ -8,6 +8,9 @@ import {
   CREATE_LEAVE_FAIL,
   CREATE_LEAVE_REQUEST,
   CREATE_LEAVE_SUCCESS,
+  DELETE_LEAVE_FAIL,
+  DELETE_LEAVE_REQUEST,
+  DELETE_LEAVE_SUCCESS,
   GET_ALL_LEAVE_FAIL,
   GET_ALL_LEAVE_REQUEST,
   GET_ALL_LEAVE_SUCCESS,
@@ -164,6 +167,32 @@ export const adminLeaveDetailsReducer = (state = { leaves: [] }, action) => {
         leaves: payload,
       };
     case ADMIN_LEAVE_DETAILS_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+    default:
+      return state;
+  }
+};
+
+export const deleteLeaveRequestReducer = (state = { leave: {} }, action) => {
+  const { type, payload } = action;
+
+  switch (type) {
+    case DELETE_LEAVE_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      };
+    case DELETE_LEAVE_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        leave: payload,
+      };
+    case DELETE_LEAVE_FAIL:
       return {
         ...state,
         loading: false,
