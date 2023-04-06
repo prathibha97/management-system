@@ -4,8 +4,8 @@ import { DataGrid } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Loader } from '../../components';
-import { approveLeaveRequest, getAllLeaveDetails, rejectLeaveRequest } from '../../redux/actions/leaveActions';
+import { LeaveRejectDialog, Loader } from '../../components';
+import { approveLeaveRequest, getAllLeaveDetails } from '../../redux/actions/leaveActions';
 import { formatDate } from '../../utils/formatDate';
 
 
@@ -16,6 +16,8 @@ export default function DataGridDemo() {
   const navigate = useNavigate();
 
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
+
+  const [openRejectDialog, setOpenRejectDialog] = useState(false);
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin
@@ -50,7 +52,7 @@ export default function DataGridDemo() {
   }
 
   const columns = [
-    { field: 'empNo', headerName: 'Emp No', width: 90},
+    { field: 'empNo', headerName: 'Emp No', width: 90 },
     {
       field: 'fullName',
       headerName: 'Full name',
@@ -84,7 +86,7 @@ export default function DataGridDemo() {
       field: 'reason',
       headerName: 'Reason',
       width: 280,
-      // headerAlign: 'center',
+      headerAlign: 'center',
     },
     {
       field: 'status',
@@ -114,7 +116,7 @@ export default function DataGridDemo() {
       field: 'action',
       headerName: 'Action',
       width: 170,
-      // headerAlign: 'center',
+      headerAlign: 'center',
       renderCell: (params) => {
         const handleApprove = () => {
           const leaveId = params.row._id;
@@ -127,21 +129,30 @@ export default function DataGridDemo() {
           }
         };
 
-        const handleReject = () => {
-          const leaveId = params.row._id;
-          const { empNo } = params.row;
+        const handleRejectDialog = () => {
+          setOpenRejectDialog(true);
+        };
+
+        const handleReject = (reason) => {
+          console.log(reason);
+          // const leaveId = params.row._id;
+          // const { empNo } = params.row;
           try {
-            dispatch(rejectLeaveRequest({ leaveId, empNo, status: 'Rejected' }))
+            // dispatch(rejectLeaveRequest({ leaveId, empNo, status: 'Rejected' }))
             setAlert({ open: true, message: 'Leave Rejected successfully', severity: 'success' });
           } catch (err) {
             setAlert({ open: true, message: err.response.data.message, severity: 'error' });
           }
-        };
+        }
 
         return (
           <div>
             <Chip label="Approve" color='success' variant='outlined' onClick={() => handleApprove(params)} />
-            <Chip label="Reject" color='error' variant='outlined' onClick={() => handleReject(params)} sx={{ marginLeft: 1 }} />
+            {openRejectDialog &&
+              <LeaveRejectDialog open={openRejectDialog} onClose={() => setOpenRejectDialog(false)} onReject={handleReject} />
+            }
+
+            <Chip label="Reject" color='error' variant='outlined' sx={{ marginLeft: 1 }} onClick={() => handleRejectDialog(params)} />
           </div>
         );
       },
