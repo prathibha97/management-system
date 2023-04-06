@@ -154,7 +154,7 @@ export const approveLeaveRequest =
   };
 
 export const rejectLeaveRequest =
-  ({ leaveId, empNo, status }) =>
+  ({ leaveId, empNo, status, reason }) =>
   async (dispatch, getState) => {
     try {
       dispatch({
@@ -170,7 +170,7 @@ export const rejectLeaveRequest =
       };
       const { data } = await api.put(
         `/leaves/${empNo}/approval/${leaveId}`,
-        { status },
+        { status, reason },
         config
       );
       dispatch({

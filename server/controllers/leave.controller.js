@@ -94,7 +94,7 @@ const approveOrRejectLeave = async (req, res) => {
     }
 
     if (status === 'Approved') {
-      const { leaveType, startDate, endDate } = leave;
+      const { leaveType, startDate, endDate, } = leave;
       const numberOfDays = getNumberOfDays(startDate, endDate);
       const employee = await Employee.findOne({ empNo });
       const leaveBalance = employee.leaveBalance[leaveType];
@@ -116,12 +116,14 @@ const approveOrRejectLeave = async (req, res) => {
       const channel = `private-${empNo}`;
       io.to(channel).emit('leave-approved', payload);
     } else {
+      const { reason } = req.body;
       leave.status = status;
       leave.rejectedOn = new Date();
       leave.rejectedBy = req.user.id;
+      leave.rejectionReason = reason;
 
       // Notify employee about leave rejection
-      const message = `Your leave request has been rejected.`;
+      const message = `Your leave request has been rejected due to ${reason}.`;
       const payload = { message };
       const channel = `private-${empNo}`;
       io.to(channel).emit('leave-rejected', payload);

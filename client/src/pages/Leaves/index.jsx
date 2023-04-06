@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { LeaveRejectDialog, Loader } from '../../components';
-import { approveLeaveRequest, getAllLeaveDetails } from '../../redux/actions/leaveActions';
+import { approveLeaveRequest, getAllLeaveDetails, rejectLeaveRequest } from '../../redux/actions/leaveActions';
 import { formatDate } from '../../utils/formatDate';
 
 
@@ -135,10 +135,10 @@ export default function DataGridDemo() {
 
         const handleReject = (reason) => {
           console.log(reason);
-          // const leaveId = params.row._id;
-          // const { empNo } = params.row;
+          const leaveId = params.row._id;
+          const { empNo } = params.row;
           try {
-            // dispatch(rejectLeaveRequest({ leaveId, empNo, status: 'Rejected' }))
+            dispatch(rejectLeaveRequest({ leaveId, empNo, status: 'Rejected', reason}))
             setAlert({ open: true, message: 'Leave Rejected successfully', severity: 'success' });
           } catch (err) {
             setAlert({ open: true, message: err.response.data.message, severity: 'error' });
