@@ -46,15 +46,16 @@ function AttendanceCalendar({ user }) {
     } else {
       const storedUser = JSON.parse(localStorage.getItem('userInfo'));
       if (storedUser.employee.isAdmin) {
-        dispatch(getAttendanceDetailsbyIdAdmin(user.empNo))
-        dispatch(getAdminLeaveDetails(user.empNo))
+        dispatch(getAttendanceDetailsbyIdAdmin(user?.empNo))
+        dispatch(getAdminLeaveDetails(user?.empNo))
       }
     }
   }, [userInfo])
 
+  
   const { attendanceInfo, loading:attendanceLoading } = useSelector((state) => state.adminAttendanceDetails);
   const { leaves, loading:leavesLoading } = useSelector((state) => state.adminLeaveDetails);
-
+  
   if (attendanceLoading || leavesLoading) return <Loader />
 
   const days = eachDayOfInterval({

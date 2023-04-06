@@ -34,11 +34,11 @@ function App() {
           {userInfo?.employee.isAdmin && (
             <>
               <Route path="/people" element={<People />} />
-              <Route path="/people/:id" element={<EmpProfile />} />
               <Route path="/projects" element={<Projects />} />
               <Route path="/payroll" element={<Payroll />} />
               <Route path="/leaves" element={<Leaves />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/empProfile/:id" element={<EmpProfile />} />
             </>
           )}
         </Route>

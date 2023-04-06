@@ -1,4 +1,3 @@
-import axios from 'axios';
 import api from '../../utils/api';
 import {
   USER_DETAILS_ADMIN_FAIL,
@@ -80,7 +79,7 @@ export const getUserDetailsAdmin = (id) => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.token}`,
       },
     };
-    const { data } = await axios.get(`http://localhost:5000/api/emp/${id}`, config);
+    const { data } = await api.get(`http://localhost:5000/api/emp/${id}`, config);
     dispatch({
       type: USER_DETAILS_ADMIN_SUCCESS,
       payload: data,
