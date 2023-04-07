@@ -47,7 +47,7 @@ function Notifications({ empNo }) {
 
   const { notifications: userNotifications } = useSelector((state) => state.userNotifications);
 
-  const unreadCount = userNotifications.filter(notification => !notification.isRead).length;
+  const unreadCount = Array.from(userNotifications)?.filter(notification => !notification?.isRead).length;
 
   const handleNotificationClick = useCallback((event) => {
     setAnchorEl(event.currentTarget);
@@ -175,7 +175,7 @@ function Notifications({ empNo }) {
           </List>
         ) : userNotifications.length > 0 ? (
           <List sx={{ textAlign: 'center' }}>
-            {userNotifications.map((notification) => (
+            {Array.from(userNotifications).map((notification) => (
               <NotificationItem notification={notification} />
             ))}
             <Button onClick={handleClearNotifications}>Clear All</Button>
