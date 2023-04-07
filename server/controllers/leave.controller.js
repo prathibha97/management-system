@@ -6,6 +6,8 @@ const Leave = require('../models/Leave');
 const Employee = require('../models/Employee');
 const getNumberOfDays = require('../utils/getNumberOfDays');
 const io = require('../services/socket');
+const Notification = require('../models/Notification');
+const formatDate = require('../utils/formatDate');
 
 /* 
 ?@desc   Create a new leave request
@@ -94,7 +96,7 @@ const approveOrRejectLeave = async (req, res) => {
     }
 
     if (status === 'Approved') {
-      const { leaveType, startDate, endDate, } = leave;
+      const { leaveType, startDate, endDate } = leave;
       const numberOfDays = getNumberOfDays(startDate, endDate);
       const employee = await Employee.findOne({ empNo });
       const leaveBalance = employee.leaveBalance[leaveType];
@@ -111,10 +113,19 @@ const approveOrRejectLeave = async (req, res) => {
       leave.approvedBy = req.user.id;
 
       // Notify employee about leave approval
-      const message = `Your leave request has been approved for ${numberOfDays} days from ${startDate} to ${endDate}.`;
+      const message = `Your leave request has been approved for ${numberOfDays} days from ${formatDate(startDate)} to ${formatDate(endDate)}.`;
       const payload = { message };
       const channel = `private-${empNo}`;
       io.to(channel).emit('leave-approved', payload);
+
+      // Persist the notification
+      const notification = {
+        message,
+        type: 'leave-approved',
+        empNo,
+      };
+      await Notification.create(notification);
+
     } else {
       const { reason } = req.body;
       leave.status = status;
@@ -127,6 +138,14 @@ const approveOrRejectLeave = async (req, res) => {
       const payload = { message };
       const channel = `private-${empNo}`;
       io.to(channel).emit('leave-rejected', payload);
+
+      // Persist the notification
+      const notification = {
+        message,
+        type: 'leave-rejected',
+        empNo,
+      };
+      await Notification.create(notification);
     }
 
     const updatedLeave = await leave.save();

@@ -51,6 +51,7 @@ import {
   userDetailsReducer,
   userLoginReducer,
 } from './reducers/userReducers';
+import { clearNotificationReducer, readNotificationReducer, userNotificationsReducer } from './reducers/notificationsReducer';
 
 const userInfoFromStorage = localStorage.getItem('userInfo')
   ? JSON.parse(localStorage.getItem('userInfo'))
@@ -94,6 +95,9 @@ const reducer = combineReducers({
   editMeeting: editMeetingReducer,
   cancelMeeting: cancelMeetingReducer,
   getDesignationsAdmin: getDesignationsAdminReducer,
+  userNotifications: userNotificationsReducer,
+  readNotification: readNotificationReducer,
+  clearNotification:clearNotificationReducer,
   // userUpdateProfile: userUpdateProfileReducer,
   // userList: userListReducer,
   // userDelete: userDeleteReducer,
