@@ -79,7 +79,7 @@ function Notifications({ empNo }) {
       }
     };
 
-    const socket = io('http://52.88.221.122:5001', {
+    const socket = io('http://ec2-52-88-221-122.us-west-2.compute.amazonaws.com:5001', {
       query: { empNo },
     });
 
