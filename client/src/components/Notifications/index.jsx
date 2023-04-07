@@ -79,7 +79,7 @@ function Notifications({ empNo }) {
       }
     };
 
-    const socket = io('http://localhost:5001', {
+    const socket = io('http://52.88.221.122:5001', {
       query: { empNo },
     });
 
