@@ -49,6 +49,9 @@ employee: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Employee'
   },
+  rejectionReason: {
+    type: String
+  }
 });
 
 module.exports = mongoose.models.Leave || mongoose.model('Leave', leaveSchema)

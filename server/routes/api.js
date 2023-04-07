@@ -11,6 +11,7 @@ const leaveRouter = require('./leave.routes');
 const meetingsRouter = require('./meetings.routes');
 const projectRouter = require('./project.routes');
 const taskRouter = require('./task.routes');
+const notificationRouter = require('./notification.routes');
 
 const api = express.Router();
 
@@ -26,5 +27,6 @@ api.use('/meetings', meetingsRouter);
 api.use('/google', googleMeetingRouter);
 api.use('/designations', designationRouter);
 api.use('/experiences', experienceRouter);
+api.use('/notifications', notificationRouter);
 
 module.exports = api;

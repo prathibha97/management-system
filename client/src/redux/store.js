@@ -24,6 +24,7 @@ import {
   adminLeaveDetailsReducer,
   allLeaveDetailsReducer,
   approveLeaveReducer,
+  deleteLeaveRequestReducer,
   leaveDetailsReducer,
   leaveRequestReducer,
   rejectLeaveReducer,
@@ -50,6 +51,7 @@ import {
   userDetailsReducer,
   userLoginReducer,
 } from './reducers/userReducers';
+import { clearNotificationReducer, readNotificationReducer, userNotificationsReducer } from './reducers/notificationsReducer';
 
 const userInfoFromStorage = localStorage.getItem('userInfo')
   ? JSON.parse(localStorage.getItem('userInfo'))
@@ -78,6 +80,7 @@ const reducer = combineReducers({
   allLeaveDetails: allLeaveDetailsReducer,
   approveLeave: approveLeaveReducer,
   rejectLeave: rejectLeaveReducer,
+  deleteLeaveRequest: deleteLeaveRequestReducer,
   userProjectDetails: userProjectDetailsReducer,
   projectDetailsById: projectDetailsByIdReducer,
   projectBoardDetails: projectBoardDetailsReducer,
@@ -92,6 +95,9 @@ const reducer = combineReducers({
   editMeeting: editMeetingReducer,
   cancelMeeting: cancelMeetingReducer,
   getDesignationsAdmin: getDesignationsAdminReducer,
+  userNotifications: userNotificationsReducer,
+  readNotification: readNotificationReducer,
+  clearNotification:clearNotificationReducer,
   // userUpdateProfile: userUpdateProfileReducer,
   // userList: userListReducer,
   // userDelete: userDeleteReducer,

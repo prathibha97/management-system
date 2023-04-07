@@ -4,8 +4,8 @@ import { DataGrid } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Loader } from '../../components';
-import { approveLeaveRequest, getAllLeaveDetails, rejectLeaveRequest } from '../../redux/actions/leaveActions';
+import { LeaveRejectDialog, Loader } from '../../components';
+import { approveLeaveRequest, deleteLeaveRequest, getAllLeaveDetails, rejectLeaveRequest } from '../../redux/actions/leaveActions';
 import { formatDate } from '../../utils/formatDate';
 
 
@@ -16,6 +16,10 @@ export default function DataGridDemo() {
   const navigate = useNavigate();
 
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
+
+  const [openRejectDialog, setOpenRejectDialog] = useState(false);
+
+  const [leaveChangeCount, setLeaveChangeCount] = useState(0)
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin
@@ -40,17 +44,22 @@ export default function DataGridDemo() {
   }, [userInfo])
 
   useEffect(() => {
+    dispatch(getAllLeaveDetails())
+  }, [leaveChangeCount])
+
+  useEffect(() => {
     if (error || errorReject) {
       setAlert({ open: true, message: error || errorReject, severity: 'error' });
     }
   }, [error, errorReject]);
+
 
   if (!userInfo || loading) {
     return <Loader />
   }
 
   const columns = [
-    { field: 'empNo', headerName: 'Emp No', width: 90},
+    { field: 'empNo', headerName: 'Emp No', width: 90 },
     {
       field: 'fullName',
       headerName: 'Full name',
@@ -83,8 +92,8 @@ export default function DataGridDemo() {
     {
       field: 'reason',
       headerName: 'Reason',
-      width: 280,
-      // headerAlign: 'center',
+      width: 240,
+      headerAlign: 'center',
     },
     {
       field: 'status',
@@ -113,39 +122,70 @@ export default function DataGridDemo() {
     {
       field: 'action',
       headerName: 'Action',
-      width: 170,
-      // headerAlign: 'center',
+      width: 160,
+      headerAlign: 'center',
       renderCell: (params) => {
-        const handleApprove = () => {
+        const { status } = params.row;
+        if (status === 'Pending') {
+          const handleApprove = () => {
+            const leaveId = params.row._id;
+            const { empNo } = params.row;
+            try {
+              dispatch(approveLeaveRequest({ leaveId, empNo, status: 'Approved' }))
+              setLeaveChangeCount(leaveChangeCount + 1)
+              setAlert({ open: true, message: 'Leave Approved successfully', severity: 'success' });
+            } catch (err) {
+              setAlert({ open: true, message: err.response.data.message, severity: 'error' });
+            }
+          };
+
+          const handleRejectDialog = () => {
+            setOpenRejectDialog(true);
+          };
+
+          const handleReject = (reason) => {
+            const leaveId = params.row._id;
+            const { empNo } = params.row;
+            try {
+              dispatch(rejectLeaveRequest({ leaveId, empNo, status: 'Rejected', reason }))
+              setLeaveChangeCount(leaveChangeCount + 1)
+              setAlert({ open: true, message: 'Leave Rejected successfully', severity: 'success' });
+            } catch (err) {
+              setAlert({ open: true, message: err.response.data.message, severity: 'error' });
+            }
+          }
+
+          return (
+            <div>
+              <Chip label="Approve" color='success' variant='outlined' onClick={() => handleApprove(params)} />
+              {openRejectDialog &&
+                <LeaveRejectDialog open={openRejectDialog} onClose={() => setOpenRejectDialog(false)} onReject={handleReject} />
+              }
+
+              <Chip label="Reject" color='error' variant='outlined' sx={{ marginLeft: 1 }} onClick={() => handleRejectDialog(params)} />
+            </div>
+          );
+        }
+        const handleDelete = () => {
           const leaveId = params.row._id;
-          const { empNo } = params.row;
           try {
-            dispatch(approveLeaveRequest({ leaveId, empNo, status: 'Approved' }))
-            setAlert({ open: true, message: 'Leave Approved successfully', severity: 'success' });
+            dispatch(deleteLeaveRequest(leaveId));
+            setLeaveChangeCount(1)
+            setAlert({ open: true, message: 'Leave Deleted successfully', severity: 'success' });
           } catch (err) {
             setAlert({ open: true, message: err.response.data.message, severity: 'error' });
           }
-        };
+        }
 
-        const handleReject = () => {
-          const leaveId = params.row._id;
-          const { empNo } = params.row;
-          try {
-            dispatch(rejectLeaveRequest({ leaveId, empNo, status: 'Rejected' }))
-            setAlert({ open: true, message: 'Leave Rejected successfully', severity: 'success' });
-          } catch (err) {
-            setAlert({ open: true, message: err.response.data.message, severity: 'error' });
-          }
-        };
-
-        return (
-          <div>
-            <Chip label="Approve" color='success' variant='outlined' onClick={() => handleApprove(params)} />
-            <Chip label="Reject" color='error' variant='outlined' onClick={() => handleReject(params)} sx={{ marginLeft: 1 }} />
-          </div>
-        );
+        return <Chip label="Delete Request" color='warning' variant='outlined' onClick={() => handleDelete(params)} />;
       },
     },
+    {
+      field: 'rejectionReason',
+      headerName: 'Rejection Reason',
+      width: 170,
+      headerAlign: 'center',
+    }
   ];
 
 
@@ -166,6 +206,14 @@ export default function DataGridDemo() {
               pageSize: 10,
             },
           },
+        }}
+        sx={{
+          "& .MuiDataGrid-columnHeaders": {
+            backgroundColor: "rgb(232 232 232)",
+            color: "black",
+            fontSize: 14,
+            fontWeight: 900,
+          }
         }}
         pageSizeOptions={[10]}
         // checkboxSelection
