@@ -127,7 +127,7 @@ function People() {
                   <TableCell align='center'>{row.empNo}</TableCell>
                   <TableCell align='center'>{row.name.first} {row.name.last}</TableCell>
                   <TableCell align='center'>{row.designation?.name}</TableCell>
-                  <TableCell align='center'>{row.department.name}</TableCell>
+                  <TableCell align='center'>{row.department?.name}</TableCell>
                   <TableCell align='center'>{row.phone}</TableCell>
                   <TableCell align='center'>
                     <FontAwesomeIcon icon={faEye} onClick={() => handleView(row)} className="mx-1 hover:text-[#1DB3AB] cursor-pointer" />

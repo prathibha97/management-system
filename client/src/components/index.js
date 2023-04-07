@@ -37,3 +37,4 @@ export { default as SalaryDetails } from './SalaryDetails';
 export { default as SalaryStructure } from './SalaryStructure';
 export { default as ScheduleMeeting } from './ScheduleMeeting';
 export { default as Sidebar } from './Sidebar';
+export { default as LeaveRejectDialog } from './LeaveRejectDialog';

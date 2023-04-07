@@ -9,6 +9,9 @@ import {
   CREATE_LEAVE_FAIL,
   CREATE_LEAVE_REQUEST,
   CREATE_LEAVE_SUCCESS,
+  DELETE_LEAVE_FAIL,
+  DELETE_LEAVE_REQUEST,
+  DELETE_LEAVE_SUCCESS,
   GET_ALL_LEAVE_REQUEST,
   GET_ALL_LEAVE_SUCCESS,
   REJECT_LEAVE_FAIL,
@@ -154,7 +157,7 @@ export const approveLeaveRequest =
   };
 
 export const rejectLeaveRequest =
-  ({ leaveId, empNo, status }) =>
+  ({ leaveId, empNo, status, reason }) =>
   async (dispatch, getState) => {
     try {
       dispatch({
@@ -170,7 +173,7 @@ export const rejectLeaveRequest =
       };
       const { data } = await api.put(
         `/leaves/${empNo}/approval/${leaveId}`,
-        { status },
+        { status, reason },
         config
       );
       dispatch({
@@ -212,6 +215,35 @@ export const getAdminLeaveDetails = (empNo) => async (dispatch, getState) => {
   } catch (err) {
     dispatch({
       type: ADMIN_LEAVE_DETAILS_FAIL,
+      payload:
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message,
+    });
+  }
+};
+
+export const deleteLeaveRequest = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: DELETE_LEAVE_REQUEST,
+    });
+    const {
+      userLogin: { userInfo },
+    } = getState();
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    const { data } = await api.delete(`/leaves/${id}`, config);
+    dispatch({
+      type: DELETE_LEAVE_SUCCESS,
+      payload: data,
+    });
+  } catch (err) {
+    dispatch({
+      type: DELETE_LEAVE_FAIL,
       payload:
         err.response && err.response.data.message
           ? err.response.data.message
