@@ -134,7 +134,7 @@ function People() {
                     <FontAwesomeIcon icon={faEdit} onClick={() => handleEdit(row)} className="mx-1 hover:text-[#1DB3AB] cursor-pointer" />
                     <FontAwesomeIcon icon={faTrash} onClick={() => setOpen(true)} className="mx-1 hover:text-[#FF6760] cursor-pointer" />
                     {open && (
-                      <AlertDialog open={open} handleClose={handleClose} setAlert={setAlert} empNo={row.empNo} />
+                      <AlertDialog open={open} handleClose={handleClose} setAlert={setAlert} empNo={row.empNo} title='Are you sure you want to remove this employee?' />
                     )}
                   </TableCell>
                 </TableRow>

@@ -96,7 +96,10 @@ const getProjectById = async (req, res) => {
 
 const getAllProjects = async (req, res) => {
   try {
-    const projects = await Project.find();
+    const projects = await Project.find()
+      .populate('client')
+      .populate('department')
+      .populate('assignee', 'name');
     return res.status(200).json(projects);
   } catch (err) {
     console.log(err);

@@ -11,6 +11,7 @@ import {
   Payroll,
   People,
   Profile,
+  Project,
   Projects,
   Register,
   Settings,
@@ -36,6 +37,7 @@ function App() {
               <Route path="/people" element={<People />} />
               <Route path="/people/:empNo" element={<EmpProfile />} />
               <Route path="/projects" element={<Projects />} />
+              <Route path="/projects/:id" element={<Project />} />
               <Route path="/payroll" element={<Payroll />} />
               <Route path="/leaves" element={<Leaves />} />
               <Route path="/register" element={<Register />} />

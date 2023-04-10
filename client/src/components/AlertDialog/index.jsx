@@ -7,7 +7,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { useDispatch } from 'react-redux';
 import { removeEmployee } from '../../redux/actions/employeeActions';
 
-export default function AlertDialog({ open, handleClose, empNo, setAlert }) {
+export default function AlertDialog({ open, handleClose, empNo, setAlert, title}) {
   const dispatch = useDispatch();
   const handleDelete = () => {
     try {
@@ -27,7 +27,7 @@ export default function AlertDialog({ open, handleClose, empNo, setAlert }) {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          Are you sure you want to remove this employee?
+          {title}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">

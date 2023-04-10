@@ -35,8 +35,14 @@ import {
   myMeetingsReducer,
   scheduleMeetingReducer,
 } from './reducers/meetingsReducer';
+import {
+  clearNotificationReducer,
+  readNotificationReducer,
+  userNotificationsReducer,
+} from './reducers/notificationsReducer';
 import passwordRecoveryReducer from './reducers/passwordRecoveryReducer';
 import {
+  allProjectDetailsReducer,
   projectDetailsByIdReducer,
   userProjectDetailsReducer,
 } from './reducers/projectReducer';
@@ -51,7 +57,6 @@ import {
   userDetailsReducer,
   userLoginReducer,
 } from './reducers/userReducers';
-import { clearNotificationReducer, readNotificationReducer, userNotificationsReducer } from './reducers/notificationsReducer';
 
 const userInfoFromStorage = localStorage.getItem('userInfo')
   ? JSON.parse(localStorage.getItem('userInfo'))
@@ -83,6 +88,7 @@ const reducer = combineReducers({
   deleteLeaveRequest: deleteLeaveRequestReducer,
   userProjectDetails: userProjectDetailsReducer,
   projectDetailsById: projectDetailsByIdReducer,
+  allProjectDetails: allProjectDetailsReducer,
   projectBoardDetails: projectBoardDetailsReducer,
   createTask: createTaskReducer,
   updateTask: updateTaskReducer,
@@ -97,7 +103,7 @@ const reducer = combineReducers({
   getDesignationsAdmin: getDesignationsAdminReducer,
   userNotifications: userNotificationsReducer,
   readNotification: readNotificationReducer,
-  clearNotification:clearNotificationReducer,
+  clearNotification: clearNotificationReducer,
   // userUpdateProfile: userUpdateProfileReducer,
   // userList: userListReducer,
   // userDelete: userDeleteReducer,
