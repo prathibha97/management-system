@@ -11,8 +11,23 @@ const Project = require('../models/Project');
 */
 
 const createProject = async (req, res) => {
-  const { title, description, deadline, startDate, endDate, assignee, client, department } =
-    req.body;
+  const {
+    title,
+    description,
+    deadline,
+    startDate,
+    endDate,
+    assignee,
+    client,
+    department,
+    scope,
+    designLink,
+    specialNotes,
+    category,
+    nftCollectionSize,
+    nftTradeCount,
+    nftBaseDesignCount,
+  } = req.body;
 
   try {
     const project = await Project.create({
@@ -24,6 +39,13 @@ const createProject = async (req, res) => {
       assignee,
       client,
       department,
+      scope,
+      designLink,
+      specialNotes,
+      category,
+      nftCollectionSize,
+      nftTradeCount,
+      nftBaseDesignCount,
     });
 
     // Update project history for each employee assigned to the project
