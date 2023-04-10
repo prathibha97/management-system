@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { AttendanceCalendar, EmployeeDetails, LeaveBalance, Loader, SalaryDetails } from '../../components';
+import { AttendanceCalendar, EmployeeDetails, LeaveBalance, Loader, ProjectHistory, SalaryDetails } from '../../components';
 import { getUserDetailsAdmin } from '../../redux/actions/userActions';
 
 function EmpProfile() {
@@ -33,6 +33,7 @@ function EmpProfile() {
         <AttendanceCalendar user={user} />
         <LeaveBalance user={user} />
         <SalaryDetails />
+        <ProjectHistory user={user} />
       </div>
     </div>
   )
