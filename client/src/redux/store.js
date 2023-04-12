@@ -8,6 +8,7 @@ import {
   markAttendanceReducer,
 } from './reducers/attendanceReducers';
 import { projectBoardDetailsReducer } from './reducers/boardReducer';
+import { clientListReducer } from './reducers/clientReducer';
 import { departmentDetailsReducer } from './reducers/departmentReducer';
 import { getDesignationsAdminReducer } from './reducers/designationReducer';
 import {
@@ -104,6 +105,7 @@ const reducer = combineReducers({
   userNotifications: userNotificationsReducer,
   readNotification: readNotificationReducer,
   clearNotification: clearNotificationReducer,
+  clientList: clientListReducer,
   // userUpdateProfile: userUpdateProfileReducer,
   // userList: userListReducer,
   // userDelete: userDeleteReducer,
