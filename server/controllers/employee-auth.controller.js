@@ -85,7 +85,7 @@ const registerEmployee = async (req, res) => {
     });
 
     const dept = await Department.findById(department);
-    dept.employees.push(newEmployee.depId);
+    dept.employees.push(newEmployee._id);
     await dept.save();
 
     res.status(201).json({ newEmployee, message: 'Employee created successfully' });

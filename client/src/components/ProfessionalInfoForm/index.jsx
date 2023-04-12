@@ -115,8 +115,8 @@ function ProfessionalInfoForm({ handleChange, values, nextStep, prevStep }) {
               <MenuItem value='Maternity'>
                 Maternity
               </MenuItem>
-              <MenuItem value='Other'>
-                Other
+              <MenuItem value='Medical'>
+                Medical
               </MenuItem>
             </Select>
           </div>
