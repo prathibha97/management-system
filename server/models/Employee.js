@@ -116,7 +116,7 @@ const empSchema = new mongoose.Schema(
           if (['Intern', 'Contract', 'Part-Time'].includes(this.workType)) {
             return 0;
           }
-          return 10;
+          return 7;
         },
       },
       Maternity: {
@@ -128,13 +128,13 @@ const empSchema = new mongoose.Schema(
           return 0;
         },
       },
-      Other: {
+      Medical: {
         type: Number,
         default() {
           if (['Intern', 'Contract', 'Part-Time'].includes(this.workType)) {
             return 1;
           }
-          return 10;
+          return 7;
         },
       },
     },

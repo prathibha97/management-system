@@ -118,7 +118,7 @@ function Projects() {
                   align='center'
                   style={{ minWidth: 90, backgroundColor: '#E8E8E8', fontWeight: 'bold' }}
                 >
-                  Action
+                  Actions
                 </TableCell>
               </TableRow>
             </TableHead>

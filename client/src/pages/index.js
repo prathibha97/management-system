@@ -13,3 +13,4 @@ export { default as Projects } from './Projects';
 export { default as Register } from './Register';
 export { default as Settings } from './Settings';
 export { default as Layout } from './layout';
+export { default as PasswordReset } from './PasswordReset';

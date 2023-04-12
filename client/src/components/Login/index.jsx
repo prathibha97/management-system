@@ -17,18 +17,15 @@ function Login({ setPage }) {
     try {
       await api.post('/emp/auth/login', { email, password })
       dispatch(login(email, password))
-      navigate('/dashboard')
+      if (password === '123456') {
+        navigate('/reset-password')
+      } else {
+        navigate('/dashboard')
+      }
     } catch (err) {
       console.log(err.message);
     }
   }
-
-  // function handlePasswordReset() {
-  //   // Perform login logic
-  //   // dispatch({ type: "SET_PAGE", payload: "otp" });
-  //   setPage('otp')
-  //   console.log('Password reset');
-  // }
 
   async function navigateToOtp() {
     if (email) {
@@ -45,7 +42,7 @@ function Login({ setPage }) {
       } catch (err) {
         console.log(err)
       }
-      return alert("Please enter your email");
+      // return alert("Please enter your email");
     }
   }
   return (

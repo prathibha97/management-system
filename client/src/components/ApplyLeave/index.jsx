@@ -13,7 +13,7 @@ import Button from '../Button';
 function ApplyLeave({ user, setLeaveChangeCount }) {
   const [leaveType, setLeaveType] = useState('')
   const [startDate, setStartDate] = useState(moment().format())
-  const [endDate, setEndDate] = useState(moment().format())
+  const [endDate, setEndDate] = useState(moment().add(1, 'd').format())
   const [reason, setReason] = useState('')
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
   const dispatch = useDispatch()
@@ -63,7 +63,7 @@ function ApplyLeave({ user, setLeaveChangeCount }) {
                   <MenuItem value='Maternity'>Maternity</MenuItem>
               }
               <MenuItem value='Annual'>Annual</MenuItem>
-              <MenuItem value='Other'>Other</MenuItem>
+              <MenuItem value='Medical'>Medical</MenuItem>
             </Select>
           </FormControl>
           <div className='flex mt-5 mb-5 gap-5'>

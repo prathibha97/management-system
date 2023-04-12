@@ -91,6 +91,9 @@ function Header() {
     case '/register':
       heading = 'Register New Employee';
       break;
+    case '/reset-password':
+      heading = 'Reset Password';
+      break;
     default:
       heading = 'Unknown Page';
       break;

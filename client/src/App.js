@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import {
   Attendance,
   Auth,
@@ -8,6 +8,7 @@ import {
   EmpProfile,
   Layout,
   Leaves,
+  PasswordReset,
   Payroll,
   People,
   Profile,
@@ -32,6 +33,7 @@ function App() {
           <Route path="/attendance" element={<Attendance />} />
           <Route path="/leave" element={<Leave />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/reset-password" element={<PasswordReset />} />
           {userInfo?.employee.isAdmin && (
             <>
               <Route path="/people" element={<People />} />
