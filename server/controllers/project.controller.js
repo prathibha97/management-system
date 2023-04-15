@@ -122,9 +122,34 @@ const getProjectByEmpId = async (req, res) => {
   }
 };
 
+/*
+?@desc   Delete project
+*@route  Delete /api/projects/:id
+*@access Private/Admin
+*/
+
+const deleteProject = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const project = await Project.findById(id);
+
+    if (!project) {
+      return res.status(404).json({ message: 'Project not found' });
+    }
+
+    await project.remove();
+
+    return res.status(200).json({ message: 'Project deleted successfully' });
+  } catch (err) {
+    return res.status(500).json({ message: 'Error occured while deleting the project' });
+  }
+}
+
 module.exports = {
   createProject,
   getProjectById,
   getAllProjects,
   getProjectByEmpId,
+  deleteProject,
 };

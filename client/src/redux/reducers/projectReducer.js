@@ -10,7 +10,10 @@ import {
   ALL_PROJECT_DETAILS_SUCCESS,
   CREATE_PROJECT_REQUEST,
   CREATE_PROJECT_SUCCESS,
-  CREATE_PROJECT_FAIL
+  CREATE_PROJECT_FAIL,
+  DELETE_PROJECT_REQUEST,
+  DELETE_PROJECT_SUCCESS,
+  DELETE_PROJECT_FAIL
 } from '../constants/projectConstants';
 
 export const userProjectDetailsReducer = (state = { projects: [] }, action) => {
@@ -107,6 +110,32 @@ export const createProjectReducer = (state = { project: {} }, action) => {
         projects: payload,
       };
     case CREATE_PROJECT_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+    default:
+      return state;
+  }
+};
+
+export const deleteProjectReducer = (state = { project: {} }, action) => {
+  const { type, payload } = action;
+
+  switch (type) {
+    case DELETE_PROJECT_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      };
+    case DELETE_PROJECT_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        projects: payload,
+      };
+    case DELETE_PROJECT_FAIL:
       return {
         ...state,
         loading: false,

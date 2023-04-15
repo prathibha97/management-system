@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Button, Loader } from '../../components';
 import AlertDialog from '../../components/AlertDialog';
-import { getAllProjects } from '../../redux/actions/projectActions';
+import { deleteProject, getAllProjects } from '../../redux/actions/projectActions';
 import { formatDate } from '../../utils/formatDate';
 
 
@@ -135,7 +135,7 @@ function Projects() {
                     <FontAwesomeIcon icon={faEdit} onClick={() => handleEdit(row)} className="mx-1 hover:text-[#1DB3AB] cursor-pointer" />
                     <FontAwesomeIcon icon={faTrash} onClick={() => setOpen(true)} className="mx-1 hover:text-[#FF6760] cursor-pointer" />
                     {open && (
-                      <AlertDialog open={open} handleClose={handleClose} setAlert={setAlert} id={row.id} title='Are you sure you want to remove this project?'/>
+                      <AlertDialog open={open} handleClose={handleClose} setAlert={setAlert} id={row._id} title='Are you sure you want to remove this project?' remove={deleteProject}/>
                     )}
                   </TableCell>
                 </TableRow>

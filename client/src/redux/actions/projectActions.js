@@ -160,3 +160,32 @@ export const createNewProject = (project) => async (dispatch, getState) => {
     });
   }
 };
+
+export const deleteProject = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: CREATE_PROJECT_REQUEST,
+    });
+    const {
+      userLogin: { userInfo },
+    } = getState();
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    const { data } = await api.delete(`/projects/${id}`, config);
+    dispatch({
+      type: CREATE_PROJECT_SUCCESS,
+      payload: data,
+    });
+  } catch (err) {
+    dispatch({
+      type: CREATE_PROJECT_FAIL,
+      payload:
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message,
+    });
+  }
+};

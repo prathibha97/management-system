@@ -9,7 +9,10 @@ import {
 } from './reducers/attendanceReducers';
 import { projectBoardDetailsReducer } from './reducers/boardReducer';
 import { clientListReducer } from './reducers/clientReducer';
-import { departmentDetailsReducer, departmentEmployeeListReducer } from './reducers/departmentReducer';
+import {
+  departmentDetailsReducer,
+  departmentEmployeeListReducer,
+} from './reducers/departmentReducer';
 import { getDesignationsAdminReducer } from './reducers/designationReducer';
 import {
   employeeListReducer,
@@ -45,6 +48,7 @@ import passwordRecoveryReducer from './reducers/passwordRecoveryReducer';
 import {
   allProjectDetailsReducer,
   createProjectReducer,
+  deleteProjectReducer,
   projectDetailsByIdReducer,
   userProjectDetailsReducer,
 } from './reducers/projectReducer';
@@ -92,6 +96,7 @@ const reducer = combineReducers({
   projectDetailsById: projectDetailsByIdReducer,
   allProjectDetails: allProjectDetailsReducer,
   createProject: createProjectReducer,
+  deleteProject: deleteProjectReducer,
   projectBoardDetails: projectBoardDetailsReducer,
   createTask: createTaskReducer,
   updateTask: updateTaskReducer,
