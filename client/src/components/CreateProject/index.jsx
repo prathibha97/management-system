@@ -77,15 +77,14 @@ function CreateProject() {
       nftCollectionSize
     }
     try {
-      dispatch(createNewProject(project))
       console.log(project);
+      dispatch(createNewProject(project))
+      navigate('/projects')
     } catch (error) {
       console.log(error);
     }
   }
 
-
-  // console.log(`category: ${category}, department: ${department}, client: ${client}, deadline: ${deadline}, team: ${team}, designLink: ${designLink}, specialNotes: ${specialNotes}, projectScope: ${projectScope}`);
   return (
     <div className='bg-[#EEF2F5] h-[90%] w-[95%] mt-6 rounded-xl m-auto overflow-y-auto'>
       <div className='flex flex-col mt-1 ml-[55px]'>
