@@ -7,7 +7,10 @@ import {
   USER_PROJECT_DETAILS_REQUEST,
   USER_PROJECT_DETAILS_SUCCESS,
   ALL_PROJECT_DETAILS_FAIL,
-  ALL_PROJECT_DETAILS_SUCCESS
+  ALL_PROJECT_DETAILS_SUCCESS,
+  CREATE_PROJECT_REQUEST,
+  CREATE_PROJECT_SUCCESS,
+  CREATE_PROJECT_FAIL
 } from '../constants/projectConstants';
 
 export const userProjectDetailsReducer = (state = { projects: [] }, action) => {
@@ -78,6 +81,32 @@ export const allProjectDetailsReducer = (state = { projects: [] }, action) => {
         projects: payload,
       };
     case ALL_PROJECT_DETAILS_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
+      };
+    default:
+      return state;
+  }
+};
+
+export const createProjectReducer = (state = { project: {} }, action) => {
+  const { type, payload } = action;
+
+  switch (type) {
+    case CREATE_PROJECT_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      };
+    case CREATE_PROJECT_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        projects: payload,
+      };
+    case CREATE_PROJECT_FAIL:
       return {
         ...state,
         loading: false,

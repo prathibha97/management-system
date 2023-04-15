@@ -83,6 +83,23 @@ const updateDepartment = async (req, res) => {
 };
 
 /*
+?@desc   Get employees by department id
+*@route  Get /api/departments/:id/employees
+*@access Private/Admin
+*/
+
+const getEmployeesByDepartmentId = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const department = await Department.findById(id).populate('employees');
+    res.status(200).json(department.employees);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: err.message });
+  }
+}
+
+/*
 ?@desc   Delete a department
 *@route  Delete /api/departments/:id
 *@access Private/Admin
@@ -104,5 +121,6 @@ module.exports = {
   getAllDepartments,
   getDepartmentById,
   updateDepartment,
+  getEmployeesByDepartmentId, 
   deleteDepartment,
 };

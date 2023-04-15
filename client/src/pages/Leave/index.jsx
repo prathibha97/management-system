@@ -10,8 +10,7 @@ function Leave() {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.userDetails) || {}
 
-  const userLogin = useSelector((state) => state.userLogin)
-  const { userInfo } = userLogin
+  const {userInfo} = useSelector((state) => state.userLogin)
 
   const leaveDetails = useSelector((state) => state.leaveDetails)
   const { leaves , loading} = leaveDetails

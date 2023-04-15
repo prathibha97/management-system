@@ -11,8 +11,8 @@ function Attendance() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo } = userLogin
+  const {userInfo} = useSelector((state) => state.userLogin);
+  const {employee} = userInfo
 
   const { attendanceInfo ,loading} = useSelector((state) => state.attendanceDetails);
 
@@ -21,10 +21,10 @@ function Attendance() {
     if (!userInfo) {
       navigate('/');
     } else {
-      const storedUser = JSON.parse(localStorage.getItem('user'));
-      if (!storedUser || storedUser.empNo !== userInfo.empNo) {
-        dispatch(getUserDetails(userInfo.employee.empNo));
-        dispatch(getAttendanceDetailsbyId(userInfo.employee.empNo));
+      const storedUserInfo = JSON.parse(localStorage.getItem('user'));
+      if (!storedUserInfo || storedUserInfo.empNo !== userInfo.empNo) {
+        dispatch(getUserDetails(employee.empNo));
+        dispatch(getAttendanceDetailsbyId(employee.empNo));
       }
     }
   }, [userInfo])

@@ -155,7 +155,7 @@ function Projects() {
       </Paper>
 
       <div className='flex justify-end mt-10'>
-        <Button title='Create New Project' icon={faSheetPlastic} onClick={() => navigate('/register')} />
+        <Button title='Create New Project' icon={faSheetPlastic} onClick={() => navigate('/projects/create')} />
       </div>
       <Snackbar open={alert?.open} autoHideDuration={5000} onClose={handleAlertClose}>
         <Alert onClose={handleAlertClose} severity={alert?.severity}>

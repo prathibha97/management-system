@@ -18,6 +18,7 @@ import {
   Settings,
 } from './pages';
 import Leave from './pages/Leave';
+import { CreateProject } from './components';
 
 function App() {
   const { userInfo } = useSelector((state) => state.userLogin);
@@ -39,6 +40,7 @@ function App() {
               <Route path="/people" element={<People />} />
               <Route path="/people/:empNo" element={<EmpProfile />} />
               <Route path="/projects" element={<Projects />} />
+              <Route path="/projects/create" element={<CreateProject />} />
               <Route path="/projects/:id" element={<Project />} />
               <Route path="/payroll" element={<Payroll />} />
               <Route path="/leaves" element={<Leaves />} />

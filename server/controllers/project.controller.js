@@ -13,14 +13,13 @@ const Project = require('../models/Project');
 const createProject = async (req, res) => {
   const {
     title,
-    description,
     deadline,
     startDate,
     endDate,
-    assignee,
+    team,
     client,
     department,
-    scope,
+    projectScope,
     designLink,
     specialNotes,
     category,
@@ -32,14 +31,13 @@ const createProject = async (req, res) => {
   try {
     const project = await Project.create({
       title,
-      description,
       deadline,
       startDate,
       endDate,
-      assignee,
+      assignee: team,
       client,
       department,
-      scope,
+      scope: projectScope,
       designLink,
       specialNotes,
       category,
@@ -49,7 +47,7 @@ const createProject = async (req, res) => {
     });
 
     // Update project history for each employee assigned to the project
-    for (const employeeId of assignee) {
+    for (const employeeId of team) {
       await Employee.findByIdAndUpdate(employeeId, {
         $push: { projectHistory: { project: project._id } },
       });

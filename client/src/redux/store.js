@@ -9,7 +9,7 @@ import {
 } from './reducers/attendanceReducers';
 import { projectBoardDetailsReducer } from './reducers/boardReducer';
 import { clientListReducer } from './reducers/clientReducer';
-import { departmentDetailsReducer } from './reducers/departmentReducer';
+import { departmentDetailsReducer, departmentEmployeeListReducer } from './reducers/departmentReducer';
 import { getDesignationsAdminReducer } from './reducers/designationReducer';
 import {
   employeeListReducer,
@@ -44,6 +44,7 @@ import {
 import passwordRecoveryReducer from './reducers/passwordRecoveryReducer';
 import {
   allProjectDetailsReducer,
+  createProjectReducer,
   projectDetailsByIdReducer,
   userProjectDetailsReducer,
 } from './reducers/projectReducer';
@@ -90,6 +91,7 @@ const reducer = combineReducers({
   userProjectDetails: userProjectDetailsReducer,
   projectDetailsById: projectDetailsByIdReducer,
   allProjectDetails: allProjectDetailsReducer,
+  createProject: createProjectReducer,
   projectBoardDetails: projectBoardDetailsReducer,
   createTask: createTaskReducer,
   updateTask: updateTaskReducer,
@@ -97,6 +99,7 @@ const reducer = combineReducers({
   deleteTask: deleteTaskReducer,
   employeeList: employeeListReducer,
   departmentDetails: departmentDetailsReducer,
+  departmentEmployeeList: departmentEmployeeListReducer,
   myMeetings: myMeetingsReducer,
   scheduleMeeting: scheduleMeetingReducer,
   editMeeting: editMeetingReducer,

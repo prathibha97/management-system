@@ -39,3 +39,4 @@ export { default as ScheduleMeeting } from './ScheduleMeeting';
 export { default as Sidebar } from './Sidebar';
 export { default as LeaveRejectDialog } from './LeaveRejectDialog';
 export { default as ProjectHistory } from './ProjectHistory';
+export { default as CreateProject } from './CreateProject';

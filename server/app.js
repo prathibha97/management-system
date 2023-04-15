@@ -10,7 +10,6 @@ const { errorHandler, notFound } = require('./middleware/error.middleware');
 const sendEmail = require('./services/sendEmail');
 // const setCache = require('./middleware/cache.middleware');
 
-
 const app = express();
 
 const corsOptions = {
@@ -19,8 +18,8 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.json({ limit: '25mb' }));
+app.use(express.urlencoded({ extended: false, limit: '25mb' }));
 app.use(morgan('dev'));
 
 // app.use(setCache);
@@ -53,8 +52,6 @@ app.post('/send_recovery_email', (req, res) => {
     .then((response) => res.send(response.message))
     .catch((error) => res.status(500).send(error.message));
 });
-
-
 
 if (process.env.NODE_ENV !== 'development') {
   app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
