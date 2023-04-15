@@ -82,6 +82,9 @@ function Header() {
     case '/projects':
       heading = 'Manage Projects';
       break;
+    case `/projects/create`:
+      heading = 'New Project';
+      break;
     case `/projects/${id}`:
       heading = 'Project Info';
       break;

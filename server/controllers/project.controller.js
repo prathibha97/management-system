@@ -138,6 +138,19 @@ const deleteProject = async (req, res) => {
       return res.status(404).json({ message: 'Project not found' });
     }
 
+    // Remove the project from the corresponding department
+    await Department.findByIdAndUpdate(
+      { 'projects.project': project._id },
+      { $pull: { projects: project._id } },
+      { new: true }
+    );
+
+    // Remove the project from the projectHistory of all employees who have been assigned to it
+    await Employee.updateMany(
+      { 'projectHistory.project': project._id },
+      { $pull: { projectHistory: { project: project._id } } }
+    );
+
     await project.remove();
 
     return res.status(200).json({ message: 'Project deleted successfully' });
