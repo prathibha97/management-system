@@ -21,7 +21,8 @@ import Leave from './pages/Leave';
 import { CreateProject } from './components';
 
 function App() {
-  const { userInfo } = useSelector((state) => state.userLogin);
+  const { user } = useSelector((state) => state.auth);
+  console.log(user);
   // if (loading) return <Loader />;
   return (
     <Router>
@@ -35,7 +36,7 @@ function App() {
           <Route path="/leave" element={<Leave />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/reset-password" element={<PasswordReset />} />
-          {userInfo?.employee.isAdmin && (
+          {user?.isAdmin && (
             <>
               <Route path="/people" element={<People />} />
               <Route path="/people/:empNo" element={<EmpProfile />} />
@@ -46,7 +47,7 @@ function App() {
               <Route path="/leaves" element={<Leaves />} />
               <Route path="/register" element={<Register />} />
             </>
-          )}
+         )}
         </Route>
       </Routes>
     </Router>

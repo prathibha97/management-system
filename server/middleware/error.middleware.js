@@ -1,17 +1,20 @@
+const { logEvents } = require("./logEvents");
+
 const notFound = (req, res, next) => {
   const error = new Error(`Not Found - ${req.originalalUrl}`);
   res.status(404);
   next(error);
 };
 
-const errorHandler = (err, req, res, next) => {
-  const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
-  res.status(statusCode);
-  res.json({
-    message: err.message,
-    stack: process.env.NODE_ENV === 'production' ? null : err.stack
-  });
+
+const errorHandler = (err, req, res) => {
+  logEvents(`${err.name}: ${err.message}`, 'errLog.txt');
+  console.error(err.stack);
+  res.status(500).send(err.message);
 };
+
+module.exports = errorHandler;
+
 
 module.exports = {
   errorHandler,

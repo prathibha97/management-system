@@ -138,7 +138,9 @@ const empSchema = new mongoose.Schema(
         },
       },
     },
+    refreshToken: [String],
   },
+
   {
     timestamps: true,
   }
