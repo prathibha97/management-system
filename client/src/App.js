@@ -1,5 +1,5 @@
-import { useSelector } from 'react-redux';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { CreateProject } from './components';
 import {
   Attendance,
   Auth,
@@ -18,11 +18,10 @@ import {
   Settings,
 } from './pages';
 import Leave from './pages/Leave';
-import { CreateProject } from './components';
 
 function App() {
-  const { user } = useSelector((state) => state.auth);
-  console.log(user);
+  // const { user } = useSelector(selectCurrentUser);
+  const user = localStorage.getItem('userInfo');
   // if (loading) return <Loader />;
   return (
     <Router>
@@ -47,7 +46,7 @@ function App() {
               <Route path="/leaves" element={<Leaves />} />
               <Route path="/register" element={<Register />} />
             </>
-         )}
+          )}
         </Route>
       </Routes>
     </Router>

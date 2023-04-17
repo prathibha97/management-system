@@ -45,9 +45,9 @@ function Notifications({ empNo }) {
   const [loading, setLoading] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0)
 
-  const { notifications: userNotifications } = useSelector((state) => state.userNotifications);
+  const { notifications: userNotifications } = useSelector(getUserNotifications);
 
-  const unreadCount = userNotifications.filter(notification => !notification.isRead).length;
+  const unreadCount = userNotifications?.filter(notification => !notification.isRead).length;
 
   const handleNotificationClick = useCallback((event) => {
     setAnchorEl(event.currentTarget);
@@ -142,7 +142,7 @@ function Notifications({ empNo }) {
       isMounted = false;
       socket.disconnect();
     };
-  }, [empNo, dispatch, userNotifications.length, userNotifications.isRead]);
+  }, [empNo, dispatch, userNotifications?.length, userNotifications?.isRead]);
 
   return (
     <>
@@ -173,9 +173,9 @@ function Notifications({ empNo }) {
               <ListItemText primary="Loading..." />
             </ListItem>
           </List>
-        ) : userNotifications.length > 0 ? (
+        ) : userNotifications?.length > 0 ? (
           <List sx={{ textAlign: 'center' }}>
-            {userNotifications.map((notification) => (
+            {userNotifications?.map((notification) => (
               <NotificationItem notification={notification} />
             ))}
             <Button onClick={handleClearNotifications}>Clear All</Button>

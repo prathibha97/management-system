@@ -20,9 +20,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { getEmployeeList } from '../../redux/actions/employeeActions'
 import { cancelMeeting, editMeeting, getMyMeetings, scheduleMeeting } from '../../redux/actions/meetingActions'
-import Loader from '../Loader'
+// import Loader from '../Loader'
 import Meetings from '../Meetings'
 import ScheduleMeeting from '../ScheduleMeeting'
+import { selectEmployeeList } from '../../features/employees/employeeSelector'
+import { selectMyMeetings } from '../../features/meetings/meetingsSelector'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -41,24 +43,23 @@ function Calendar() {
   // Define a state variable to keep track of whether new meetings have been added or removed
   const [meetingChangeCount, setMeetingChangeCount] = useState(0);
 
-  const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo } = userLogin
+  const {user} = useSelector((state) => state.auth);
 
-  const { employees } = useSelector((state) => state.employeeList);
-  const { meetings, loading } = useSelector((state) => state.myMeetings);
+  const { employees } = useSelector(selectEmployeeList);
+  const { meetings } = useSelector(selectMyMeetings);
 
   // First useEffect hook to get employee list and meetings
   useEffect(() => {
-    if (!userInfo) {
+    if (!user) {
       navigate('/');
     } else {
-      const storedUser = JSON.parse(localStorage.getItem('user'));
-      if (!storedUser || storedUser.empNo !== userInfo.empNo) {
+      const storedUser = JSON.parse(localStorage.getItem('userInfo'));
+      if (!storedUser || storedUser.empNo !== user.empNo) {
         dispatch(getMyMeetings())
         dispatch(getEmployeeList())
       }
     }
-  }, [userInfo, meetingChangeCount])
+  }, [user, meetingChangeCount])
 
   // Second useEffect hook to get meetings again and reset meetingChangeCount
   useEffect(() => {
@@ -66,7 +67,7 @@ function Calendar() {
     setMeetingChangeCount(0);
   }, [dispatch, meetingChangeCount])
 
-  if (loading) return <Loader />
+  // if (loading) return <Loader />
 
   const days = eachDayOfInterval({
     start: firstDayCurrentMonth,
@@ -83,7 +84,7 @@ function Calendar() {
     setCurrentMonth(format(firstDayNextMonth, 'MMM-yyyy'))
   }
 
-  const selectedDayMeetings = meetings.filter((meeting) =>
+  const selectedDayMeetings = meetings?.filter((meeting) =>
     isSameDay(parseISO(meeting?.start?.dateTime), selectedDay)
   )
 
@@ -211,7 +212,7 @@ function Calendar() {
                   </button>
 
                   <div className="w-1 h-1 mx-auto mt-1">
-                    {meetings.some((meeting) => isSameDay(parseISO(meeting.start.dateTime), day)) ? (
+                    {meetings?.some((meeting) => isSameDay(parseISO(meeting.start.dateTime), day)) ? (
                       <div className="w-1 h-1 rounded-full bg-sky-500" />
                     ) : null}
                   </div>
@@ -236,9 +237,9 @@ function Calendar() {
             )}
             <div>
               <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
-                {selectedDayMeetings.length > 0 ? (
-                  selectedDayMeetings.map((meeting) => (
-                    <Meetings meeting={meeting} key={meeting.id} handleMeetingCancel={handleMeetingCancel} currentUser={userInfo?.employee} handleMeetingEdit={handleMeetingEdit} people={employees}  />
+                {selectedDayMeetings?.length > 0 ? (
+                  selectedDayMeetings?.map((meeting) => (
+                    <Meetings meeting={meeting} key={meeting.id} handleMeetingCancel={handleMeetingCancel} currentUser={user} handleMeetingEdit={handleMeetingEdit} people={employees}  />
                   ))
                 ) : (
                   <p>No meetings for today.</p>

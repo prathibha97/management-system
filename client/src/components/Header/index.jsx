@@ -12,23 +12,22 @@ import { useLocation } from 'react-router-dom';
 import { AccountMenu, Button, Notifications } from '../../components';
 import { markAttendance } from '../../redux/actions/attendanceActions';
 import { ProjectDetailsById } from '../../redux/actions/projectActions';
+import { getEmployeeProjects } from '../../features/projects/projectSelectors';
 
 function Header() {
   const location = useLocation();
   const dispatch = useDispatch()
   const id = location.pathname.split('/')[2];
   // Get attendanceMark state from the Redux store
-  const attendanceMark = useSelector((state) => state.markAttendance);
-  const { error } = attendanceMark;
+  const {error} = useSelector((state) => state.attendance);
 
-  const userProjectDetails = useSelector((state) => state.userProjectDetails);
-  const { projects } = userProjectDetails
+  const {projects} = useSelector(getEmployeeProjects);
 
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
-  const [project, setProject] = useState(projects.length > 0 ? projects[0]?._id : '');
+  const [project, setProject] = useState(projects?.length > 0 ? projects[0]?._id : '');
 
   const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-  const { empNo } = userInfo.employee;
+  const { empNo } = userInfo;
 
   const handleMarkAttendance = () => {
     try {
