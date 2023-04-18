@@ -1,4 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
+// import { persistReducer, persistStore } from 'redux-persist';
+// import storage from 'redux-persist/lib/storage';
 import { apiSlice } from './api/apiSlice';
 import authReducer from '../features/auth/authSlice';
 import attendanceReducer from '../features/attendance/attendanceSlice';
@@ -6,6 +8,14 @@ import projectReducer from '../features/projects/projectSlice';
 import notificationReducer from '../features/notifications/notificationSlice';
 import employeeReducer from '../features/employees/employeeSlice';
 import meetingReducer from '../features/meetings/meetingSlice';
+
+// const persistConfig = {
+//   key: 'root',
+//   storage,
+//   whitelist: ['auth'], // Only persist the 'auth' slice
+// };
+
+// const persistedAuthReducer = persistReducer(persistConfig, authReducer);
 
 export const store = configureStore({
   reducer: {
@@ -21,3 +31,5 @@ export const store = configureStore({
     getDefaultMiddleware().concat(apiSlice.middleware),
   devtools: true,
 });
+
+// export const persistor = persistStore(store);

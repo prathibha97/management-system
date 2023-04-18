@@ -4,8 +4,9 @@ import { CheckCircle } from '@mui/icons-material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { Badge, Button, Divider, IconButton, List, ListItem, ListItemText, Popover } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import io from 'socket.io-client';
+import { useUserNotificationsQuery } from '../../features/notifications/notificationApiSlice';
 import { MarkNotificationAsRead, clearUserNotifications, getUserNotifications } from '../../redux/actions/notificationActions';
 
 function NotificationItem({ notification }) {
@@ -44,8 +45,7 @@ function Notifications({ empNo }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0)
-
-  const { notifications: userNotifications } = useSelector(getUserNotifications);
+  const { data: userNotifications } = useUserNotificationsQuery(empNo)
 
   const unreadCount = userNotifications?.filter(notification => !notification.isRead).length;
 
@@ -70,7 +70,7 @@ function Notifications({ empNo }) {
     const fetchNotifications = async () => {
       try {
         setLoading(true);
-        await dispatch(getUserNotifications(empNo));
+        // await dispatch(getUserNotifications(empNo));
         setNotificationCount(notificationCount + 1);
         setLoading(false);
       } catch (err) {
@@ -91,7 +91,7 @@ function Notifications({ empNo }) {
       console.log('Disconnected from server');
     });
 
-    socket.on('leaveApproved', async (data) => {
+    socket.on('leaveApproved', async (_data) => {
       try {
         await dispatch(getUserNotifications(empNo));
         setNotificationCount(notificationCount + 1);
@@ -100,7 +100,7 @@ function Notifications({ empNo }) {
       }
     });
 
-    socket.on('leaveRejected', async (data) => {
+    socket.on('leaveRejected', async (_data) => {
       try {
         await dispatch(getUserNotifications(empNo));
         setNotificationCount(notificationCount + 1);
@@ -109,7 +109,7 @@ function Notifications({ empNo }) {
       }
     });
 
-    socket.on('meetingCreated', async (data) => {
+    socket.on('meetingCreated', async (_data) => {
       try {
         await dispatch(getUserNotifications(empNo));
         setNotificationCount(notificationCount + 1);
@@ -118,7 +118,7 @@ function Notifications({ empNo }) {
       }
     });
 
-    socket.on('meetingUpdated', async (data) => {
+    socket.on('meetingUpdated', async (_data) => {
       try {
         await dispatch(getUserNotifications(empNo));
         setNotificationCount(notificationCount + 1);
@@ -127,7 +127,7 @@ function Notifications({ empNo }) {
       }
     });
 
-    socket.on('meetingCancelled', async (data) => {
+    socket.on('meetingCancelled', async (_data) => {
       try {
         await dispatch(getUserNotifications(empNo));
         setNotificationCount(notificationCount + 1);

@@ -4,6 +4,7 @@ const {
   loginEmployee,
   resetPassword,
   refreshAuthToken,
+  logoutEmployee,
 } = require('../controllers/employee-auth.controller');
 const upload = require('../services/fileUpload');
 
@@ -21,6 +22,7 @@ empAuthRouter
   )
   .post('/login', loginEmployee)
   .post('/reset-password', resetPassword)
-  .get('/refresh', refreshAuthToken);
+  .get('/refresh', refreshAuthToken)
+  .get('/logout', logoutEmployee);
 
 module.exports = empAuthRouter;

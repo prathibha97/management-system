@@ -15,21 +15,6 @@ function Login({ setPage }) {
 
   const [login] = useLoginMutation()
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault()
-  //   try {
-  //     await api.post('/emp/auth/login', { email, password })
-  //     dispatch(login(email, password))
-  //     if (password === '123456') {
-  //       navigate('/reset-password')
-  //     } else {
-  //       navigate('/dashboard')
-  //     }
-  //   } catch (err) {
-  //     console.log(err.message);
-  //   }
-  // }
-
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {

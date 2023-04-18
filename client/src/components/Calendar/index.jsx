@@ -18,13 +18,14 @@ import {
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { getEmployeeList } from '../../redux/actions/employeeActions'
-import { cancelMeeting, editMeeting, getMyMeetings, scheduleMeeting } from '../../redux/actions/meetingActions'
+import { cancelMeeting, editMeeting, getMyMeetings } from '../../redux/actions/meetingActions'
 // import Loader from '../Loader'
+import { useEmployeeListQuery } from '../../features/employees/employeeApiSlice'
+import { useMyMeetingQuery, useScheduleMeetingMutation } from '../../features/meetings/meetingApiSlice'
+import { setMyMeetings, setScheduleMeeting } from '../../features/meetings/meetingSlice'
+import Loader from '../Loader'
 import Meetings from '../Meetings'
 import ScheduleMeeting from '../ScheduleMeeting'
-import { selectEmployeeList } from '../../features/employees/employeeSelector'
-import { selectMyMeetings } from '../../features/meetings/meetingsSelector'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -39,15 +40,15 @@ function Calendar() {
   const [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
   const firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date())
+  const [scheduleMeeting, { isLoading: scheduleMeetingLoading , error}] = useScheduleMeetingMutation()
 
   // Define a state variable to keep track of whether new meetings have been added or removed
   const [meetingChangeCount, setMeetingChangeCount] = useState(0);
 
-  const {user} = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
 
-  const { employees } = useSelector(selectEmployeeList);
-  const { meetings } = useSelector(selectMyMeetings);
-
+  const { data: meetings } = useMyMeetingQuery()
+  const { data: employees, isLoading } = useEmployeeListQuery()
   // First useEffect hook to get employee list and meetings
   useEffect(() => {
     if (!user) {
@@ -56,7 +57,7 @@ function Calendar() {
       const storedUser = JSON.parse(localStorage.getItem('userInfo'));
       if (!storedUser || storedUser.empNo !== user.empNo) {
         dispatch(getMyMeetings())
-        dispatch(getEmployeeList())
+        dispatch(setMyMeetings())
       }
     }
   }, [user, meetingChangeCount])
@@ -67,7 +68,7 @@ function Calendar() {
     setMeetingChangeCount(0);
   }, [dispatch, meetingChangeCount])
 
-  // if (loading) return <Loader />
+  if (isLoading || scheduleMeetingLoading) return <Loader />
 
   const days = eachDayOfInterval({
     start: firstDayCurrentMonth,
@@ -113,14 +114,14 @@ function Calendar() {
     }
   }
 
-  const handleSubmit = (summary, selectedPeople, startValue, endValue) => {
+  const handleSubmit = async (summary, selectedPeople, startValue, endValue) => {
     try {
-      dispatch(scheduleMeeting(summary, selectedPeople.map((person) => person.email), startValue, endValue))
-      console.log(`meeting scheduled with ${selectedPeople?.map((person) => person?.name?.first)} ${selectedPeople?.map((person) => person?.name?.last)} on ${startValue} to ${endValue}`);
+      const meeting = await scheduleMeeting({ summary, attendee: selectedPeople.map((person) => person.email), startValue, endValue }).unwrap()
+      dispatch(setScheduleMeeting({ ...meeting }))
       setMeetingChangeCount(1);
       setAlert({ open: true, message: `meeting scheduled with ${selectedPeople?.map((person) => person?.name?.first)} ${selectedPeople?.map((person) => person?.name?.last)} on ${startValue} to ${endValue}`, severity: 'success' });
     } catch (err) {
-      setAlert({ open: true, message: err?.response?.data?.message, severity: 'error' });
+      setAlert({ open: true, message: error.message, severity: 'error' });
     }
     setIsOpen(false)
   }
@@ -239,7 +240,7 @@ function Calendar() {
               <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
                 {selectedDayMeetings?.length > 0 ? (
                   selectedDayMeetings?.map((meeting) => (
-                    <Meetings meeting={meeting} key={meeting.id} handleMeetingCancel={handleMeetingCancel} currentUser={user} handleMeetingEdit={handleMeetingEdit} people={employees}  />
+                    <Meetings meeting={meeting} key={meeting.id} handleMeetingCancel={handleMeetingCancel} currentUser={user} handleMeetingEdit={handleMeetingEdit} people={employees} />
                   ))
                 ) : (
                   <p>No meetings for today.</p>

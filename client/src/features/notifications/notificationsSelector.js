@@ -1,1 +1,1 @@
-export const getUserNotifications = (state) => state.notifications.notifications;
+export const selectUserNotifications = (state) => state.notifications.notifications;

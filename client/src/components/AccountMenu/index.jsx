@@ -10,7 +10,7 @@ import Tooltip from '@mui/material/Tooltip';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { logout } from '../../redux/actions/userActions';
+import { setLogout } from '../../features/auth/authSlice';
 import CustomAvatar from '../CustomAvatar';
 
 export default function AccountMenu({ userInfo }) {
@@ -18,6 +18,8 @@ export default function AccountMenu({ userInfo }) {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -26,10 +28,10 @@ export default function AccountMenu({ userInfo }) {
   };
 
   const handleLogout = () => {
-    dispatch(logout())
+    dispatch(setLogout())
     navigate('/')
   }
-  
+
   return (
     <>
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
@@ -42,7 +44,7 @@ export default function AccountMenu({ userInfo }) {
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
           >
-            <CustomAvatar name={`${userInfo?.employee?.name?.first} ${userInfo?.employee?.name?.last}`}/>
+            <CustomAvatar name={`${userInfo?.employee?.name?.first} ${userInfo?.employee?.name?.last}`} />
           </IconButton>
         </Tooltip>
       </Box>

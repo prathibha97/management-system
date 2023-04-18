@@ -8,8 +8,8 @@ function Auth() {
   const navigate = useNavigate();
 
   function checkUserInfo() {
-    const userInfo = localStorage.getItem('userInfo');
-    if (userInfo) {
+    const token = JSON.parse(localStorage.getItem('token'));
+    if (token) {
       navigate('/dashboard');
     }
   }

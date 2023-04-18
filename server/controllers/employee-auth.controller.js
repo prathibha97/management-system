@@ -118,23 +118,22 @@ const registerEmployee = async (req, res) => {
 
 const loginEmployee = async (req, res) => {
   const { email, password } = req.body;
-  const {cookies} = req;
+  const { cookies } = req;
   try {
     const employee = await Employee.findOne({ email });
     if (!employee) return res.status(404).json({ message: 'Employee does not exists' });
     const isMatch = await bcrypt.compare(password, employee.password);
     if (!isMatch) return res.status(403).json({ message: 'Invalid password' });
-    
+
     const accessToken = generateToken(employee._id, '1d');
     const newRefreshToken = generateToken(employee._id, '1d');
-    
+
     // Changed to let keyword
     let newRefreshTokenArray = !cookies?.jwt
-    ? employee.refreshToken
-    : employee.refreshToken.filter((rt) => rt !== cookies.jwt);
+      ? employee.refreshToken
+      : employee.refreshToken.filter((rt) => rt !== cookies.jwt);
 
     if (cookies?.jwt) {
-  
       const refreshToken = cookies.jwt;
       const foundToken = await Employee.findOne({ refreshToken }).exec();
 
@@ -162,7 +161,7 @@ const loginEmployee = async (req, res) => {
       sameSite: 'None',
       maxAge: 24 * 60 * 60 * 1000,
     });
-    
+
     employee.password = undefined;
     // Send authorization roles and access token to user
     res.status(200).json({ employee, token: accessToken });
@@ -170,6 +169,35 @@ const loginEmployee = async (req, res) => {
     console.error(err.message);
     res.status(500).json({ message: 'Failed to login employee' });
   }
+};
+
+/* 
+?@desc   Logout a user
+*@route  Post /api/emp/auth/login
+*@access Private
+*/
+
+const logoutEmployee = async (req, res) => {
+  // On client, also delete the accessToken
+
+  const { cookies } = req;
+  if (!cookies?.jwt) return res.sendStatus(204);
+  const refreshToken = cookies.jwt;
+
+  // Is refreshToken in db?
+  const foundUser = await Employee.findOne({ refreshToken }).exec();
+  if (!foundUser) {
+    res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
+    return res.sendStatus(204);
+  }
+
+  // Delete refreshToken in db
+  foundUser.refreshToken = foundUser.refreshToken.filter((rt) => rt !== refreshToken);
+  const result = await foundUser.save();
+  console.log(result);
+
+  res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
+  res.sendStatus(204);
 };
 
 /* 
@@ -206,7 +234,7 @@ const resetPassword = async (req, res) => {
 */
 
 const refreshAuthToken = async (req, res) => {
-  const {cookies} = req;
+  const { cookies } = req;
   if (!cookies?.jwt) return res.sendStatus(401);
   const refreshToken = cookies.jwt;
   res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
@@ -216,7 +244,7 @@ const refreshAuthToken = async (req, res) => {
   // Detected refresh token reuse!
   if (!foundUser) {
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, async (err, decoded) => {
-      if (err) return res.sendStatus(403); 
+      if (err) return res.sendStatus(403);
       // Delete refresh tokens of hacked user
       const hackedUser = await Employee.findOne({
         empNo: decoded.empNo,
@@ -224,7 +252,7 @@ const refreshAuthToken = async (req, res) => {
       hackedUser.refreshToken = [];
       await hackedUser.save();
     });
-    return res.sendStatus(403); 
+    return res.sendStatus(403);
   }
 
   const newRefreshTokenArray = foundUser.refreshToken.filter((rt) => rt !== refreshToken);
@@ -238,8 +266,8 @@ const refreshAuthToken = async (req, res) => {
     }
     if (err || foundUser.empNo !== decoded.empNo) return res.sendStatus(403);
 
-const accessToken = generateToken(decoded.empNo, '1d');
-const newRefreshToken = generateToken(decoded.empNo, '1d');
+    const accessToken = generateToken(decoded.empNo, '1d');
+    const newRefreshToken = generateToken(decoded.empNo, '1d');
     // Saving refreshToken with current user
     foundUser.refreshToken = [...newRefreshTokenArray, newRefreshToken];
     await foundUser.save();
@@ -259,6 +287,7 @@ const newRefreshToken = generateToken(decoded.empNo, '1d');
 module.exports = {
   registerEmployee,
   loginEmployee,
+  logoutEmployee,
   resetPassword,
   refreshAuthToken,
 };
