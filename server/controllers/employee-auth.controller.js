@@ -177,28 +177,52 @@ const loginEmployee = async (req, res) => {
 *@access Private
 */
 
-const logoutEmployee = async (req, res) => {
-  // On client, also delete the accessToken
+// const logoutEmployee = async (req, res) => {
+//   // On client, also delete the accessToken
 
+//   const { cookies } = req;
+//   if (!cookies?.jwt) return res.sendStatus(204);
+//   const refreshToken = cookies.jwt;
+
+//   // Is refreshToken in db?
+//   const foundUser = await Employee.findOne({ refreshToken }).exec();
+//   if (!foundUser) {
+//     res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
+//     return res.sendStatus(204);
+//   }
+
+//   // Delete refreshToken in db
+// await Employee.findOneAndUpdate(
+//     { _id: foundUser._id },
+//     { $pull: { refreshToken } },
+//     { new: true }
+//   ).exec();
+
+//   res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
+//   res.sendStatus(204);
+// };
+
+const logoutEmployee = async (req, res) => {
   const { cookies } = req;
   if (!cookies?.jwt) return res.sendStatus(204);
-  const refreshToken = cookies.jwt;
 
-  // Is refreshToken in db?
-  const foundUser = await Employee.findOne({ refreshToken }).exec();
+  const refreshToken = cookies.jwt;
+  const foundUser = await Employee.findOne({ refreshToken });
+
   if (!foundUser) {
     res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
     return res.sendStatus(204);
   }
 
-  // Delete refreshToken in db
   foundUser.refreshToken = foundUser.refreshToken.filter((rt) => rt !== refreshToken);
-  const result = await foundUser.save();
-  console.log(result);
+  await foundUser.save();
 
   res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
   res.sendStatus(204);
 };
+
+
+
 
 /* 
 ?@desc   Reset password

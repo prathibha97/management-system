@@ -3,25 +3,25 @@ import { createSlice } from '@reduxjs/toolkit';
 const experienceSlice = createSlice({
   name: 'experience',
   initialState: {
-    experience: {},
     experiences: [],
   },
   reducers: {
     setAddExperience: (state, action) => {
-      const { experience } = action.payload;
-      state.experience = experience;
+      const { newExperience } = action.payload;
+      state.experiences.push(newExperience);
     },
     setGetExperiences: (state, action) => {
       const { experiences } = action.payload;
-      state.experiences = experiences;
+      state.experiences = [...experiences];
     },
-    setRemoveExperiences: (state, action) => {
-      const { experience } = action.payload;
-      state.experience = experience;
+    setRemoveExperience: (state, action) => {
+      const { id } = action.payload;
+      console.log('Removing experience:', id);
+      state.experiences = state.experiences.filter((exp) => exp._id !== id);
     },
   },
 });
 
-export const { setAddExperience, setGetExperiences, setRemoveExperiences } =
+export const { setAddExperience, setGetExperiences, setRemoveExperience } =
   experienceSlice.actions;
 export default experienceSlice.reducer;

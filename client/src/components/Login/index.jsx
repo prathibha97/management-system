@@ -20,6 +20,7 @@ function Login({ setPage }) {
     try {
       const userData = await login({ email, password }).unwrap()
       dispatch(setCredentials({ ...userData }))
+      // document.cookie = `jwt=${userData.token}`
       if (password === '123456') {
         navigate('/reset-password')
       } else {

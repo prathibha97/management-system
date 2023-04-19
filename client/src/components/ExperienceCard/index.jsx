@@ -33,7 +33,7 @@ function ExperienceCard({ employee, setExperienceChangeCount }) {
       </div>
       <div className='h-[550px] overflow-y-auto'>
         {isOpen && (
-          <AddExperience isOpen={isOpen} setIsOpen={setIsOpen} setAlert={setAlert} />
+          <AddExperience isOpen={isOpen} setIsOpen={setIsOpen} setAlert={setAlert} setExperienceChangeCount={setExperienceChangeCount}/>
         )}
         {employee.employmentHistory?.map((item, index) => (
           <Experience key={index} item={item} formatDate={formatDate} setAlert={setAlert} setExperienceChangeCount={setExperienceChangeCount} />

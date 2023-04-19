@@ -2,8 +2,8 @@
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
-const cookieParser = require('cookie-parser');
 const path = require('path');
+const cookieParser = require('cookie-parser');
 
 const fs = require('fs');
 const api = require('./routes/api');
@@ -18,10 +18,10 @@ const corsOptions = {
   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
+app.use(cookieParser());
 app.use(cors(corsOptions));
 app.use(express.json({ limit: '25mb' }));
 app.use(express.urlencoded({ extended: false, limit: '25mb' }));
-app.use(cookieParser());
 app.use(morgan('dev'));
 
 // app.use(setCache);

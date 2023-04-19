@@ -7,7 +7,25 @@ export const experienceApiSlice = apiSlice.injectEndpoints({
         url: `/experiences/${empNo}`,
       }),
     }),
+    addExperience: builder.mutation({
+      query: (experience) => ({
+        url: `/experiences`,
+        method: 'POST',
+        body: { ...experience },
+      }),
+    }),
+    removeExperience: builder.mutation({
+      query: (id) => ({
+        url: `/experiences/${id}`,
+        method: 'DELETE',
+      }),
+    }),
   }),
 });
 
-export const { useGetUserExperiencesQuery } = experienceApiSlice;
+export const {
+  useGetUserExperiencesQuery,
+  useLazyGetUserExperiencesQuery,
+  useAddExperienceMutation,
+  useRemoveExperienceMutation,
+} = experienceApiSlice;
