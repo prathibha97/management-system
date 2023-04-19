@@ -69,7 +69,7 @@ function Sidebar({ user }) {
     },
   ];
 
-  if (user.isAdmin) {
+  if (user?.isAdmin) {
     adminSidebarItems.push({
       name: "Settings",
       link: "/settings",
