@@ -16,7 +16,6 @@ function ExperienceCard({ employee, setExperienceChangeCount }) {
     const formattedDate = `${dateObj.getMonth() + 1}-${dateObj.getDate()}-${dateObj.getFullYear()}`;
     return formattedDate;
   }
-
   const handleAlertClose = () => {
     setAlert({ ...alert, open: false });
   };

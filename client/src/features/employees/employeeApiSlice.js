@@ -7,7 +7,13 @@ export const employeeApiSlice = apiSlice.injectEndpoints({
         url: `/emp`,
       }),
     }),
+    employeeProfile: builder.query({
+      query: (empNo) => ({
+        url: `emp/profile/${empNo}`,
+      }),
+    }),
   }),
 });
 
-export const { useEmployeeListQuery } = employeeApiSlice;
+export const { useEmployeeListQuery, useEmployeeProfileQuery } =
+  employeeApiSlice;

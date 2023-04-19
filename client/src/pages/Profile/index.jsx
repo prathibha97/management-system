@@ -2,7 +2,10 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { EmployeeCard, ExperienceCard, Loader } from '../../components';
-import { getUserDetails } from '../../redux/actions/userActions';
+import { selectCurrentUser } from '../../features/auth/authSelectors';
+import { useGetUserExperiencesQuery } from '../../features/experiences/experienceApiSlice';
+import { setEmployeeProfile } from '../../features/employees/employeeSlice';
+import { useEmployeeProfileQuery } from '../../features/employees/employeeApiSlice';
 
 
 function Profile() {
@@ -11,27 +14,24 @@ function Profile() {
 
   const [experienceChangeCount, setExperienceChangeCount] = useState(0)
 
-  const { user } = useSelector((state) => state.userDetails) || {}
+  const userInfo = useSelector(selectCurrentUser)
 
-  const userLogin = useSelector((state) => state.userLogin)
-  const { userInfo } = userLogin
-
-  const { experiences, loading } = useSelector((state) => state.getExperience)
-
+  const { data: experiences, isLoading } = useGetUserExperiencesQuery(userInfo?.empNo)
+  const { data: user, isLoading: isProfileLoading } = useEmployeeProfileQuery(userInfo?.empNo)
 
   useEffect(() => {
     if (!userInfo) {
       navigate('/')
-    } else {
-      const storedUser = JSON.parse(localStorage.getItem('user'));
-      if (!storedUser || storedUser.empNo !== userInfo.empNo) {
-        dispatch(getUserDetails(userInfo?.employee?.empNo));
-      }
+      } else {
+        const storedUser = JSON.parse(localStorage.getItem('userInfo'));
+        if (!storedUser || storedUser.empNo !== userInfo.empNo) {
+          dispatch(setEmployeeProfile(userInfo?.empNo));
+        }
     }
   }, [userInfo, experiences, experienceChangeCount])
 
 
-  if (!user || loading) {
+  if (!user || isLoading || isProfileLoading) {
     return <Loader />
   }
 
@@ -41,7 +41,7 @@ function Profile() {
         <EmployeeCard employee={user} />
       </div>
       <div className="flex flex-col flex-1">
-        <ExperienceCard employee={user} setExperienceChangeCount={setExperienceChangeCount}/>
+        <ExperienceCard employee={user} setExperienceChangeCount={setExperienceChangeCount} />
       </div>
     </div>
   );

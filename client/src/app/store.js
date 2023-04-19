@@ -8,6 +8,7 @@ import projectReducer from '../features/projects/projectSlice';
 import notificationReducer from '../features/notifications/notificationSlice';
 import employeeReducer from '../features/employees/employeeSlice';
 import meetingReducer from '../features/meetings/meetingSlice';
+import experienceReducer from '../features/experiences/experienceSlice';
 
 // const persistConfig = {
 //   key: 'root',
@@ -26,6 +27,7 @@ export const store = configureStore({
     notifications: notificationReducer,
     employees: employeeReducer,
     meetings: meetingReducer,
+    experience: experienceReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(apiSlice.middleware),

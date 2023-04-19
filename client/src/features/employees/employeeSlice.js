@@ -11,8 +11,12 @@ const employeeSlice = createSlice({
       const { employees } = action.payload;
       state.employees = employees;
     },
+    setEmployeeProfile: (state, action) => {
+      const { employee } = action.payload;
+      state.employee = employee;
+    },
   },
 });
 
-export const { setEmployeeList } = employeeSlice.actions;
+export const { setEmployeeList, setEmployeeProfile } = employeeSlice.actions;
 export default employeeSlice.reducer;
