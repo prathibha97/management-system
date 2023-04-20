@@ -6,9 +6,9 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Fragment, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useAddExperienceMutation } from '../../features/experiences/experienceApiSlice';
-import { setAddExperience } from '../../features/experiences/experienceSlice';
 import Button from '../Button';
+import { useAddExperienceMutation } from '../../app/features/experiences/experienceApiSlice';
+import { setAddExperience } from '../../app/features/experiences/experienceSlice';
 
 function AddExperience({ isOpen, setIsOpen, setAlert, setExperienceChangeCount }) {
 

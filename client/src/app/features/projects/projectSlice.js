@@ -13,5 +13,5 @@ const projectSlice = createSlice({
   },
 });
 
-export const { setCredentials, setLogout } = projectSlice.actions;
+export const { setProjects } = projectSlice.actions;
 export default projectSlice.reducer;

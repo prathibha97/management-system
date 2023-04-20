@@ -6,8 +6,8 @@ import { Badge, Button, Divider, IconButton, List, ListItem, ListItemText, Popov
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import io from 'socket.io-client';
-import { useUserNotificationsQuery } from '../../features/notifications/notificationApiSlice';
 import { MarkNotificationAsRead, clearUserNotifications, getUserNotifications } from '../../redux/actions/notificationActions';
+import { useUserNotificationsQuery } from '../../app/features/notifications/notificationApiSlice';
 
 function NotificationItem({ notification }) {
   const dispatch = useDispatch();

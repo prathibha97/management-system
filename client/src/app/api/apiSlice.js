@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { setCredentials, setLogout } from '../../features/auth/authSlice';
+import { setCredentials, setLogout } from '../features/auth/authSlice';
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `http://localhost:5000/api`,

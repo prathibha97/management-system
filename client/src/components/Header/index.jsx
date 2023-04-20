@@ -12,7 +12,7 @@ import { useLocation } from 'react-router-dom';
 import { AccountMenu, Button, Notifications } from '../../components';
 import { markAttendance } from '../../redux/actions/attendanceActions';
 import { ProjectDetailsById } from '../../redux/actions/projectActions';
-import { getEmployeeProjects } from '../../features/projects/projectSelectors';
+import { getEmployeeProjects } from '../../app/features/projects/projectSelectors';
 
 function Header() {
   const location = useLocation();

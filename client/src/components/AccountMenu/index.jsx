@@ -10,11 +10,11 @@ import Tooltip from '@mui/material/Tooltip';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { useLogoutQuery } from '../../features/auth/authApiSlice';
-import { setLogout } from '../../features/auth/authSlice';
 import CustomAvatar from '../CustomAvatar';
 import Loader from '../Loader';
 import api from '../../utils/api';
+import { setLogout } from '../../app/features/auth/authSlice';
+import { useLogoutQuery } from '../../app/features/auth/authApiSlice';
 
 export default function AccountMenu({ userInfo }) {
   const dispatch = useDispatch()

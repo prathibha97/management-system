@@ -2,9 +2,9 @@ import { faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { useRemoveExperienceMutation } from '../../features/experiences/experienceApiSlice'
 import Loader from '../Loader'
-import { setRemoveExperience } from '../../features/experiences/experienceSlice'
+import { setRemoveExperience } from '../../app/features/experiences/experienceSlice'
+import { useRemoveExperienceMutation } from '../../app/features/experiences/experienceApiSlice'
 
 function Experience({ item, formatDate, setAlert, setExperienceChangeCount }) {
   const dispatch = useDispatch()

@@ -19,13 +19,12 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { cancelMeeting, editMeeting, getMyMeetings } from '../../redux/actions/meetingActions'
-// import Loader from '../Loader'
-import { useEmployeeListQuery } from '../../features/employees/employeeApiSlice'
-import { useMyMeetingQuery, useScheduleMeetingMutation } from '../../features/meetings/meetingApiSlice'
-import { setMyMeetings, setScheduleMeeting } from '../../features/meetings/meetingSlice'
 import Loader from '../Loader'
 import Meetings from '../Meetings'
 import ScheduleMeeting from '../ScheduleMeeting'
+import { useEmployeeListQuery } from '../../app/features/employees/employeeApiSlice'
+import { setMyMeetings, setScheduleMeeting } from '../../app/features/meetings/meetingSlice'
+import { useMyMeetingQuery, useScheduleMeetingMutation } from '../../app/features/meetings/meetingApiSlice'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')

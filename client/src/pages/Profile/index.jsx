@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { selectCurrentUser } from '../../app/features/auth/authSelectors';
+import { useEmployeeProfileQuery } from '../../app/features/employees/employeeApiSlice';
+import { setEmployeeProfile } from '../../app/features/employees/employeeSlice';
+import { useGetUserExperiencesQuery } from '../../app/features/experiences/experienceApiSlice';
 import { EmployeeCard, ExperienceCard, Loader } from '../../components';
-import { selectCurrentUser } from '../../features/auth/authSelectors';
-import { useEmployeeProfileQuery } from '../../features/employees/employeeApiSlice';
-import { setEmployeeProfile } from '../../features/employees/employeeSlice';
-import { useGetUserExperiencesQuery } from '../../features/experiences/experienceApiSlice';
+
 
 
 function Profile() {

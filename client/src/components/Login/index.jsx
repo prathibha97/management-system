@@ -3,8 +3,9 @@ import axios from "axios"
 import { useState } from "react"
 import { useDispatch } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
-import { useLoginMutation } from "../../features/auth/authApiSlice"
-import { setCredentials } from "../../features/auth/authSlice"
+import { useLoginMutation } from "../../app/features/auth/authApiSlice"
+import { setCredentials } from "../../app/features/auth/authSlice"
+
 // import { setCredentials } from "../../features/auth/authSlice"
 
 function Login({ setPage }) {
