@@ -14,14 +14,16 @@ const markAttendance = async (req, res) => {
     date: new Date().toISOString().slice(0, 10),
   });
 
+  const timeZoneOffset = 5.5 * 60 * 60 * 1000; // 5.5 hours ahead of UTC
+
   if (existingAttendance) {
     // Update the existing attendance record with the outTime
     const { outTime } = existingAttendance;
     if (outTime) {
       return res.status(400).json({ message: 'Attendance already marked for today' });
     }
-    existingAttendance.outTime = new Date();
-    const duration = (existingAttendance.outTime - existingAttendance.inTime) / 1000; // duration in seconds
+    existingAttendance.outTime = new Date(Date.now() + timeZoneOffset).toISOString();
+    const duration = (new Date(existingAttendance.outTime) - existingAttendance.inTime) / 1000; // duration in seconds
     existingAttendance.workHours = duration / 3600; // duration in hours
     await existingAttendance.save();
     return res.json(existingAttendance);
@@ -31,11 +33,12 @@ const markAttendance = async (req, res) => {
   const attendance = new Attendance({
     empNo,
     date: new Date().toISOString().slice(0, 10),
-    inTime: new Date(),
+    inTime: new Date(Date.now() + timeZoneOffset).toISOString(),
   });
   await attendance.save();
   return res.json(attendance);
 };
+
 
 
 

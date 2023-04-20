@@ -26,6 +26,7 @@ function Profile() {
   });
 
   const { data: user, isLoading: isProfileLoading, refetch } = useEmployeeProfileQuery(userInfo?.empNo)
+  
   useEffect(() => {
     if (!userInfo) {
       navigate('/')

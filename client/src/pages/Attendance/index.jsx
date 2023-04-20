@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { useGetEmployeeAttendanceQuery } from '../../app/features/attendance/attendanceApiSlice';
+import { setEmployeeAttendance } from '../../app/features/attendance/attendanceSlice';
+import { selectCurrentUser } from '../../app/features/auth/authSelectors';
 import { DataTable, Loader } from '../../components';
-import { getAttendanceDetailsbyId } from '../../redux/actions/attendanceActions';
-import { getUserDetails } from '../../redux/actions/userActions';
 import formatTime from '../../utils/formatTime';
 import roundToTwoDecimals from '../../utils/roundToTwoDecimals';
 
@@ -11,25 +12,22 @@ function Attendance() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const {userInfo} = useSelector((state) => state.userLogin);
-  const {employee} = userInfo
+  const userInfo = useSelector(selectCurrentUser)
 
-  const { attendanceInfo ,loading} = useSelector((state) => state.attendanceDetails);
+  const { data: attendanceInfo, isLoading } = useGetEmployeeAttendanceQuery(userInfo.empNo)
 
-  const { user } = useSelector((state) => state.userDetails) || {}
   useEffect(() => {
     if (!userInfo) {
       navigate('/');
     } else {
       const storedUserInfo = JSON.parse(localStorage.getItem('user'));
       if (!storedUserInfo || storedUserInfo.empNo !== userInfo.empNo) {
-        dispatch(getUserDetails(employee.empNo));
-        dispatch(getAttendanceDetailsbyId(employee.empNo));
+        dispatch(setEmployeeAttendance({ attendanceInfo }))
       }
     }
   }, [userInfo])
 
-  if (!user || loading) {
+  if (isLoading) {
     return <Loader />
   }
 

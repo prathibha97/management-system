@@ -1,1 +1,1 @@
-// export const selectCurrentUser = (state) => state.auth.user;
+export const selectUserAttendance = (state) => state.attendance.attendanceInfo;

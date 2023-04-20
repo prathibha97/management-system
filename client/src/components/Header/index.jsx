@@ -9,39 +9,53 @@ import { Alert, FormControl, InputLabel, MenuItem, Select, Snackbar } from '@mui
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { AccountMenu, Button, Notifications } from '../../components';
-import { markAttendance } from '../../redux/actions/attendanceActions';
-import { ProjectDetailsById } from '../../redux/actions/projectActions';
+import { useGetEmployeeAttendanceQuery, useMarkAttendanceQuery } from '../../app/features/attendance/attendanceApiSlice';
+import { setEmployeeAttendance, setMarkAttendance } from '../../app/features/attendance/attendanceSlice';
 import { getEmployeeProjects } from '../../app/features/projects/projectSelectors';
+import { AccountMenu, Button, Notifications } from '../../components';
+import { ProjectDetailsById } from '../../redux/actions/projectActions';
 
 function Header() {
   const location = useLocation();
   const dispatch = useDispatch()
   const id = location.pathname.split('/')[2];
-  // Get attendanceMark state from the Redux store
-  const {error} = useSelector((state) => state.attendance);
 
-  const {projects} = useSelector(getEmployeeProjects);
+  const { projects } = useSelector(getEmployeeProjects);
 
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
   const [project, setProject] = useState(projects?.length > 0 ? projects[0]?._id : '');
+  const [attendanceChangeCount, setAttendanceChangeCount] = useState(0)
+
 
   const userInfo = JSON.parse(localStorage.getItem('userInfo'));
   const { empNo } = userInfo;
 
+  const { date: attendanceInfo, refetch } = useGetEmployeeAttendanceQuery(empNo)
+  const { data: attendance, refetch: markAttendance, error: markAttendanceError, isSuccess } = useMarkAttendanceQuery()
+
   const handleMarkAttendance = () => {
     try {
-      dispatch(markAttendance());
-      setAlert({ open: true, message: 'Attendance marked successfully', severity: 'success' });
+      markAttendance().unwrap()
+      dispatch(setMarkAttendance({ attendance }));
+      setAttendanceChangeCount(1)
+      if(isSuccess) {
+        setAlert({ open: true, message: 'Attendance marked successfully', severity: 'success' });
+      }
     } catch (err) {
-      setAlert({ open: true, message: err.response.data.message, severity: 'error' });
+      setAlert({ open: true, message: markAttendanceError.data.message, severity: 'error' });
+      console.log(markAttendanceError.data.message);
     }
   };
   useEffect(() => {
-    if (error) {
-      setAlert({ open: true, message: error, severity: 'error' });
+    if (markAttendanceError) {
+      setAlert({ open: true, message: 'Something went wrong!', severity: 'error' });
     }
-  }, [error]);
+  }, [ markAttendanceError]);
+
+  useEffect(() => {
+    refetch()
+    dispatch(setEmployeeAttendance({ attendanceInfo }))
+  }, [attendanceChangeCount, attendanceInfo])
 
   const handleProjectChange = (event) => {
     const selectedProject = event.target.value;

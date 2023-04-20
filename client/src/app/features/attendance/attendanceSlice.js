@@ -8,11 +8,18 @@ const attendanceSlice = createSlice({
   },
   reducers: {
     setMarkAttendance: (state, action) => {
-      const { attendance} = action.payload;
+      const { attendance } = action.payload;
       state.attendance = attendance;
+      state.attendanceInfo.push(attendance);
+
+    },
+    setEmployeeAttendance: (state, action) => {
+      const { attendanceInfo } = action.payload;
+      state.attendanceInfo = attendanceInfo;
     },
   },
 });
 
-export const { setMarkAttendance } = attendanceSlice.actions;
+export const { setMarkAttendance, setEmployeeAttendance } =
+  attendanceSlice.actions;
 export default attendanceSlice.reducer;
