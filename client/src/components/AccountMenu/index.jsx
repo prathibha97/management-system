@@ -53,7 +53,7 @@ export default function AccountMenu({ userInfo }) {
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
           >
-            <CustomAvatar name={`${userInfo?.employee?.name?.first} ${userInfo?.employee?.name?.last}`} />
+            <CustomAvatar name={`${userInfo?.name?.first} ${userInfo?.name?.last}`} />
           </IconButton>
         </Tooltip>
       </Box>
