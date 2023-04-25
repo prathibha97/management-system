@@ -14,9 +14,28 @@ export const leaveApiSlice = apiSlice.injectEndpoints({
         body: { ...leave },
       }),
     }),
-    removeExperience: builder.mutation({
-      query: (id) => ({
-        url: `/experiences/${id}`,
+    approveLeave: builder.mutation({
+      query: ({ id, lId, status }) => ({
+        url: `/leaves/${id}/approval/${lId}`,
+        method: 'PUT',
+        body: { status },
+      }),
+    }),
+    rejectLeave: builder.mutation({
+      query: ({ id, lId, status, reason }) => ({
+        url: `/leaves/${id}/approval/${lId}`,
+        method: 'PUT',
+        body: { status, reason },
+      }),
+    }),
+    getAllLeaves: builder.query({
+      query: () => ({
+        url: `/leaves`,
+      }),
+    }),
+    deleteLeave: builder.mutation({
+      query: ({leaveId}) => ({
+        url: `/leaves/${leaveId}`,
         method: 'DELETE',
       }),
     }),
@@ -26,4 +45,8 @@ export const leaveApiSlice = apiSlice.injectEndpoints({
 export const {
   useGetUserLeavesQuery,
   useRequestLeaveMutation,
+  useApproveLeaveMutation,
+  useRejectLeaveMutation,
+  useGetAllLeavesQuery,
+  useDeleteLeaveMutation,
 } = leaveApiSlice;

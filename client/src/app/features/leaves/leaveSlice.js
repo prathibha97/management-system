@@ -4,6 +4,7 @@ const leaveSlice = createSlice({
   name: 'leaves',
   initialState: {
     leaves: [],
+    allLeaves: [],
   },
   reducers: {
     setLeaveRequest: (state, action) => {
@@ -15,40 +16,43 @@ const leaveSlice = createSlice({
       state.leaves = leaves;
     },
     getAllLeaves: (state, action) => {
-      const { id } = action.payload;
-      console.log('Removing experience:', id);
-      state.experiences = state.experiences.filter((exp) => exp._id !== id);
+      const { leaves } = action.payload;
+      state.allLeaves = leaves;
     },
-    approveLeave: (state, action) => {
-      const { id } = action.payload;
-      console.log('Removing experience:', id);
-      state.experiences = state.experiences.filter((exp) => exp._id !== id);
+    approveLeaveRequest: (state, action) => {
+      const { leaveData } = action.payload;
+      state.allLeaves = state.allLeaves.map((leave) =>
+        leave._id === leaveData._id ? { ...leave, status: 'approved' } : leave
+      );
     },
-    rejectLeave: (state, action) => {
-      const { id } = action.payload;
-      console.log('Removing experience:', id);
-      state.experiences = state.experiences.filter((exp) => exp._id !== id);
+    rejectLeaveRequest: (state, action) => {
+      const { leaveData } = action.payload;
+      state.allLeaves = state.allLeaves.map((leave) =>
+        leave._id === leaveData._id ? { ...leave, status: 'rejected' } : leave
+      );
     },
-    deleteLeave: (state, action) => {
-      const { id } = action.payload;
-      console.log('Removing experience:', id);
-      state.experiences = state.experiences.filter((exp) => exp._id !== id);
+    deleteLeaveRequest: (state, action) => {
+      const { deletedLeave } = action.payload;
+      state.allLeaves = state.allLeaves.filter(
+        (leave) => leave._id !== deletedLeave._id
+      );
     },
     getLeaveDetailsAdmin: (state, action) => {
-      const { id } = action.payload;
-      console.log('Removing experience:', id);
-      state.experiences = state.experiences.filter((exp) => exp._id !== id);
+      const { id, details } = action.payload;
+      state.leaves = state.leaves.map((leave) =>
+        leave._id === id ? { ...leave, details } : leave
+      );
     },
   },
 });
 
 export const {
   getUserLeaves,
-  approveLeave,
-  deleteLeave,
+  approveLeaveRequest,
+  deleteLeaveRequest,
   getAllLeaves,
   getLeaveDetailsAdmin,
-  rejectLeave,
+  rejectLeaveRequest,
   setLeaveRequest,
 } = leaveSlice.actions;
 export default leaveSlice.reducer;

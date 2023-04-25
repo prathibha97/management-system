@@ -22,7 +22,6 @@ function AddExperience({ isOpen, setIsOpen, setAlert, setExperienceChangeCount }
   const handleSubmit = async () => {
     try {
       const experienceData = await addExperience({ position, company, startDate, endDate }).unwrap()
-      console.log(experienceData);
       dispatch(setAddExperience({ newExperience: experienceData }))
       setExperienceChangeCount(1)
       setAlert({ open: true, message: `Experience added successfully`, severity: 'success' });

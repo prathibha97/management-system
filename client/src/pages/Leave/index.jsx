@@ -13,9 +13,9 @@ function Leave() {
 
   const userInfo = useSelector(selectCurrentUser)
 
-  const { data: user, isLoading: isProfileLoading, } = useEmployeeProfileQuery(userInfo?.empNo)
+  const { data: user, isLoading: isProfileLoading, refetch: fetchProfile } = useEmployeeProfileQuery(userInfo?.empNo)
 
-  const { data: leaves, isLoading: isLeavesLoading, refetch } = useGetUserLeavesQuery(userInfo?.empNo, {
+  const { data: leaves, isLoading: isLeavesLoading, refetch: fetchLeaves } = useGetUserLeavesQuery(userInfo?.empNo, {
     refetchOnMountOrArgChange: true,
   })
 
@@ -34,7 +34,8 @@ function Leave() {
 
   // Second useEffect hook to get leaves again and reset leaveChangeCount
   useEffect(() => {
-    refetch()
+    fetchProfile()
+    fetchLeaves()
     setLeaveChangeCount(0);
   }, [leaveChangeCount])
 
