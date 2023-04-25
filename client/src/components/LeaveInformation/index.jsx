@@ -11,7 +11,7 @@ function LeaveInformation({ user, leaves }) {
         <p className='text-[#707070] text-sm'>Here you can view your leave history</p>
       </div>
       <LeaveBalance user={user} />
-      <LeaveHistory leaves={leaves}/>
+      <LeaveHistory leaves={leaves} />
     </div>
   )
 }

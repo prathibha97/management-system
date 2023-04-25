@@ -1,4 +1,6 @@
+import { useSelector } from 'react-redux';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { selectCurrentUser } from './app/features/auth/authSelectors';
 import { CreateProject } from './components';
 import {
   Attendance,
@@ -20,8 +22,9 @@ import {
 import Leave from './pages/Leave';
 
 function App() {
-  // const { user } = useSelector(selectCurrentUser);
-  const user = localStorage.getItem('userInfo');
+  const user = useSelector(selectCurrentUser);
+  // const user = localStorage.getItem('userInfo');
+  // console.log(user?.name?.first);
   // if (loading) return <Loader />;
   return (
     <Router>

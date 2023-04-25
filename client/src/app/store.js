@@ -18,6 +18,7 @@ import notificationReducer from './features/notifications/notificationSlice';
 import employeeReducer from './features/employees/employeeSlice';
 import meetingReducer from './features/meetings/meetingSlice';
 import experienceReducer from './features/experiences/experienceSlice';
+import leaveReducer from './features/leaves/leaveSlice';
 
 const persistConfig = {
   key: 'root',
@@ -35,6 +36,7 @@ const persistedReducer = persistReducer(
     employees: employeeReducer,
     meetings: meetingReducer,
     experience: experienceReducer,
+    leaves: leaveReducer,
   })
 );
 
