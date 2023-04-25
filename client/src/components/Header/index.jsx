@@ -43,7 +43,6 @@ function Header() {
       }
     } catch (err) {
       setAlert({ open: true, message: markAttendanceError.data.message, severity: 'error' });
-      console.log(markAttendanceError.data.message);
     }
   };
   useEffect(() => {
