@@ -1,7 +1,6 @@
 import React from 'react';
 
 function ProjectHistory({ user }) {
-  console.log(user);
   return (
     <div>
       {user?.projectHistory?.map((project) => (

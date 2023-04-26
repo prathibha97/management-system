@@ -9,11 +9,26 @@ export const employeeApiSlice = apiSlice.injectEndpoints({
     }),
     employeeProfile: builder.query({
       query: (empNo) => ({
-        url: `emp/profile/${empNo}`,
+        url: `/emp/profile/${empNo}`,
+      }),
+    }),
+    removeEmployee: builder.mutation({
+      query: ({ id }) => ({
+        url: `/emp/${id}`,
+        method: 'DELETE',
+      }),
+    }),
+    employeeDetailsAdmin: builder.query({
+      query: (empNo) => ({
+        url: `/emp/${empNo}`,
       }),
     }),
   }),
 });
 
-export const { useEmployeeListQuery, useEmployeeProfileQuery } =
-  employeeApiSlice;
+export const {
+  useEmployeeListQuery,
+  useEmployeeProfileQuery,
+  useRemoveEmployeeMutation,
+  useEmployeeDetailsAdminQuery,
+} = employeeApiSlice;

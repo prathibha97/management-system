@@ -17,7 +17,10 @@ import {
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { getAttendanceDetailsbyIdAdmin } from '../../redux/actions/attendanceActions'
+import { useGetEmployeeAttendanceAdminQuery } from '../../app/features/attendance/attendanceApiSlice'
+import { selectCurrentUser } from '../../app/features/auth/authSelectors'
+import { useGetEmployeeLeavesAdminQuery } from '../../app/features/leaves/leaveApiSlice'
+import { setEmployeeAttendanceAdmin } from '../../app/features/attendance/attendanceSlice'
 import { getAdminLeaveDetails } from '../../redux/actions/leaveActions'
 import { formatDateShort } from '../../utils/formatDate'
 import formatTime from '../../utils/formatTime'
@@ -35,10 +38,12 @@ function AttendanceCalendar({ user }) {
   const [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))
   const firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date())
 
-  const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo } = userLogin
+  const userInfo = useSelector(selectCurrentUser);
 
-  // const { employees } = useSelector((state) => state.employeeList);
+  const { data: attendanceInfo, isLoading: isAttendanceInfoLoading } = useGetEmployeeAttendanceAdminQuery(user.empNo)
+  const { data: leaves, isLoading: isLeavesLoading } = useGetEmployeeLeavesAdminQuery(user.empNo,{
+    refetchOnMountOrArgChange: true,
+  })
 
   useEffect(() => {
     if (!userInfo) {
@@ -46,16 +51,14 @@ function AttendanceCalendar({ user }) {
     } else {
       const storedUser = JSON.parse(localStorage.getItem('user'));
       if (!storedUser || storedUser.empNo !== userInfo.empNo) {
-        dispatch(getAttendanceDetailsbyIdAdmin(user.empNo))
+        dispatch(setEmployeeAttendanceAdmin({ attendanceInfo }))
         dispatch(getAdminLeaveDetails(user.empNo))
       }
     }
   }, [userInfo])
 
-  const { attendanceInfo, loading } = useSelector((state) => state.adminAttendanceDetails);
-  const { leaves } = useSelector((state) => state.adminLeaveDetails);
 
-  if (loading) return <Loader />
+  if (isAttendanceInfoLoading || isLeavesLoading) return <Loader />
 
   const days = eachDayOfInterval({
     start: firstDayCurrentMonth,

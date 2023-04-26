@@ -9,7 +9,7 @@ import { Alert, FormControl, InputLabel, MenuItem, Select, Snackbar } from '@mui
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { useGetEmployeeAttendanceQuery, useMarkAttendanceQuery } from '../../app/features/attendance/attendanceApiSlice';
+import { useGetEmployeeAttendanceQuery, useLazyMarkAttendanceQuery } from '../../app/features/attendance/attendanceApiSlice';
 import { setEmployeeAttendance, setMarkAttendance } from '../../app/features/attendance/attendanceSlice';
 import { getEmployeeProjects } from '../../app/features/projects/projectSelectors';
 import { AccountMenu, Button, Notifications } from '../../components';
@@ -30,30 +30,31 @@ function Header() {
   const userInfo = JSON.parse(localStorage.getItem('userInfo'));
   const { empNo } = userInfo;
 
-  const { date: attendanceInfo, refetch } = useGetEmployeeAttendanceQuery(empNo)
-  const { data: attendance, refetch: markAttendance, error: markAttendanceError, isSuccess } = useMarkAttendanceQuery()
+  const { date: attendanceInfo, refetch:refetchAttendance } = useGetEmployeeAttendanceQuery(empNo)
+  const [trigger, { data: attendance, error: markAttendanceError }] = useLazyMarkAttendanceQuery()
 
   const handleMarkAttendance = () => {
     try {
-      markAttendance().unwrap()
+      trigger().unwrap()
       dispatch(setMarkAttendance({ attendance }));
       setAttendanceChangeCount(1)
-      if(isSuccess) {
         setAlert({ open: true, message: 'Attendance marked successfully', severity: 'success' });
-      }
     } catch (err) {
-      setAlert({ open: true, message: markAttendanceError.data.message, severity: 'error' });
+      setAlert({ open: true, message: markAttendanceError?.data?.message, severity: 'error' });
     }
   };
-  useEffect(() => {
-    if (markAttendanceError) {
-      setAlert({ open: true, message: 'Something went wrong!', severity: 'error' });
-    }
-  }, [ markAttendanceError]);
 
   useEffect(() => {
-    refetch()
+    if (alert?.severity === 'error') {
+      setAttendanceChangeCount((count) => count - 1);
+    }
+  }, [alert?.severity]);
+
+
+  useEffect(() => {
+    refetchAttendance()
     dispatch(setEmployeeAttendance({ attendanceInfo }))
+    setAttendanceChangeCount(0)
   }, [attendanceChangeCount, attendanceInfo])
 
   const handleProjectChange = (event) => {

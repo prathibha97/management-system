@@ -15,8 +15,23 @@ const employeeSlice = createSlice({
       const { employee } = action.payload;
       state.employee = employee;
     },
+    setRemoveEmployee: (state, action) => {
+      const { employeeId } = action.payload;
+      state.employees = state.employees.filter(
+        (employee) => employee.empNo !== employeeId
+      );
+    },
+    setEmployeeDetailsAdmin: (state, action) => {
+      const { employee } = action.payload;
+      state.employee = employee;
+    }
   },
 });
 
-export const { setEmployeeList, setEmployeeProfile } = employeeSlice.actions;
+export const {
+  setEmployeeList,
+  setEmployeeProfile,
+  setRemoveEmployee,
+  setEmployeeDetailsAdmin,
+} = employeeSlice.actions;
 export default employeeSlice.reducer;

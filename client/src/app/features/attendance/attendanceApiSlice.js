@@ -1,4 +1,4 @@
-import { apiSlice } from "../../api/apiSlice";
+import { apiSlice } from '../../api/apiSlice';
 
 export const attendanceApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -12,10 +12,16 @@ export const attendanceApiSlice = apiSlice.injectEndpoints({
         url: `/attendance/${id}`,
       }),
     }),
+    getEmployeeAttendanceAdmin: builder.query({
+      query: (id) => ({
+        url: `/attendance/emp/${id}`,
+      }),
+    }),
   }),
 });
 
-export const { 
-  useMarkAttendanceQuery,
+export const {
+  useLazyMarkAttendanceQuery,
   useGetEmployeeAttendanceQuery,
- } = attendanceApiSlice;
+  useGetEmployeeAttendanceAdminQuery,
+} = attendanceApiSlice;

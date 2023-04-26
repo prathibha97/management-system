@@ -38,10 +38,8 @@ const leaveSlice = createSlice({
       );
     },
     getLeaveDetailsAdmin: (state, action) => {
-      const { id, details } = action.payload;
-      state.leaves = state.leaves.map((leave) =>
-        leave._id === id ? { ...leave, details } : leave
-      );
+      const { leaveData } = action.payload;
+      state.leaves = leaveData;
     },
   },
 });

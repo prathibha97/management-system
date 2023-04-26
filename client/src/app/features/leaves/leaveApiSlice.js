@@ -34,9 +34,14 @@ export const leaveApiSlice = apiSlice.injectEndpoints({
       }),
     }),
     deleteLeave: builder.mutation({
-      query: ({leaveId}) => ({
+      query: ({ leaveId }) => ({
         url: `/leaves/${leaveId}`,
         method: 'DELETE',
+      }),
+    }),
+    getEmployeeLeavesAdmin: builder.query({
+      query: (empNo) => ({
+        url: `/leaves/emp/${empNo}`,
       }),
     }),
   }),
@@ -49,4 +54,5 @@ export const {
   useRejectLeaveMutation,
   useGetAllLeavesQuery,
   useDeleteLeaveMutation,
+  useGetEmployeeLeavesAdminQuery,
 } = leaveApiSlice;

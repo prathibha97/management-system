@@ -1,31 +1,33 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
+import { selectCurrentUser } from '../../app/features/auth/authSelectors';
+import { useEmployeeDetailsAdminQuery } from '../../app/features/employees/employeeApiSlice';
+import { setEmployeeDetailsAdmin } from '../../app/features/employees/employeeSlice';
 import { AttendanceCalendar, EmployeeDetails, LeaveBalance, Loader, ProjectHistory, SalaryDetails } from '../../components';
-import { getUserDetailsAdmin } from '../../redux/actions/userActions';
 
 function EmpProfile() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo } = userLogin
+  const userInfo = useSelector(selectCurrentUser);
   const { empNo } = useParams();
+
+  const { data: user, isLoading: isUserdetailsLoading } = useEmployeeDetailsAdminQuery(empNo,{
+    refetchOnMountOrArgChange: true,
+  })
 
   useEffect(() => {
     if (!userInfo) {
       navigate('/');
     } else {
       const storedUser = JSON.parse(localStorage.getItem('userInfo'));
-      if (storedUser.employee.isAdmin) {
-        dispatch(getUserDetailsAdmin(empNo))
+      if (!storedUser || storedUser.empNo !== userInfo.empNo) {
+        dispatch(setEmployeeDetailsAdmin({ employee: user }))
       }
     }
   }, [userInfo])
 
-  const { user, loading } = useSelector((state) => state.userDetailsAdmin);
-  console.log(user);
-
-  if (loading) return <Loader />
+  if (isUserdetailsLoading) return <Loader />
   return (
     <div className='h-[90%]'>
       <div className='bg-[#EEF2F5]  w-[95%] rounded-xl mt-6 m-auto overflow-y-auto'>
