@@ -5,15 +5,14 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useDispatch } from 'react-redux';
-import { setRemoveEmployee } from '../../app/features/employees/employeeSlice';
 
-export default function AlertDialog({ open, handleClose, id, setAlert, title, remove, setEmployeeListChangeCount, errorRemoveEmployee }) {
+export default function AlertDialog({ open, handleClose, id, setAlert, title, remove, changeCount, errorRemoveEmployee, action }) {
   const dispatch = useDispatch();
   const handleDelete = async () => {
     try {
       await remove({ id }).unwrap()
-      dispatch(setRemoveEmployee({ employeeId: id }))
-      setEmployeeListChangeCount(1)
+      dispatch(action({ employeeId: id }))
+      changeCount(1)
       handleClose()
       setAlert({ open: true, message: 'Removed successfully', severity: 'success' });
     } catch (err) {
