@@ -24,6 +24,11 @@ const employeeSlice = createSlice({
     setEmployeeDetailsAdmin: (state, action) => {
       const { employee } = action.payload;
       state.employee = employee;
+    },
+    setRegisterEmployee: (state, action) => {
+      const { employee } = action.payload;
+      console.log(employee);
+      state.employees.push(employee);
     }
   },
 });
@@ -33,5 +38,6 @@ export const {
   setEmployeeProfile,
   setRemoveEmployee,
   setEmployeeDetailsAdmin,
+  setRegisterEmployee,
 } = employeeSlice.actions;
 export default employeeSlice.reducer;

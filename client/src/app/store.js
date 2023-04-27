@@ -1,24 +1,26 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import {
-  persistReducer,
-  persistStore,
   FLUSH,
-  REHYDRATE,
   PAUSE,
   PERSIST,
   PURGE,
   REGISTER,
+  REHYDRATE,
+  persistReducer,
+  persistStore,
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { apiSlice } from './api/apiSlice';
-import authReducer from './features/auth/authSlice';
 import attendanceReducer from './features/attendance/attendanceSlice';
-import projectReducer from './features/projects/projectSlice';
-import notificationReducer from './features/notifications/notificationSlice';
+import authReducer from './features/auth/authSlice';
+import departmentReducer from './features/departments/departmentSlice';
+import designationReducer from './features/designations/designationSlice';
 import employeeReducer from './features/employees/employeeSlice';
-import meetingReducer from './features/meetings/meetingSlice';
 import experienceReducer from './features/experiences/experienceSlice';
 import leaveReducer from './features/leaves/leaveSlice';
+import meetingReducer from './features/meetings/meetingSlice';
+import notificationReducer from './features/notifications/notificationSlice';
+import projectReducer from './features/projects/projectSlice';
 
 const persistConfig = {
   key: 'root',
@@ -37,6 +39,8 @@ const persistedReducer = persistReducer(
     meetings: meetingReducer,
     experience: experienceReducer,
     leaves: leaveReducer,
+    departments: departmentReducer,
+    designations: designationReducer,
   })
 );
 

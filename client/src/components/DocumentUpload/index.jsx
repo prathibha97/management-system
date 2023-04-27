@@ -2,16 +2,16 @@
 import { InputLabel, TextField } from '@mui/material'
 import React from 'react'
 
-function DocumentUpload({ handleChange, values, nextStep, prevStep }) {
+function DocumentUpload({ nextStep, prevStep, values, handleChange }) {
   const handleNextStep = (e) => {
     e.preventDefault()
-    console.log(values.idCardPath, values.bankPassPath, values.resumePath)
     nextStep()
   }
   const handlePrevStep = (e) => {
     e.preventDefault()
     prevStep()
   }
+
   return (
     <div className='bg-[#EEF2F5] h-[90%] w-[95%] rounded-xl m-auto'>
       <div className='flex flex-col mt-6 ml-[55px]'>
@@ -52,6 +52,7 @@ function DocumentUpload({ handleChange, values, nextStep, prevStep }) {
               accept=".pdf,.doc,.docx,.jpeg,.jpg,.png"
               onChange={handleChange('resumePath')}
               defaultValue={values.resumePath} />
+
           </div>
         </div>
       </div>

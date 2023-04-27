@@ -23,6 +23,14 @@ export const employeeApiSlice = apiSlice.injectEndpoints({
         url: `/emp/${empNo}`,
       }),
     }),
+    registerEmployee: builder.mutation({
+      query: (employee, idCardPath, bankPassPath, resumePath) => ({
+        url: `/emp/auth/register`,
+        method: 'POST',
+
+        body: { ...employee, ...idCardPath, ...bankPassPath, ...resumePath },
+      }),
+    }),
   }),
 });
 
@@ -31,4 +39,5 @@ export const {
   useEmployeeProfileQuery,
   useRemoveEmployeeMutation,
   useEmployeeDetailsAdminQuery,
+  useRegisterEmployeeMutation,
 } = employeeApiSlice;

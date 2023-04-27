@@ -12,7 +12,7 @@ function EmpProfile() {
   const userInfo = useSelector(selectCurrentUser);
   const { empNo } = useParams();
 
-  const { data: user, isLoading: isUserdetailsLoading } = useEmployeeDetailsAdminQuery(empNo,{
+  const { data: user, isLoading: isUserdetailsLoading } = useEmployeeDetailsAdminQuery(empNo, {
     refetchOnMountOrArgChange: true,
   })
 

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { DocumentUpload, PersonalInfoForm, ProfessionalInfoForm, ReviewNewEmployee, SalaryStructure } from '../../components'
+import encodePDFToBase64 from '../../utils/encodePDFToBase64'
 
 function Register() {
   const [step, setStep] = useState(1)
@@ -41,6 +42,39 @@ function Register() {
 
   const prevStep = () => {
     setStep(step - 1);
+  };
+
+  const handleIdInputChange = (e) => {
+    const file = e.target.files[0];
+    encodePDFToBase64(file)
+      .then((base64) => {
+        setIdCardPath(base64);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const handleBankPassInputChange = (e) => {
+    const file = e.target.files[0];
+    encodePDFToBase64(file)
+      .then((base64) => {
+        setBankPassPath(base64);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const handleResumeInputChange = (e) => {
+    const file = e.target.files[0];
+    encodePDFToBase64(file)
+      .then((base64) => {
+        setResumePath(base64);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   const handleChange = input => e => {
@@ -130,13 +164,13 @@ function Register() {
         setIsAdmin(e.target.checked);
         break;
       case 'idCardPath':
-        setIdCardPath(e.target.files[0]);
+        handleIdInputChange(e);
         break;
       case 'bankPassPath':
-        setBankPassPath(e.target.files[0]);
+        handleBankPassInputChange(e);
         break;
       case 'resumePath':
-        setResumePath(e.target.files[0]);
+        handleResumeInputChange(e);
         break;
       default:
         break;
@@ -150,7 +184,6 @@ function Register() {
       }));
     }
   };
-
 
   const values = { firstName, lastName, email, password, birthDate, phone, gender, nic, street, city, state, zip, empNo, dateOfAppointment, designation, workType, department, leaveAllocation, isAdmin, idCardPath, bankPassPath, resumePath, effectiveDate, paymentModel, basicSalary, pf, bank, accNo, advance, maxAdvance, noOfAdvances };
   switch (step) {

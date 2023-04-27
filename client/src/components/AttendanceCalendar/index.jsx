@@ -18,10 +18,10 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { useGetEmployeeAttendanceAdminQuery } from '../../app/features/attendance/attendanceApiSlice'
+import { setEmployeeAttendanceAdmin } from '../../app/features/attendance/attendanceSlice'
 import { selectCurrentUser } from '../../app/features/auth/authSelectors'
 import { useGetEmployeeLeavesAdminQuery } from '../../app/features/leaves/leaveApiSlice'
-import { setEmployeeAttendanceAdmin } from '../../app/features/attendance/attendanceSlice'
-import { getAdminLeaveDetails } from '../../redux/actions/leaveActions'
+import { getLeaveDetailsAdmin } from '../../app/features/leaves/leaveSlice'
 import { formatDateShort } from '../../utils/formatDate'
 import formatTime from '../../utils/formatTime'
 import Loader from '../Loader'
@@ -41,7 +41,7 @@ function AttendanceCalendar({ user }) {
   const userInfo = useSelector(selectCurrentUser);
 
   const { data: attendanceInfo, isLoading: isAttendanceInfoLoading } = useGetEmployeeAttendanceAdminQuery(user.empNo)
-  const { data: leaves, isLoading: isLeavesLoading } = useGetEmployeeLeavesAdminQuery(user.empNo,{
+  const { data: leaves, isLoading: isLeavesLoading } = useGetEmployeeLeavesAdminQuery(user.empNo, {
     refetchOnMountOrArgChange: true,
   })
 
@@ -52,7 +52,7 @@ function AttendanceCalendar({ user }) {
       const storedUser = JSON.parse(localStorage.getItem('user'));
       if (!storedUser || storedUser.empNo !== userInfo.empNo) {
         dispatch(setEmployeeAttendanceAdmin({ attendanceInfo }))
-        dispatch(getAdminLeaveDetails(user.empNo))
+        dispatch(getLeaveDetailsAdmin({ leaveData: leaves }))
       }
     }
   }, [userInfo])
