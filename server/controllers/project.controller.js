@@ -130,6 +130,7 @@ const getProjectByEmpId = async (req, res) => {
 
 const deleteProject = async (req, res) => {
   const { id } = req.params;
+  console.log(id);
 
   try {
     const project = await Project.findById(id);
@@ -155,9 +156,10 @@ const deleteProject = async (req, res) => {
 
     return res.status(200).json({ message: 'Project deleted successfully' });
   } catch (err) {
+    console.log(err.message);
     return res.status(500).json({ message: 'Error occured while deleting the project' });
   }
-}
+};
 
 module.exports = {
   createProject,

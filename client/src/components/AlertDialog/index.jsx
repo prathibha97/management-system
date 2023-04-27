@@ -10,7 +10,7 @@ export default function AlertDialog({ open, handleClose, id, setAlert, title, re
   const dispatch = useDispatch();
   const handleDelete = async () => {
     try {
-      await remove({ id }).unwrap()
+      await remove( {id} ).unwrap()
       dispatch(action({ employeeId: id }))
       changeCount(1)
       handleClose()

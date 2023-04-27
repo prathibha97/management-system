@@ -7,11 +7,11 @@
 import { faClock } from '@fortawesome/free-solid-svg-icons';
 import { Alert, FormControl, InputLabel, MenuItem, Select, Snackbar } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { useGetEmployeeAttendanceQuery, useLazyMarkAttendanceQuery } from '../../app/features/attendance/attendanceApiSlice';
 import { setEmployeeAttendance, setMarkAttendance } from '../../app/features/attendance/attendanceSlice';
-import { getEmployeeProjects } from '../../app/features/projects/projectSelectors';
+import { useGetEmployeeProjectsQuery } from '../../app/features/projects/projectApiSlice';
 import { AccountMenu, Button, Notifications } from '../../components';
 import { ProjectDetailsById } from '../../redux/actions/projectActions';
 
@@ -20,7 +20,8 @@ function Header() {
   const dispatch = useDispatch()
   const id = location.pathname.split('/')[2];
 
-  const { projects } = useSelector(getEmployeeProjects);
+  const { data: projects } = useGetEmployeeProjectsQuery()
+
 
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
   const [project, setProject] = useState(projects?.length > 0 ? projects[0]?._id : '');
@@ -30,15 +31,17 @@ function Header() {
   const userInfo = JSON.parse(localStorage.getItem('userInfo'));
   const { empNo } = userInfo;
 
-  const { date: attendanceInfo, refetch:refetchAttendance } = useGetEmployeeAttendanceQuery(empNo)
+  const { data: attendanceInfo, refetch: refetchAttendance } = useGetEmployeeAttendanceQuery(empNo)
+
   const [trigger, { data: attendance, error: markAttendanceError }] = useLazyMarkAttendanceQuery()
+
 
   const handleMarkAttendance = () => {
     try {
       trigger().unwrap()
       dispatch(setMarkAttendance({ attendance }));
       setAttendanceChangeCount(1)
-        setAlert({ open: true, message: 'Attendance marked successfully', severity: 'success' });
+      setAlert({ open: true, message: 'Attendance marked successfully', severity: 'success' });
     } catch (err) {
       setAlert({ open: true, message: markAttendanceError?.data?.message, severity: 'error' });
     }

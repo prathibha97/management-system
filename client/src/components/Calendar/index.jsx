@@ -18,13 +18,13 @@ import {
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { cancelMeeting, editMeeting, getMyMeetings } from '../../redux/actions/meetingActions'
+import { useEmployeeListQuery } from '../../app/features/employees/employeeApiSlice'
+import { useCancelMeetingMutation, useMyMeetingQuery, useScheduleMeetingMutation } from '../../app/features/meetings/meetingApiSlice'
+import { setMyMeetings, setScheduleMeeting, setcancelMeeting } from '../../app/features/meetings/meetingSlice'
+import { editMeeting } from '../../redux/actions/meetingActions'
 import Loader from '../Loader'
 import Meetings from '../Meetings'
 import ScheduleMeeting from '../ScheduleMeeting'
-import { useEmployeeListQuery } from '../../app/features/employees/employeeApiSlice'
-import { setMyMeetings, setScheduleMeeting } from '../../app/features/meetings/meetingSlice'
-import { useMyMeetingQuery, useScheduleMeetingMutation } from '../../app/features/meetings/meetingApiSlice'
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -39,15 +39,23 @@ function Calendar() {
   const [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
   const firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date())
-  const [scheduleMeeting, { isLoading: scheduleMeetingLoading , error}] = useScheduleMeetingMutation()
+  const [scheduleMeeting, { isLoading: scheduleMeetingLoading, error }] = useScheduleMeetingMutation()
 
   // Define a state variable to keep track of whether new meetings have been added or removed
   const [meetingChangeCount, setMeetingChangeCount] = useState(0);
 
   const { user } = useSelector((state) => state.auth);
 
-  const { data: meetings } = useMyMeetingQuery()
+  const { data: meetings, refetch: refetchMeetings } = useMyMeetingQuery({
+    refetchOnMountOrArgChange: true,
+    refetchOnReconnect: true,
+    refetchOnFocus: true,
+    refetchOnWindowFocus: true,
+  })
   const { data: employees, isLoading } = useEmployeeListQuery()
+
+  const [cancelMeeting, { isLoading: isCancelMeetingLoading }] = useCancelMeetingMutation()
+
   // First useEffect hook to get employee list and meetings
   useEffect(() => {
     if (!user) {
@@ -55,18 +63,20 @@ function Calendar() {
     } else {
       const storedUser = JSON.parse(localStorage.getItem('userInfo'));
       if (!storedUser || storedUser.empNo !== user.empNo) {
-        dispatch(getMyMeetings())
-        dispatch(setMyMeetings())
+        dispatch(setMyMeetings({ meetings }))
       }
     }
-  }, [user, meetingChangeCount])
+  }, [user])
 
   // Second useEffect hook to get meetings again and reset meetingChangeCount
   useEffect(() => {
-    dispatch(getMyMeetings())
-    setMeetingChangeCount(0);
-  }, [dispatch, meetingChangeCount])
+    if (meetingChangeCount > 0) {
+      refetchMeetings()
+      setMeetingChangeCount(0);
+    }
+  }, [meetingChangeCount])
 
+ 
   if (isLoading || scheduleMeetingLoading) return <Loader />
 
   const days = eachDayOfInterval({
@@ -93,10 +103,11 @@ function Calendar() {
   };
 
 
-  const handleMeetingCancel = (id) => {
+  const handleMeetingCancel = async (id) => {
     try {
-      dispatch(cancelMeeting(id));
-      setMeetingChangeCount(1);
+      const res = await cancelMeeting({ id }).unwrap();
+      dispatch(setcancelMeeting({ meetingId: res._id }));
+      setMeetingChangeCount(prev => prev + 1);
       setAlert({ open: true, message: 'Meeting Cancelled Successfully', severity: 'success' });
     } catch (err) {
       setAlert({ open: true, message: err.response.data.message, severity: 'error' });
@@ -106,7 +117,7 @@ function Calendar() {
   const handleMeetingEdit = (id, summary, selectedPeople, startValue, endValue) => {
     try {
       dispatch(editMeeting(id, summary, selectedPeople.map((person) => person.email), startValue, endValue));
-      setMeetingChangeCount(1);
+      setMeetingChangeCount(prev => prev + 1);
       setAlert({ open: true, message: 'Meeting Edited Successfully', severity: 'success' });
     } catch (err) {
       setAlert({ open: true, message: err.response.data.message, severity: 'error' });
@@ -115,12 +126,12 @@ function Calendar() {
 
   const handleSubmit = async (summary, selectedPeople, startValue, endValue) => {
     try {
-      const meeting = await scheduleMeeting({ summary, attendee: selectedPeople.map((person) => person.email), startValue, endValue }).unwrap()
-      dispatch(setScheduleMeeting({ ...meeting }))
-      setMeetingChangeCount(1);
+      const meeting = await scheduleMeeting({ summary, attendee: selectedPeople.map((person) => person.email), startDatetime: startValue, endDatetime: endValue }).unwrap()
+      dispatch(setScheduleMeeting({ meeting }))
+      setMeetingChangeCount(prev => prev + 1);
       setAlert({ open: true, message: `meeting scheduled with ${selectedPeople?.map((person) => person?.name?.first)} ${selectedPeople?.map((person) => person?.name?.last)} on ${startValue} to ${endValue}`, severity: 'success' });
     } catch (err) {
-      setAlert({ open: true, message: error.message, severity: 'error' });
+      setAlert({ open: true, message: error?.data?.messeage, severity: 'error' });
     }
     setIsOpen(false)
   }
@@ -134,6 +145,8 @@ function Calendar() {
     'col-start-6',
     'col-start-7',
   ]
+
+  if (isCancelMeetingLoading) return <Loader />
 
   return (
     <div className=" pt-12">

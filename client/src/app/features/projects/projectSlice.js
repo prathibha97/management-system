@@ -10,8 +10,17 @@ const projectSlice = createSlice({
       const { projects } = action.payload;
       state.projects = projects;
     },
+    setCreateProject: (state, action) => {
+      const { project } = action.payload;
+      state.projects.push(project);
+    },
+    setDeleteProject: (state, action) => {
+      const { project } = action.payload;
+      state.projects = state.projects.filter((p) => p.id !== project._id);
+    },
   },
 });
 
-export const { setProjects } = projectSlice.actions;
+export const { setProjects, setCreateProject, setDeleteProject } =
+  projectSlice.actions;
 export default projectSlice.reducer;

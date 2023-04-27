@@ -1,4 +1,4 @@
-import { apiSlice } from "../../api/apiSlice";
+import { apiSlice } from '../../api/apiSlice';
 
 export const meetingApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -14,8 +14,17 @@ export const meetingApiSlice = apiSlice.injectEndpoints({
         body: { ...meeting },
       }),
     }),
+    cancelMeeting: builder.mutation({
+      query: ({id}) => ({
+        url: `/google/${id}`,
+        method: 'DELETE',
+      }),
+    }),
   }),
 });
 
-export const { useMyMeetingQuery, useScheduleMeetingMutation } =
-  meetingApiSlice;
+export const {
+  useMyMeetingQuery,
+  useScheduleMeetingMutation,
+  useCancelMeetingMutation,
+} = meetingApiSlice;

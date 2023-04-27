@@ -13,6 +13,7 @@ import storage from 'redux-persist/lib/storage';
 import { apiSlice } from './api/apiSlice';
 import attendanceReducer from './features/attendance/attendanceSlice';
 import authReducer from './features/auth/authSlice';
+import clientReducer from './features/clients/clientSlice';
 import departmentReducer from './features/departments/departmentSlice';
 import designationReducer from './features/designations/designationSlice';
 import employeeReducer from './features/employees/employeeSlice';
@@ -25,6 +26,7 @@ import projectReducer from './features/projects/projectSlice';
 const persistConfig = {
   key: 'root',
   storage,
+  blacklist: ['projects.projects.scope'],
 };
 
 const persistedReducer = persistReducer(
@@ -41,6 +43,7 @@ const persistedReducer = persistReducer(
     leaves: leaveReducer,
     departments: departmentReducer,
     designations: designationReducer,
+    clients: clientReducer,
   })
 );
 

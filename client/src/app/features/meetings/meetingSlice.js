@@ -13,10 +13,16 @@ const meetingSlice = createSlice({
     },
     setScheduleMeeting: (state, action) => {
       const { meeting } = action.payload;
-      state.meeting = meeting;
-    }
+      state.meetings.push(meeting);
+    },
+    setcancelMeeting: (state, action) => {
+      const { meetingId } = action.payload;
+      console.log(meetingId);
+        state.meetings = state.meetings.filter((m) => m._id !== meetingId);
+    },
   },
 });
 
-export const { setMyMeetings, setScheduleMeeting } = meetingSlice.actions;
+export const { setMyMeetings, setScheduleMeeting, setcancelMeeting } =
+  meetingSlice.actions;
 export default meetingSlice.reducer;

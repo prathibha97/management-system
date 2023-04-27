@@ -14,8 +14,17 @@ export const departmentApiSlice = apiSlice.injectEndpoints({
         url: '/departments',
       }),
     }),
+    getDepartmentEmployeeList: builder.query({
+      query: (departmentId) => ({
+        url: `/departments/${departmentId}/employees`,
+      })
+    })
   }),
 });
 
-export const { useCreateDepartmentMutation, useGetDepartmentsQuery } =
+export const { 
+  useCreateDepartmentMutation, 
+  useGetDepartmentsQuery,
+  useGetDepartmentEmployeeListQuery,
+ } =
   departmentApiSlice;

@@ -16,7 +16,6 @@ const experienceSlice = createSlice({
     },
     setRemoveExperience: (state, action) => {
       const { id } = action.payload;
-      console.log('Removing experience:', id);
       state.experiences = state.experiences.filter((exp) => exp._id !== id);
     },
   },
