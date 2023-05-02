@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { DocumentUpload, PersonalInfoForm, ProfessionalInfoForm, ReviewNewEmployee, SalaryStructure } from '../../components'
-import encodePDFToBase64 from '../../utils/encodePDFToBase64'
 
 function Register() {
   const [step, setStep] = useState(1)
@@ -44,38 +43,38 @@ function Register() {
     setStep(step - 1);
   };
 
-  const handleIdInputChange = (e) => {
-    const file = e.target.files[0];
-    encodePDFToBase64(file)
-      .then((base64) => {
-        setIdCardPath(base64);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
+  // const handleIdInputChange = (e) => {
+  //   const file = e.target.files[0];
+  //   encodePDFToBase64(file)
+  //     .then((base64) => {
+  //       setIdCardPath(base64);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
+  // };
 
-  const handleBankPassInputChange = (e) => {
-    const file = e.target.files[0];
-    encodePDFToBase64(file)
-      .then((base64) => {
-        setBankPassPath(base64);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
+  // const handleBankPassInputChange = (e) => {
+  //   const file = e.target.files[0];
+  //   encodePDFToBase64(file)
+  //     .then((base64) => {
+  //       setBankPassPath(base64);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
+  // };
 
-  const handleResumeInputChange = (e) => {
-    const file = e.target.files[0];
-    encodePDFToBase64(file)
-      .then((base64) => {
-        setResumePath(base64);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
+  // const handleResumeInputChange = (e) => {
+  //   const file = e.target.files[0];
+  //   encodePDFToBase64(file)
+  //     .then((base64) => {
+  //       setResumePath(base64);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
+  // };
 
   const handleChange = input => e => {
     switch (input) {
@@ -164,13 +163,13 @@ function Register() {
         setIsAdmin(e.target.checked);
         break;
       case 'idCardPath':
-        handleIdInputChange(e);
+        setIdCardPath(e.target.files[0]);
         break;
       case 'bankPassPath':
-        handleBankPassInputChange(e);
+        setBankPassPath(e.target.files[0]);
         break;
       case 'resumePath':
-        handleResumeInputChange(e);
+        setResumePath(e.target.files[0]);
         break;
       default:
         break;

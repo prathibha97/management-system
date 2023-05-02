@@ -1,19 +1,18 @@
+/* eslint-disable object-shorthand */
 import { faBriefcase, faBuilding, faEnvelope, faGift, faHouse, faHouseLaptop, faIdCard, faLock, faMars, faRightFromBracket, faScrewdriverWrench, faUser, faVenus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Alert, Snackbar } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { useRegisterEmployeeMutation } from '../../app/features/employees/employeeApiSlice';
-import Loader from '../Loader';
-import { setRegisterEmployee } from '../../app/features/employees/employeeSlice';
+import { registerEmployee } from '../../redux/actions/employeeActions';
 
 function ReviewNewEmployee({ prevStep, values }) {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
 
-  const [registerEmployee, { error, isLoading }] = useRegisterEmployeeMutation()
+  // const [registerEmployee, { error, isLoading }] = useRegisterEmployeeMutation()
 
   const { firstName,
     lastName,
@@ -45,14 +44,40 @@ function ReviewNewEmployee({ prevStep, values }) {
     accNo,
   } = values
 
-  console.log(values);
-
-
   const saveEmployee = async () => {
     try {
-      const employee = await registerEmployee({
-        firstName,
-        lastName,
+      // await registerEmployee({
+      //   firstName,
+      //   lastName,
+      //   birthDate,
+      //   email,
+      //   password,
+      //   phone,
+      //   gender,
+      //   nic,
+      //   street,
+      //   city,
+      //   state,
+      //   zip,
+      //   empNo,
+      //   designation,
+      //   workType,
+      //   department,
+      //   employementHistoty,
+      //   projectHistory,
+      //   leaveAllocation,
+      //   isAdmin,
+      //   idCardPath,
+      //   bankPassPath,
+      //   resumePath,
+      //   dateOfAppointment,
+      //   effectiveDate,
+      //   paymentModel,
+      //   bank,
+      //   accNo,
+      // }).unwrap()
+
+      dispatch(registerEmployee(lastName,
         birthDate,
         email,
         password,
@@ -78,14 +103,12 @@ function ReviewNewEmployee({ prevStep, values }) {
         effectiveDate,
         paymentModel,
         bank,
-        accNo,
-      }).unwrap()
-      console.log(`employee`, employee);
-      dispatch(setRegisterEmployee({employee}))
+        accNo,))
+      // dispatch(setRegisterEmployee({employee}))
       navigate('/people')
       setAlert({ open: true, message: 'Employee Added Successfully', severity: 'success' });
     } catch (err) {
-      setAlert({ open: true, message: error?.data?.message, severity: 'error' });
+      setAlert({ open: true, message: err?.data?.message, severity: 'error' });
     }
 
   }
@@ -98,13 +121,13 @@ function ReviewNewEmployee({ prevStep, values }) {
     setAlert({ ...alert, open: false });
   };
 
-  useEffect(() => {
-    if (error) {
-      setAlert({ open: true, message: error?.data?.message, severity: 'error' });
-    }
-  }, [error]);
+  // useEffect(() => {
+  //   if (error) {
+  //     setAlert({ open: true, message: error?.data?.message, severity: 'error' });
+  //   }
+  // }, [error]);
 
-  if (isLoading) return <Loader />
+  // if (isLoading) return <Loader />
 
   const birthdateString = birthDate;
   const birthdate = new Date(birthdateString);
