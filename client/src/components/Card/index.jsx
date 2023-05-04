@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Avatar, AvatarGroup } from "@mui/material";
 import MenuButton from "../MenuButton";
 
-function Card({ task }) {
+function Card({ task, refetchProjectBoards, setNumTasks }) {
 
   return (
     <div className='p-1 rounded-lg' key={task._id}>
@@ -15,7 +15,8 @@ function Card({ task }) {
           <FontAwesomeIcon icon={faCircle} className="text-[8px]" />
           <p>tag</p>
         </div>
-        <MenuButton id={task._id} />
+        <MenuButton id={task._id} refetchProjectBoards={refetchProjectBoards} setNumTasks={setNumTasks}
+        />
       </div>
       <div className="flex flex-col gap-2 mb-5">
         <h1 className="font-semibold">{task.title}</h1>

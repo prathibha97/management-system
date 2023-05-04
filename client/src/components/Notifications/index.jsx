@@ -6,21 +6,37 @@ import { Badge, Button, Divider, IconButton, List, ListItem, ListItemText, Popov
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import io from 'socket.io-client';
-import { MarkNotificationAsRead, clearUserNotifications, getUserNotifications } from '../../redux/actions/notificationActions';
-import { useUserNotificationsQuery } from '../../app/features/notifications/notificationApiSlice';
+import { useClearNotificationsMutation, useReadNotificationMutation, useUserNotificationsQuery } from '../../app/features/notifications/notificationApiSlice';
+import { setClearNotifications, setReadNotification } from '../../app/features/notifications/notificationSlice';
 
-function NotificationItem({ notification }) {
+function NotificationItem({ notification, empNo }) {
   const dispatch = useDispatch();
+  const [notificationCount, setNotificationCount] = useState(0)
+  const { data: userNotifications, refetch: refetchNotifications } = useUserNotificationsQuery(empNo)
+  const [readNotification] = useReadNotificationMutation()
 
   const formattedDate = new Date(notification.createdAt).toLocaleString();
 
-  const handleMarkAsRead = () => {
+  const handleMarkAsRead = async () => {
     try {
-      dispatch(MarkNotificationAsRead(notification._id));
+      const notificationData = await readNotification({ id: notification._id }).unwrap()
+      dispatch(setReadNotification({ notificationData }));
     } catch (err) {
       console.log('Error marking notification as read');
     }
   }
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        refetchNotifications()
+        setNotificationCount(notificationCount + 1);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchNotifications()
+  }, [])
 
   return (
     <>
@@ -45,7 +61,8 @@ function Notifications({ empNo }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0)
-  const { data: userNotifications } = useUserNotificationsQuery(empNo)
+  const { data: userNotifications, refetch: refetchNotifications } = useUserNotificationsQuery(empNo)
+  const [clearNotifications] = useClearNotificationsMutation()
 
   const unreadCount = userNotifications?.filter(notification => !notification.isRead).length;
 
@@ -57,12 +74,18 @@ function Notifications({ empNo }) {
     setAnchorEl(null);
   }, []);
 
-  const handleClearNotifications = useCallback(() => {
-    dispatch(clearUserNotifications(empNo));
-    dispatch(getUserNotifications(empNo));
-    setNotificationCount(0);
-    setAnchorEl(null);
+  const handleClearNotifications = useCallback(async () => {
+    try {
+      const res = await clearNotifications({ empNo }).unwrap()
+      dispatch(setClearNotifications(res));
+      refetchNotifications()
+      setNotificationCount(0);
+      setAnchorEl(null);
+    } catch (err) {
+      console.error(err);
+    }
   }, [empNo, dispatch]);
+
 
   useEffect(() => {
     let isMounted = true;
@@ -71,6 +94,7 @@ function Notifications({ empNo }) {
       try {
         setLoading(true);
         // await dispatch(getUserNotifications(empNo));
+        refetchNotifications()
         setNotificationCount(notificationCount + 1);
         setLoading(false);
       } catch (err) {
@@ -93,7 +117,8 @@ function Notifications({ empNo }) {
 
     socket.on('leaveApproved', async (_data) => {
       try {
-        await dispatch(getUserNotifications(empNo));
+        // await dispatch(getUserNotifications(empNo));
+        refetchNotifications()
         setNotificationCount(notificationCount + 1);
       } catch (err) {
         console.error(err);
@@ -102,7 +127,8 @@ function Notifications({ empNo }) {
 
     socket.on('leaveRejected', async (_data) => {
       try {
-        await dispatch(getUserNotifications(empNo));
+        // await dispatch(getUserNotifications(empNo));
+        refetchNotifications()
         setNotificationCount(notificationCount + 1);
       } catch (err) {
         console.error(err);
@@ -111,7 +137,8 @@ function Notifications({ empNo }) {
 
     socket.on('meetingCreated', async (_data) => {
       try {
-        await dispatch(getUserNotifications(empNo));
+        // await dispatch(getUserNotifications(empNo));
+        refetchNotifications()
         setNotificationCount(notificationCount + 1);
       } catch (err) {
         console.error(err);
@@ -120,7 +147,8 @@ function Notifications({ empNo }) {
 
     socket.on('meetingUpdated', async (_data) => {
       try {
-        await dispatch(getUserNotifications(empNo));
+        // await dispatch(getUserNotifications(empNo));
+        refetchNotifications()
         setNotificationCount(notificationCount + 1);
       } catch (err) {
         console.error(err);
@@ -129,7 +157,8 @@ function Notifications({ empNo }) {
 
     socket.on('meetingCancelled', async (_data) => {
       try {
-        await dispatch(getUserNotifications(empNo));
+        // await dispatch(getUserNotifications(empNo));
+        refetchNotifications()
         setNotificationCount(notificationCount + 1);
       } catch (err) {
         console.error(err);
@@ -176,7 +205,7 @@ function Notifications({ empNo }) {
         ) : userNotifications?.length > 0 ? (
           <List sx={{ textAlign: 'center' }}>
             {userNotifications?.map((notification) => (
-              <NotificationItem notification={notification} />
+              <NotificationItem notification={notification} empNo={empNo} />
             ))}
             <Button onClick={handleClearNotifications}>Clear All</Button>
           </List>

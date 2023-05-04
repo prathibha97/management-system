@@ -13,6 +13,7 @@ import storage from 'redux-persist/lib/storage';
 import { apiSlice } from './api/apiSlice';
 import attendanceReducer from './features/attendance/attendanceSlice';
 import authReducer from './features/auth/authSlice';
+import boardReducer from './features/boards/boardSlice';
 import clientReducer from './features/clients/clientSlice';
 import departmentReducer from './features/departments/departmentSlice';
 import designationReducer from './features/designations/designationSlice';
@@ -22,11 +23,12 @@ import leaveReducer from './features/leaves/leaveSlice';
 import meetingReducer from './features/meetings/meetingSlice';
 import notificationReducer from './features/notifications/notificationSlice';
 import projectReducer from './features/projects/projectSlice';
+import taskReducer from './features/tasks/taskSlice';
 
 const persistConfig = {
   key: 'root',
   storage,
-  blacklist: ['projects.projects.scope'],
+  blacklist: ['projects.scope'],
 };
 
 const persistedReducer = persistReducer(
@@ -44,6 +46,8 @@ const persistedReducer = persistReducer(
     departments: departmentReducer,
     designations: designationReducer,
     clients: clientReducer,
+    boards: boardReducer,
+    tasks: taskReducer,
   })
 );
 

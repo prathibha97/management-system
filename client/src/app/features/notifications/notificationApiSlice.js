@@ -1,4 +1,4 @@
-import { apiSlice } from "../../api/apiSlice";
+import { apiSlice } from '../../api/apiSlice';
 
 export const notificationApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -8,7 +8,23 @@ export const notificationApiSlice = apiSlice.injectEndpoints({
         method: 'GET',
       }),
     }),
+    readNotification: builder.mutation({
+      query: ({ id }) => ({
+        url: `/notifications/${id}`,
+        method: 'PUT',
+      }),
+    }),
+    clearNotifications: builder.mutation({
+      query: ({empNo}) => ({
+        url: `/notifications/${empNo}`,
+        method: 'DELETE',
+      }),
+    }),
   }),
 });
 
-export const { useUserNotificationsQuery } = notificationApiSlice;
+export const {
+  useUserNotificationsQuery,
+  useReadNotificationMutation,
+  useClearNotificationsMutation,
+} = notificationApiSlice;

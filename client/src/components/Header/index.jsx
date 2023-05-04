@@ -12,8 +12,8 @@ import { useLocation } from 'react-router-dom';
 import { useGetEmployeeAttendanceQuery, useLazyMarkAttendanceQuery } from '../../app/features/attendance/attendanceApiSlice';
 import { setEmployeeAttendance, setMarkAttendance } from '../../app/features/attendance/attendanceSlice';
 import { useGetEmployeeProjectsQuery } from '../../app/features/projects/projectApiSlice';
+import { setProjects, setSelectedProject } from '../../app/features/projects/projectSlice';
 import { AccountMenu, Button, Notifications } from '../../components';
-import { ProjectDetailsById } from '../../redux/actions/projectActions';
 
 function Header() {
   const location = useLocation();
@@ -21,6 +21,7 @@ function Header() {
   const id = location.pathname.split('/')[2];
 
   const { data: projects } = useGetEmployeeProjectsQuery()
+  dispatch(setProjects({ projects }))
 
 
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
@@ -63,7 +64,7 @@ function Header() {
   const handleProjectChange = (event) => {
     const selectedProject = event.target.value;
     setProject(selectedProject?._id);
-    dispatch(ProjectDetailsById(selectedProject?._id))
+    dispatch(setSelectedProject({ project: selectedProject }))
   };
 
   let heading;

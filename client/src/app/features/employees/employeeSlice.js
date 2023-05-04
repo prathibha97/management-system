@@ -27,6 +27,7 @@ const employeeSlice = createSlice({
     },
     setRegisterEmployee: (state, action) => {
       const { employee } = action.payload;
+      console.log(employee);
       state.employees.push(employee);
     }
   },

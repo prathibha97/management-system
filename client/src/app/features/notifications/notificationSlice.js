@@ -8,7 +8,8 @@ const notificationsSlice = createSlice({
   },
   reducers: {
     setUserNotifications: (state, action) => {
-      state.notifications = action.payload;
+      const { notifications } = action.payload;
+      state.notifications = notifications;
     },
     setReadNotification: (state, action) => {
       const notification = state.notifications.find(

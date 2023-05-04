@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const Employee = require('../models/Employee');
 const Department = require('../models/Department');
 const generateToken = require('../utils/generateToken');
+const upload = require('../services/fileUpload');
 
 const unlinkAsync = promisify(fs.unlink);
 
@@ -54,9 +55,12 @@ const registerEmployee = async (req, res) => {
     }
 
     // Upload files using the "upload" middleware
-    const idCardPath = req.files?.idCardPath[0].path;
-    const bankPassPath = req.files?.bankPassPath[0].path;
-    const resumePath = req.files?.resumePath[0].path;
+    await upload.any()(req, res, () => {});
+
+    // // Upload files using the "upload" middleware
+    const idCardPath = req.files?.idCardPath?.[0]?.path ?? '';
+    const bankPassPath = req.files?.bankPassPath?.[0]?.path ?? '';
+    const resumePath = req.files?.resumePath?.[0]?.path ?? '';
 
     // Create a new employee object
     const newEmployee = await Employee.create({
@@ -85,14 +89,16 @@ const registerEmployee = async (req, res) => {
       accountNo: accNo,
     });
 
+    console.log(req.files?.idCardPath[0].path);
+    console.log(req.files?.bankPassPath[0].path);
+    console.log(req.files?.resumePath[0].path);
+
     const dept = await Department.findById(department);
     dept.employees.push(newEmployee._id);
     await dept.save();
 
     res.status(201).json({ newEmployee, message: 'Employee created successfully' });
   } catch (err) {
-    console.error(err.message);
-
     // Delete uploaded files if any
     if (req.files?.idCard) {
       await unlinkAsync(req.files?.idCardPath[0].path);
@@ -107,6 +113,7 @@ const registerEmployee = async (req, res) => {
     }
 
     res.status(500).json({ message: 'Failed to register employee' });
+    console.error(err.message);
   }
 };
 /* 
@@ -220,9 +227,6 @@ const logoutEmployee = async (req, res) => {
   res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
   res.sendStatus(204);
 };
-
-
-
 
 /* 
 ?@desc   Reset password

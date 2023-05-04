@@ -10,9 +10,10 @@ import { useEffect, useState } from 'react'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { getBoardsByProjectId } from '../../redux/actions/boardActions'
-import { getUserProjectDetails } from '../../redux/actions/projectActions'
-import { updateTask } from '../../redux/actions/taskActions'
+import { selectCurrentUser } from '../../app/features/auth/authSelectors'
+import { useGetProjectBoardsByIdQuery } from '../../app/features/boards/boardApiSlice'
+import { useUpdateTaskBoardMutation } from '../../app/features/tasks/taskApiSlice'
+import { setUpdateTaskBoard } from '../../app/features/tasks/taskSlice'
 import AddTaskModal from '../AddTaskModal'
 import Card from '../Card'
 import Loader from '../Loader'
@@ -22,15 +23,21 @@ function Kanban({ numTasks, setNumTasks }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo } = userLogin
+  const userInfo = useSelector(selectCurrentUser);
 
-  const { user } = useSelector((state) => state.userDetails) || {}
-  const projectDetailsById = useSelector((state) => state.projectDetailsById) || {};
-  const { project } = projectDetailsById
+  // const projectDetailsById = useSelector((state) => state.projectDetailsById) || {};
+  // const { project } = projectDetailsById
 
-  const projectBoardDetails = useSelector((state) => state.projectBoardDetails) || [];
-  const { boards, loading } = projectBoardDetails
+  const { project } = useSelector((state) => state.projects) || {}
+
+  // const { data: projects } = useGetProjectByIdQuery(userInfo.empNo)
+
+  // const projectBoardDetails = useSelector((state) => state.projectBoardDetails) || [];
+  // const { boards, loading } = projectBoardDetails
+
+  const { data: boards, isLoading: isBoardsLoading, refetch: refetchProjectBoards, isFetching: isBoardsFetching } = useGetProjectBoardsByIdQuery(project?._id)
+
+  const [updateTaskBoard, { isLoading: isupdateTaskBoardLoading }] = useUpdateTaskBoardMutation()
 
   // const { tasks } = useSelector((state) => state.getTasksByProject);
 
@@ -41,20 +48,12 @@ function Kanban({ numTasks, setNumTasks }) {
   useEffect(() => {
     if (!userInfo) {
       navigate('/');
-    } else {
-      const storedUser = JSON.parse(localStorage.getItem('user'));
-      if (!storedUser || storedUser.empNo !== userInfo.empNo) {
-        dispatch(getUserProjectDetails())
-        if (project && project._id) {
-          dispatch(getBoardsByProjectId(project?._id))
-        }
-      }
     }
-  }, [userInfo, project])
+  }, [userInfo])
 
   // Initialize the showCreateForms array with false values for each board
   useEffect(() => {
-    setShowCreateForms(new Array(boards.length).fill(false));
+    setShowCreateForms(new Array(boards?.length).fill(false));
   }, [boards]);
 
   // Track changes in the number of tasks
@@ -62,10 +61,7 @@ function Kanban({ numTasks, setNumTasks }) {
     setNumTasks(0);
   }, [numTasks]);
 
-  if (!user || !project || loading) {
-    return <Loader />
-  }
-
+ 
   const onDragEnd = async (result) => {
     if (!result.destination) return;
     const { source, destination } = result;
@@ -81,18 +77,21 @@ function Kanban({ numTasks, setNumTasks }) {
     destinationTasks.splice(destination.index, 0, task);
 
     const newBoards = [...boards];
-    const newSourceBoard = newBoards.find(board => board._id === source.droppableId);
-    const newDestinationBoard = newBoards.find(board => board._id === destination.droppableId);
+    // const newSourceBoard = newBoards.find(board => board._id === source.droppableId);
+    // const newDestinationBoard = newBoards.find(board => board._id === destination.droppableId);
+    // newSourceBoard.tasks = sourceTasks;
+    // newDestinationBoard.tasks = destinationTasks;
+    const newSourceBoard = { ...newBoards.find(board => board._id === source.droppableId) };
+    const newDestinationBoard = { ...newBoards.find(board => board._id === destination.droppableId) };
     newSourceBoard.tasks = sourceTasks;
     newDestinationBoard.tasks = destinationTasks;
 
+
     try {
       // Update the destinationBoard object before dispatching the updateTask action
-      const updatedTask = {
-        ...task,
-        boardId: destinationBoard._id,
-      };
-      await dispatch(updateTask(task._id, updatedTask));
+      const taskData = await updateTaskBoard({ id: task._id, boardId: destinationBoard._id }).unwrap();
+      dispatch(setUpdateTaskBoard({ task: taskData }));
+      refetchProjectBoards();
       // const updatedTasks = boards.flatMap(board => board.tasks);
       // setTasks(updatedTasks);
     } catch (err) {
@@ -104,9 +103,13 @@ function Kanban({ numTasks, setNumTasks }) {
   };
 
 
-  if (boards.length === 0) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '90vh' }}>
+  if (boards?.length === 0) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '90vh' }}>
     <h1 className='text-center'>Select a project to view the boards!</h1>
   </div>
+
+  if (isupdateTaskBoardLoading || isBoardsLoading || isBoardsFetching) {
+    return <Loader />
+  }
 
 
   return (
@@ -154,6 +157,9 @@ function Kanban({ numTasks, setNumTasks }) {
                           <Card
                             task={task}
                             boardId={section?._id}
+                            refetchProjectBoards={refetchProjectBoards}
+                            setNumTasks={setNumTasks}
+
                           />
                         </div>
                       )}

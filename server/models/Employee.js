@@ -90,6 +90,7 @@ const empSchema = new mongoose.Schema(
           type: Date,
           default: Date.now,
         },
+        default: [],
       },
     ],
     idCardPath: { type: String },
