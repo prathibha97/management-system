@@ -89,9 +89,9 @@ const registerEmployee = async (req, res) => {
       accountNo: accNo,
     });
 
-    console.log(req.files?.idCardPath[0].path);
-    console.log(req.files?.bankPassPath[0].path);
-    console.log(req.files?.resumePath[0].path);
+    // console.log(req.files?.idCardPath[0].path);
+    // console.log(req.files?.bankPassPath[0].path);
+    // console.log(req.files?.resumePath[0].path);
 
     const dept = await Department.findById(department);
     dept.employees.push(newEmployee._id);

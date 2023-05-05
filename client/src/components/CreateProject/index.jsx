@@ -10,7 +10,6 @@ import { useGetDepartmentEmployeeListQuery, useGetDepartmentsQuery } from '../..
 import { departmentEmployeeList, getDepartments } from '../../app/features/departments/departmentSlice'
 import { useCreateProjectMutation } from '../../app/features/projects/projectApiSlice'
 import { setCreateProject } from '../../app/features/projects/projectSlice'
-import encodePDFToBase64 from '../../utils/encodePDFToBase64'
 import Loader from '../Loader'
 
 function CreateProject() {
@@ -44,7 +43,7 @@ function CreateProject() {
     if (!userInfo) {
       navigate('/');
     } else {
-      const storedUser = JSON.parse(localStorage.getItem('user'));
+      const storedUser = JSON.parse(localStorage.getItem('userInfo'));
       if (!storedUser || storedUser.empNo !== userInfo.empNo) {
         dispatch(getDepartments({ departments }))
         dispatch(getClients({ clients }))
@@ -53,17 +52,6 @@ function CreateProject() {
     }
   }, [userInfo, department])
 
-
-  const handleFileInputChange = (e) => {
-    const file = e.target.files[0];
-    encodePDFToBase64(file)
-      .then((base64) => {
-        setProjectScope(base64);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
 
   const handleCreateProject = async () => {
     try {
@@ -222,7 +210,7 @@ function CreateProject() {
               type='file'
               id='pdf-file-input'
               accept=".pdf,.doc,.docx,.jpeg,.jpg,.png"
-              onChange={handleFileInputChange}
+              onChange={(e) => setProjectScope(e.target.files[0])}
             />
           </div>
           <div className='flex flex-col w-[100%]'>

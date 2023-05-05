@@ -25,50 +25,12 @@ export const employeeApiSlice = apiSlice.injectEndpoints({
       }),
     }),
     registerEmployee: builder.mutation({
-      query: async ({employee}) =>
-        // const formData = new FormData();
-
-        // for (const [key, value] of Object.entries(employee)) {
-        //   if (Array.isArray(value)) {
-        //     // If the value is an array, assume it's a file input
-        //     formData.append(key, value[0]);
-        //   } else {
-        //     formData.append(key, value);
-        //   }
-        // }
-        ({
-          url: `/emp/auth/register`,
-          method: 'POST',
-          body: { ...employee },
-        }),
+      query: (employee) => ({
+        url: `/emp/auth/register`,
+        method: 'POST',
+        body: employee,
+      }),
     }),
-
-    // registerEmployee: builder.mutation({
-    //   query: async (employee) => {
-    //     const formData = new FormData();
-
-    //     for (const [key, value] of Object.entries(employee)) {
-    //       if (Array.isArray(value)) {
-    //         // If the value is an array, assume it's a file input
-    //         formData.append(key, value[0]);
-    //       } else {
-    //         formData.append(key, value);
-    //       }
-    //     }
-
-    //     const { data } = await api.post(
-    //       '/emp/auth/register',
-    //       { formData },
-    //       {
-    //         headers: {
-    //           'Content-Type': `multipart/form-data;`,
-    //         },
-    //       }
-    //     );
-
-    //     return { ...data };
-    //   },
-    // }),
   }),
 });
 

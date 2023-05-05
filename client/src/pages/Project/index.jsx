@@ -3,8 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { selectCurrentUser } from '../../app/features/auth/authSelectors';
 import { useGetProjectByIdQuery } from '../../app/features/projects/projectApiSlice';
-import { Loader } from '../../components';
-import decodeBase64ToPDF from '../../utils/decodeBase64ToPDF';
+import { FilePreview, Loader } from '../../components';
 
 function Project() {
 
@@ -27,14 +26,13 @@ function Project() {
 
   if (isProjectLoading) return <Loader />
 
-  const handleDecode = () => {
-    decodeBase64ToPDF(project?.scope)
-
-  }
   return (
     <div>
       <h1>{project?.title}</h1>
-      <button type='button' onClick={handleDecode}>view scope</button>
+      <div className='flex flex-col'>
+        <span className='text-[#707070]'>Project Scope</span>
+        <FilePreview fileToView={project?.scope} />
+      </div>
     </div>
   )
 }
