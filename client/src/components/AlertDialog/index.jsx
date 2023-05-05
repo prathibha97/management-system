@@ -6,7 +6,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useDispatch } from 'react-redux';
 
-export default function AlertDialog({ open, handleClose, id, setAlert, title, remove, changeCount, errorRemoveEmployee, action }) {
+export default function AlertDialog({ open, handleClose, id, setAlert, title, remove, changeCount, errorRemoveEmployee, action}) {
   const dispatch = useDispatch();
   const handleDelete = async () => {
     try {

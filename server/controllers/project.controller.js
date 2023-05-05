@@ -167,6 +167,39 @@ const getProjectByEmpId = async (req, res) => {
 *@access Private/Admin
 */
 
+// const deleteProject = async (req, res) => {
+//   const { id } = req.params;
+//   console.log(id);
+
+//   try {
+//     const project = await Project.findById(id);
+
+//     if (!project) {
+//       return res.status(404).json({ message: 'Project not found' });
+//     }
+
+//     // Remove the project from the corresponding department
+//     await Department.findByIdAndUpdate(
+//       { 'projects.project': project._id },
+//       { $pull: { projects: project._id } },
+//       { new: true }
+//     );
+
+//     // Remove the project from the projectHistory of all employees who have been assigned to it
+//     await Employee.updateMany(
+//       { 'projectHistory.project': project._id },
+//       { $pull: { projectHistory: { project: project._id } } }
+//     );
+
+//     await project.remove();
+
+//     return res.status(200).json({ message: 'Project deleted successfully' });
+//   } catch (err) {
+//     console.log(err.message);
+//     return res.status(500).json({ message: 'Error occured while deleting the project' });
+//   }
+// };
+
 const deleteProject = async (req, res) => {
   const { id } = req.params;
   console.log(id);
@@ -178,17 +211,18 @@ const deleteProject = async (req, res) => {
       return res.status(404).json({ message: 'Project not found' });
     }
 
+    const projectId = Types.ObjectId(id);
+
     // Remove the project from the corresponding department
-    await Department.findByIdAndUpdate(
-      { 'projects.project': project._id },
-      { $pull: { projects: project._id } },
-      { new: true }
+    await Department.updateOne(
+      { 'projects.project': projectId },
+      { $pull: { projects: { project: projectId } } }
     );
 
     // Remove the project from the projectHistory of all employees who have been assigned to it
     await Employee.updateMany(
-      { 'projectHistory.project': project._id },
-      { $pull: { projectHistory: { project: project._id } } }
+      { 'projectHistory.project': projectId },
+      { $pull: { projectHistory: { project: projectId } } }
     );
 
     await project.remove();
@@ -196,9 +230,10 @@ const deleteProject = async (req, res) => {
     return res.status(200).json({ message: 'Project deleted successfully' });
   } catch (err) {
     console.log(err.message);
-    return res.status(500).json({ message: 'Error occured while deleting the project' });
+    return res.status(500).json({ message: 'Error occurred while deleting the project' });
   }
 };
+
 
 module.exports = {
   createProject,

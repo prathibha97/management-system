@@ -20,7 +20,9 @@ function Header() {
   const dispatch = useDispatch()
   const id = location.pathname.split('/')[2];
 
-  const { data: projects } = useGetEmployeeProjectsQuery()
+  const { data: projects } = useGetEmployeeProjectsQuery({
+    refetchOnMountOrArgChange: true,
+  })
   dispatch(setProjects({ projects }))
 
 

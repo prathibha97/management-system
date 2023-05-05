@@ -45,7 +45,7 @@ function Projects() {
 
   useEffect(() => {
     if (error) {
-      setAlert({ open: true, message: error, severity: 'error' });
+      setAlert({ open: true, message: error?.data?.message, severity: 'error' });
     } else {
       refetchProjects()
     }
