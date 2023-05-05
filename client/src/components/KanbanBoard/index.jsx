@@ -17,6 +17,8 @@ import { setUpdateTaskBoard } from '../../app/features/tasks/taskSlice'
 import AddTaskModal from '../AddTaskModal'
 import Card from '../Card'
 import Loader from '../Loader'
+import { useGetEmployeeProjectsQuery } from '../../app/features/projects/projectApiSlice'
+import { getBoardsByProjectId } from '../../app/features/boards/boardSlice'
 
 function Kanban({ numTasks, setNumTasks }) {
 
@@ -25,22 +27,16 @@ function Kanban({ numTasks, setNumTasks }) {
 
   const userInfo = useSelector(selectCurrentUser);
 
-  // const projectDetailsById = useSelector((state) => state.projectDetailsById) || {};
-  // const { project } = projectDetailsById
-
   const { project } = useSelector((state) => state.projects) || {}
 
-  // const { data: projects } = useGetProjectByIdQuery(userInfo.empNo)
-
-  // const projectBoardDetails = useSelector((state) => state.projectBoardDetails) || [];
-  // const { boards, loading } = projectBoardDetails
-
   const { data: boards, isLoading: isBoardsLoading, refetch: refetchProjectBoards, isFetching: isBoardsFetching } = useGetProjectBoardsByIdQuery(project?._id)
+  dispatch(getBoardsByProjectId({ boards }))
+
+  const { data: projects } = useGetEmployeeProjectsQuery({
+    refetchOnMountOrArgChange: true,
+  })
 
   const [updateTaskBoard, { isLoading: isupdateTaskBoardLoading }] = useUpdateTaskBoardMutation()
-
-  // const { tasks } = useSelector((state) => state.getTasksByProject);
-
 
   const [showCreateForms, setShowCreateForms] = useState([]);
   const [isBoardHovered, setIsBoardHovered] = useState(false);
@@ -59,7 +55,7 @@ function Kanban({ numTasks, setNumTasks }) {
   // Track changes in the number of tasks
   useEffect(() => {
     setNumTasks(0);
-  }, [numTasks]);
+  }, [numTasks, projects]);
 
  
   const onDragEnd = async (result) => {
@@ -77,10 +73,6 @@ function Kanban({ numTasks, setNumTasks }) {
     destinationTasks.splice(destination.index, 0, task);
 
     const newBoards = [...boards];
-    // const newSourceBoard = newBoards.find(board => board._id === source.droppableId);
-    // const newDestinationBoard = newBoards.find(board => board._id === destination.droppableId);
-    // newSourceBoard.tasks = sourceTasks;
-    // newDestinationBoard.tasks = destinationTasks;
     const newSourceBoard = { ...newBoards.find(board => board._id === source.droppableId) };
     const newDestinationBoard = { ...newBoards.find(board => board._id === destination.droppableId) };
     newSourceBoard.tasks = sourceTasks;
@@ -92,8 +84,6 @@ function Kanban({ numTasks, setNumTasks }) {
       const taskData = await updateTaskBoard({ id: task._id, boardId: destinationBoard._id }).unwrap();
       dispatch(setUpdateTaskBoard({ task: taskData }));
       refetchProjectBoards();
-      // const updatedTasks = boards.flatMap(board => board.tasks);
-      // setTasks(updatedTasks);
     } catch (err) {
       console.log(err);
       // If there's an error, undo the changes made to the local state
