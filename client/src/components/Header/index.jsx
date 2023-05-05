@@ -22,6 +22,7 @@ function Header() {
 
   const { data: projects } = useGetEmployeeProjectsQuery({
     refetchOnMountOrArgChange: true,
+    refetchOnReconnect: true,
   })
   dispatch(setProjects({ projects }))
 
