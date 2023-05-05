@@ -5,14 +5,12 @@
 const mongoose = require('mongoose');
 const Board = require('./Board');
 
-const { Schema } = mongoose;
-
-const projectSchema = new Schema({
+const projectSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
   },
-  description: {
+  category: {
     type: String,
     required: true,
   },
@@ -27,9 +25,18 @@ const projectSchema = new Schema({
   endDate: {
     type: Date,
   },
+  scope: {
+    type: String,
+  },
+  designLink: {
+    type: String,
+  },
+  specialNotes: {
+    type: String,
+  },
   assignee: [
     {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'Employee',
       required: true,
     },
@@ -44,9 +51,33 @@ const projectSchema = new Schema({
     ref: 'Department',
     required: true,
   },
-  boards: [{ type: Schema.Types.ObjectId, ref: 'Board' }],
-  tasks: [{ type: Schema.Types.ObjectId, ref: 'Task' }],
+  boards: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Board' }],
+  tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Task' }],
+
+  nftBaseDesignCount: {
+    type: Number,
+    default: 0,
+  },
+  nftTradeCount: {
+    type: Number,
+    default: 0,
+  },
+  nftCollectionSize: {
+    type: Number,
+    default: 0,
+  },
 });
+
+// Set the defaults for the new fields if the category is not NFT
+projectSchema.pre('validate', function (next) {
+  if (this.category !== 'NFT') {
+    this.nftBaseDesignCount = 0;
+    this.nftTradeCount = 0;
+    this.nftCollectionSize = 0;
+  }
+  next();
+});
+
 
 projectSchema.pre('save', async function (next) {
   if (!this.isNew) {

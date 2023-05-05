@@ -7,7 +7,7 @@ function LeaveBalance({user}) {
       <div className='flex flex-col items-center'>
         <div className='flex mt-2 gap-10'>
           <div className='flex flex-col items-center'>
-            <h2 className='font-semibold'>{user?.leaveBalance?.Casual}/10</h2>
+            <h2 className='font-semibold'>{user?.leaveBalance?.Casual}/7</h2>
             <p className='text-[#707070]'>Casual</p>
           </div>
           {user?.leaveBalance?.Maternity === 0 ? null :(
@@ -17,12 +17,12 @@ function LeaveBalance({user}) {
           </div>
           )}
           <div className='flex flex-col items-center'>
-            <h2 className='font-semibold'>{user?.leaveBalance?.Annual}/10</h2>
+            <h2 className='font-semibold'>{user?.leaveBalance?.Annual}/7</h2>
             <p className='text-[#707070]'>Annual</p>
           </div>
           <div className='flex flex-col items-center'>
-            <h2 className='font-semibold'>{user?.leaveBalance?.Other}/10</h2>
-            <p className='text-[#707070]'>Other</p>
+            <h2 className='font-semibold'>{user?.leaveBalance?.Medical}/7</h2>
+            <p className='text-[#707070]'>Medical</p>
           </div>
         </div>
       </div>

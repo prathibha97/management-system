@@ -7,47 +7,67 @@
 import { faClock } from '@fortawesome/free-solid-svg-icons';
 import { Alert, FormControl, InputLabel, MenuItem, Select, Snackbar } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useLocation } from 'react-router-dom';
+import { useGetEmployeeAttendanceQuery, useLazyMarkAttendanceQuery } from '../../app/features/attendance/attendanceApiSlice';
+import { setEmployeeAttendance, setMarkAttendance } from '../../app/features/attendance/attendanceSlice';
+import { useGetEmployeeProjectsQuery } from '../../app/features/projects/projectApiSlice';
+import { setProjects, setSelectedProject } from '../../app/features/projects/projectSlice';
 import { AccountMenu, Button, Notifications } from '../../components';
-import { markAttendance } from '../../redux/actions/attendanceActions';
-import { ProjectDetailsById } from '../../redux/actions/projectActions';
 
 function Header() {
   const location = useLocation();
   const dispatch = useDispatch()
   const id = location.pathname.split('/')[2];
-  // Get attendanceMark state from the Redux store
-  const attendanceMark = useSelector((state) => state.markAttendance);
-  const { error } = attendanceMark;
 
-  const userProjectDetails = useSelector((state) => state.userProjectDetails);
-  const { projects } = userProjectDetails
+  const { data: projects } = useGetEmployeeProjectsQuery({
+    refetchOnMountOrArgChange: true,
+    refetchOnReconnect: true,
+  })
+  dispatch(setProjects({ projects }))
+
 
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
-  const [project, setProject] = useState(projects.length > 0 ? projects[0]?._id : '');
+  const [project, setProject] = useState(projects?.length > 0 ? projects[0]?._id : '');
+  const [attendanceChangeCount, setAttendanceChangeCount] = useState(0)
+
 
   const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-  const { empNo } = userInfo.employee;
+  const { empNo } = userInfo;
+
+  const { data: attendanceInfo, refetch: refetchAttendance } = useGetEmployeeAttendanceQuery(empNo)
+
+  const [trigger, { data: attendance, error: markAttendanceError }] = useLazyMarkAttendanceQuery()
+
 
   const handleMarkAttendance = () => {
     try {
-      dispatch(markAttendance());
+      trigger().unwrap()
+      dispatch(setMarkAttendance({ attendance }));
+      setAttendanceChangeCount(1)
       setAlert({ open: true, message: 'Attendance marked successfully', severity: 'success' });
     } catch (err) {
-      setAlert({ open: true, message: err.response.data.message, severity: 'error' });
+      setAlert({ open: true, message: markAttendanceError?.data?.message, severity: 'error' });
     }
   };
+
   useEffect(() => {
-    if (error) {
-      setAlert({ open: true, message: error, severity: 'error' });
+    if (alert?.severity === 'error') {
+      setAttendanceChangeCount((count) => count - 1);
     }
-  }, [error]);
+  }, [alert?.severity]);
+
+
+  useEffect(() => {
+    refetchAttendance()
+    dispatch(setEmployeeAttendance({ attendanceInfo }))
+    setAttendanceChangeCount(0)
+  }, [attendanceChangeCount, attendanceInfo])
 
   const handleProjectChange = (event) => {
     const selectedProject = event.target.value;
     setProject(selectedProject?._id);
-    dispatch(ProjectDetailsById(selectedProject?._id))
+    dispatch(setSelectedProject({ project: selectedProject }))
   };
 
   let heading;
@@ -82,11 +102,20 @@ function Header() {
     case '/projects':
       heading = 'Manage Projects';
       break;
+    case `/projects/create`:
+      heading = 'New Project';
+      break;
+    case `/projects/${id}`:
+      heading = 'Project Info';
+      break;
     case '/leaves':
       heading = 'Manage Leaves';
       break;
     case '/register':
       heading = 'Register New Employee';
+      break;
+    case '/reset-password':
+      heading = 'Reset Password';
       break;
     default:
       heading = 'Unknown Page';

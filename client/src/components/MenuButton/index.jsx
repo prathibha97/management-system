@@ -2,23 +2,21 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { IconButton } from '@mui/material';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { deleteTask } from '../../redux/actions/taskActions';
+import { useDeleteTaskMutation } from '../../app/features/tasks/taskApiSlice';
+import { setDeleteTask } from '../../app/features/tasks/taskSlice';
 
-export default function MenuButton({ id }) {
+export default function MenuButton({ id, refetchProjectBoards, setNumTasks }) {
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
+  const [deleteTask] = useDeleteTaskMutation()
+
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-  const deleteTaskhandler = useCallback(() => {
-    dispatch(deleteTask(id));
-    handleClose();
-  }, [dispatch]);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -45,7 +43,16 @@ export default function MenuButton({ id }) {
         }}
       >
         <MenuItem onClick={handleClose}>Edit Task</MenuItem>
-        <MenuItem onClick={deleteTaskhandler}>Delete Task</MenuItem>
+        <MenuItem onClick={() => {
+          deleteTask({ taskId: id })
+            .unwrap()
+            .then(() => {
+              dispatch(setDeleteTask({ taskId: id }));
+              setNumTasks((prev) => prev - 1);
+              refetchProjectBoards();
+              handleClose();
+            })
+        }}>Delete Task</MenuItem>
       </Menu>
     </div>
   );

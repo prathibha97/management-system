@@ -12,6 +12,7 @@ const meetingsRouter = require('./meetings.routes');
 const projectRouter = require('./project.routes');
 const taskRouter = require('./task.routes');
 const notificationRouter = require('./notification.routes');
+const clientRouter = require('./client.routes');
 
 const api = express.Router();
 
@@ -21,6 +22,7 @@ api.use('/departments', departmentRouter);
 api.use('/attendance', attendanceRouter);
 api.use('/leaves', leaveRouter);
 api.use('/projects', projectRouter);
+api.use('/clients', clientRouter);
 api.use('/tasks', taskRouter);
 api.use('/boards', boardRouter);
 api.use('/meetings', meetingsRouter);

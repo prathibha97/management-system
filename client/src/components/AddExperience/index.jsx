@@ -2,12 +2,13 @@
 import { faUserTie } from '@fortawesome/free-solid-svg-icons';
 import { Dialog, Transition } from '@headlessui/react';
 import { InputLabel, TextField } from '@mui/material';
-import { useDispatch } from 'react-redux';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Fragment, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import Button from '../Button';
-import { addExperience } from '../../redux/actions/experienceActions';
+import { useAddExperienceMutation } from '../../app/features/experiences/experienceApiSlice';
+import { setAddExperience } from '../../app/features/experiences/experienceSlice';
 
 function AddExperience({ isOpen, setIsOpen, setAlert, setExperienceChangeCount }) {
 
@@ -16,15 +17,17 @@ function AddExperience({ isOpen, setIsOpen, setAlert, setExperienceChangeCount }
   const [company, setCompany] = useState('')
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
+  const [addExperience, { error }] = useAddExperienceMutation()
 
-
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     try {
-      dispatch(addExperience(position, company, startDate, endDate))
+      const experienceData = await addExperience({ position, company, startDate, endDate }).unwrap()
+      dispatch(setAddExperience({ newExperience: experienceData }))
       setExperienceChangeCount(1)
       setAlert({ open: true, message: `Experience added successfully`, severity: 'success' });
     } catch (err) {
-      setAlert({ open: true, message: err?.response?.data?.message, severity: 'error' });
+      setAlert({ open: true, message: error?.data?.message, severity: 'error' });
+      console.log(error);
     }
     setIsOpen(false)
   }

@@ -8,7 +8,11 @@ import {
   markAttendanceReducer,
 } from './reducers/attendanceReducers';
 import { projectBoardDetailsReducer } from './reducers/boardReducer';
-import { departmentDetailsReducer } from './reducers/departmentReducer';
+import { clientListReducer } from './reducers/clientReducer';
+import {
+  departmentDetailsReducer,
+  departmentEmployeeListReducer,
+} from './reducers/departmentReducer';
 import { getDesignationsAdminReducer } from './reducers/designationReducer';
 import {
   employeeListReducer,
@@ -35,8 +39,16 @@ import {
   myMeetingsReducer,
   scheduleMeetingReducer,
 } from './reducers/meetingsReducer';
-import { passwordRecoveryReducer } from './reducers/passwordRecoveryReducer';
 import {
+  clearNotificationReducer,
+  readNotificationReducer,
+  userNotificationsReducer,
+} from './reducers/notificationsReducer';
+import passwordRecoveryReducer from './reducers/passwordRecoveryReducer';
+import {
+  allProjectDetailsReducer,
+  createProjectReducer,
+  deleteProjectReducer,
   projectDetailsByIdReducer,
   userProjectDetailsReducer,
 } from './reducers/projectReducer';
@@ -51,7 +63,6 @@ import {
   userDetailsReducer,
   userLoginReducer,
 } from './reducers/userReducers';
-import { clearNotificationReducer, readNotificationReducer, userNotificationsReducer } from './reducers/notificationsReducer';
 
 const userInfoFromStorage = localStorage.getItem('userInfo')
   ? JSON.parse(localStorage.getItem('userInfo'))
@@ -83,6 +94,9 @@ const reducer = combineReducers({
   deleteLeaveRequest: deleteLeaveRequestReducer,
   userProjectDetails: userProjectDetailsReducer,
   projectDetailsById: projectDetailsByIdReducer,
+  allProjectDetails: allProjectDetailsReducer,
+  createProject: createProjectReducer,
+  deleteProject: deleteProjectReducer,
   projectBoardDetails: projectBoardDetailsReducer,
   createTask: createTaskReducer,
   updateTask: updateTaskReducer,
@@ -90,6 +104,7 @@ const reducer = combineReducers({
   deleteTask: deleteTaskReducer,
   employeeList: employeeListReducer,
   departmentDetails: departmentDetailsReducer,
+  departmentEmployeeList: departmentEmployeeListReducer,
   myMeetings: myMeetingsReducer,
   scheduleMeeting: scheduleMeetingReducer,
   editMeeting: editMeetingReducer,
@@ -97,7 +112,8 @@ const reducer = combineReducers({
   getDesignationsAdmin: getDesignationsAdminReducer,
   userNotifications: userNotificationsReducer,
   readNotification: readNotificationReducer,
-  clearNotification:clearNotificationReducer,
+  clearNotification: clearNotificationReducer,
+  clientList: clientListReducer,
   // userUpdateProfile: userUpdateProfileReducer,
   // userList: userListReducer,
   // userDelete: userDeleteReducer,

@@ -3,8 +3,10 @@ import { Checkbox, InputLabel, MenuItem, Select, TextField } from '@mui/material
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { getDepartmentDetails } from '../../redux/actions/departmentActions'
-import { getDesignationListAdmin } from '../../redux/actions/designationActions'
+import { selectCurrentUser } from '../../app/features/auth/authSelectors'
+import { useGetDepartmentsQuery } from '../../app/features/departments/departmentApiSlice'
+import { getDepartments } from '../../app/features/departments/departmentSlice'
+import { useGetDesignationsQuery } from '../../app/features/designations/designationApiSlice'
 
 function ProfessionalInfoForm({ handleChange, values, nextStep, prevStep }) {
   const navigate = useNavigate()
@@ -19,8 +21,10 @@ function ProfessionalInfoForm({ handleChange, values, nextStep, prevStep }) {
     prevStep()
   }
 
-  const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo } = userLogin
+  const userInfo = useSelector(selectCurrentUser);
+
+  const { data: departments } = useGetDepartmentsQuery()
+  const { data: designations } = useGetDesignationsQuery()
 
   useEffect(() => {
     if (!userInfo) {
@@ -28,14 +32,12 @@ function ProfessionalInfoForm({ handleChange, values, nextStep, prevStep }) {
     } else {
       const storedUser = JSON.parse(localStorage.getItem('user'));
       if (!storedUser || storedUser.empNo !== userInfo.empNo) {
-        dispatch(getDepartmentDetails())
-        dispatch(getDesignationListAdmin())
+        dispatch(getDepartments({ departments }))
+        dispatch(getDepartments({designations}))
       }
     }
   }, [userInfo])
 
-  const { departments } = useSelector((state) => state.departmentDetails)
-  const { designations } = useSelector((state) => state.getDesignationsAdmin)
 
   return (
     <div className='bg-[#EEF2F5] h-[90%] w-[95%] rounded-xl m-auto'>
@@ -72,7 +74,7 @@ function ProfessionalInfoForm({ handleChange, values, nextStep, prevStep }) {
               Designation
             </InputLabel>
             <Select labelid="designation-lable" id="designation-lable" onChange={handleChange('designation')} defaultValue={values.designation}>
-              {designations.map((designation) => (
+              {designations?.map((designation) => (
                 <MenuItem key={designation?._id} value={designation?._id}>{designation?.name}</MenuItem>
               ))}
             </Select>
@@ -95,7 +97,7 @@ function ProfessionalInfoForm({ handleChange, values, nextStep, prevStep }) {
               Department
             </InputLabel>
             <Select labelid="department-type-lable" id="department-type-lable" onChange={handleChange('department')} defaultValue={values.department}>
-              {departments.map((department) => (
+              {departments?.map((department) => (
                 <MenuItem key={department._id} value={department._id}>{department.name}</MenuItem>
               ))}
             </Select>
@@ -115,8 +117,8 @@ function ProfessionalInfoForm({ handleChange, values, nextStep, prevStep }) {
               <MenuItem value='Maternity'>
                 Maternity
               </MenuItem>
-              <MenuItem value='Other'>
-                Other
+              <MenuItem value='Medical'>
+                Medical
               </MenuItem>
             </Select>
           </div>
