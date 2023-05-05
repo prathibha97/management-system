@@ -6,29 +6,35 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { createLeaveRequest } from '../../redux/actions/leaveActions';
+import { useDispatch } from 'react-redux';
+import { useRequestLeaveMutation } from '../../app/features/leaves/leaveApiSlice';
+import { setLeaveRequest } from '../../app/features/leaves/leaveSlice';
 import Button from '../Button';
 
 function ApplyLeave({ user, setLeaveChangeCount }) {
   const [leaveType, setLeaveType] = useState('')
   const [startDate, setStartDate] = useState(moment().format())
-  const [endDate, setEndDate] = useState(moment().format())
+  const [endDate, setEndDate] = useState(moment().add(1, 'd').format())
   const [reason, setReason] = useState('')
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
   const dispatch = useDispatch()
 
-  const leaveRequest = useSelector((state) => state.leaveRequest);
-  const { error } = leaveRequest;
+
+  const [requestLeave, { error }] = useRequestLeaveMutation()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      dispatch(createLeaveRequest(leaveType, startDate, endDate, reason))
-      setLeaveChangeCount(1)
+      const leaveData = await requestLeave({ leaveType, startDate, endDate, reason }).unwrap()
+      dispatch(setLeaveRequest({ newLeave: leaveData }))
       setAlert({ open: true, message: 'Leave reaquest created successfully', severity: 'success' });
+      setLeaveChangeCount(1)
+      setLeaveType('')
+      setStartDate(moment().format())
+      setEndDate(moment().add(1, 'd').format())
+      setReason('')
     } catch (err) {
-      setAlert({ open: true, message: err.response.data.message, severity: 'error' });
+      setAlert({ open: true, message: error.data.message, severity: 'error' });
     }
   }
 
@@ -38,7 +44,7 @@ function ApplyLeave({ user, setLeaveChangeCount }) {
 
   useEffect(() => {
     if (error) {
-      setAlert({ open: true, message: error, severity: 'error' });
+      setAlert({ open: true, message: error.data.message, severity: 'error' });
     }
   }, [error]);
 
@@ -63,7 +69,7 @@ function ApplyLeave({ user, setLeaveChangeCount }) {
                   <MenuItem value='Maternity'>Maternity</MenuItem>
               }
               <MenuItem value='Annual'>Annual</MenuItem>
-              <MenuItem value='Other'>Other</MenuItem>
+              <MenuItem value='Medical'>Medical</MenuItem>
             </Select>
           </FormControl>
           <div className='flex mt-5 mb-5 gap-5'>

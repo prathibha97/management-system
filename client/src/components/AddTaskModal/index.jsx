@@ -1,20 +1,29 @@
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, Snackbar, TextField } from '@mui/material';
 import React, { useRef, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { createTask } from '../../redux/actions/taskActions';
+import { useGetProjectBoardsByIdQuery } from '../../app/features/boards/boardApiSlice';
+import { useCreateTaskMutation } from '../../app/features/tasks/taskApiSlice';
+import { setCreateTask } from '../../app/features/tasks/taskSlice';
+import Loader from '../Loader';
 
 function AddTaskModal({ open, handleClose, boardId, setNumTasks }) {
   const user = JSON.parse(localStorage.getItem('userInfo'));
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState('backlog');
-  const [assignee, setAssignee] = useState(user?.employee?._id)
+  const [assignee, setAssignee] = useState(user?._id)
   const taskNameRef = useRef();
 
   const dispatch = useDispatch();
 
-  const projectId = useSelector((state) => state.projectDetailsById.project._id);
+  const projectId = useSelector((state) => state.projects.project._id);
   // const { tasks } = useSelector((state) => state.getTasksByProject);
+
+  const [createTask, { isLoading: isCreateTaskLoading, error: taskCreateError }] = useCreateTaskMutation()
+  const { refetch: refetchProjectBoards } = useGetProjectBoardsByIdQuery(projectId, {
+    refetchOnMountOrArgChange: true,
+  })
+
 
 
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
@@ -35,15 +44,17 @@ function AddTaskModal({ open, handleClose, boardId, setNumTasks }) {
     setAssignee(event.target.value);
   };
 
-  const handleAddButtonClick = () => {
+  const handleAddButtonClick = async () => {
     try {
       // Add the task and close the dialog
-      dispatch(createTask(boardId, projectId, title, description, status, assignee));
+      const { task } = await createTask({ boardId, projectId, title, description, status, assignee: { _id: assignee } }).unwrap();
+      dispatch(setCreateTask({ task }));
+      refetchProjectBoards();
       setNumTasks(1);
       setAlert({ open: true, message: 'Attendance marked successfully', severity: 'success' });
       handleClose();
     } catch (err) {
-      setAlert({ open: true, message: err.response.data.message, severity: 'error' });
+      setAlert({ open: true, message: taskCreateError?.data?.message, severity: 'error' });
     }
   };
 
@@ -61,6 +72,8 @@ function AddTaskModal({ open, handleClose, boardId, setNumTasks }) {
   const handleAlertClose = () => {
     setAlert({ ...alert, open: false });
   };
+
+  if (isCreateTaskLoading) return <Loader />;
 
   return (
     <>

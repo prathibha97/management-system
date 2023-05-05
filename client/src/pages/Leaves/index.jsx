@@ -4,10 +4,11 @@ import { DataGrid } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { selectCurrentUser } from '../../app/features/auth/authSelectors';
+import { useApproveLeaveMutation, useDeleteLeaveMutation, useGetAllLeavesQuery, useRejectLeaveMutation } from '../../app/features/leaves/leaveApiSlice';
+import { approveLeaveRequest, deleteLeaveRequest, getAllLeaves, rejectLeaveRequest } from '../../app/features/leaves/leaveSlice';
 import { LeaveRejectDialog, Loader } from '../../components';
-import { approveLeaveRequest, deleteLeaveRequest, getAllLeaveDetails, rejectLeaveRequest } from '../../redux/actions/leaveActions';
 import { formatDate } from '../../utils/formatDate';
-
 
 
 export default function DataGridDemo() {
@@ -21,16 +22,16 @@ export default function DataGridDemo() {
 
   const [leaveChangeCount, setLeaveChangeCount] = useState(0)
 
-  const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo } = userLogin
+  const userInfo = useSelector(selectCurrentUser);
 
-  const approveLeave = useSelector((state) => state.approveLeave);
-  const { error } = approveLeave;
+  const [approveLeave, { error: errorApproval }] = useApproveLeaveMutation()
 
-  const rejectLeave = useSelector((state) => state.rejectLeave);
-  const { errorReject } = rejectLeave;
+  const [rejectLeave, { error: errorReject }] = useRejectLeaveMutation()
+  const [deleteLeave, { error: errorDelete }] =useDeleteLeaveMutation()
 
-  const { leaves, loading } = useSelector((state) => state.allLeaveDetails);
+  const { data: leaves, isLoading: isLeavesLoading, refetch: refetchLeaves } = useGetAllLeavesQuery({
+    refetchOnMountOrArgChange: true,
+  })
 
   useEffect(() => {
     if (!userInfo) {
@@ -38,23 +39,24 @@ export default function DataGridDemo() {
     } else {
       const storedUser = JSON.parse(localStorage.getItem('user'));
       if (!storedUser || storedUser.empNo !== userInfo.empNo) {
-        dispatch(getAllLeaveDetails())
+        dispatch(getAllLeaves({ leaves }))
       }
     }
   }, [userInfo])
 
   useEffect(() => {
-    dispatch(getAllLeaveDetails())
+    refetchLeaves()
+    setLeaveChangeCount(0);
   }, [leaveChangeCount])
 
   useEffect(() => {
-    if (error || errorReject) {
-      setAlert({ open: true, message: error || errorReject, severity: 'error' });
+    if (errorApproval || errorReject || errorDelete) {
+      setAlert({ open: true, message: errorApproval?.data?.message || errorReject?.data?.message || errorDelete?.data?.message, severity: 'error' });
     }
-  }, [error, errorReject]);
+  }, [errorApproval, errorReject, errorDelete]);
 
 
-  if (!userInfo || loading) {
+  if (!userInfo || isLeavesLoading) {
     return <Loader />
   }
 
@@ -127,15 +129,16 @@ export default function DataGridDemo() {
       renderCell: (params) => {
         const { status } = params.row;
         if (status === 'Pending') {
-          const handleApprove = () => {
+          const handleApprove = async () => {
             const leaveId = params.row._id;
             const { empNo } = params.row;
             try {
-              dispatch(approveLeaveRequest({ leaveId, empNo, status: 'Approved' }))
-              setLeaveChangeCount(leaveChangeCount + 1)
+              const leaveData = await approveLeave({ id: empNo, lId: leaveId, status: 'Approved' }).unwrap()
+              dispatch(approveLeaveRequest({ leaveData }))
+              setLeaveChangeCount(1)
               setAlert({ open: true, message: 'Leave Approved successfully', severity: 'success' });
             } catch (err) {
-              setAlert({ open: true, message: err.response.data.message, severity: 'error' });
+              setAlert({ open: true, message: errorApproval?.data?.message, severity: 'error' });
             }
           };
 
@@ -143,15 +146,16 @@ export default function DataGridDemo() {
             setOpenRejectDialog(true);
           };
 
-          const handleReject = (reason) => {
+          const handleReject = async (reason) => {
             const leaveId = params.row._id;
             const { empNo } = params.row;
             try {
-              dispatch(rejectLeaveRequest({ leaveId, empNo, status: 'Rejected', reason }))
-              setLeaveChangeCount(leaveChangeCount + 1)
+              const leaveData = await rejectLeave({ id: empNo, lId: leaveId, status: 'Rejected', reason }).unwrap()
+              dispatch(rejectLeaveRequest({ leaveData }))
+              setLeaveChangeCount(1)
               setAlert({ open: true, message: 'Leave Rejected successfully', severity: 'success' });
             } catch (err) {
-              setAlert({ open: true, message: err.response.data.message, severity: 'error' });
+              setAlert({ open: true, message: errorReject.data.message, severity: 'error' });
             }
           }
 
@@ -166,14 +170,15 @@ export default function DataGridDemo() {
             </div>
           );
         }
-        const handleDelete = () => {
+        const handleDelete = async() => {
           const leaveId = params.row._id;
           try {
-            dispatch(deleteLeaveRequest(leaveId));
+            const deletedLeave = await deleteLeave({leaveId}).unwrap()
+            dispatch(deleteLeaveRequest({deletedLeave}));
             setLeaveChangeCount(1)
             setAlert({ open: true, message: 'Leave Deleted successfully', severity: 'success' });
           } catch (err) {
-            setAlert({ open: true, message: err.response.data.message, severity: 'error' });
+            setAlert({ open: true, message: errorDelete?.data?.message, severity: 'error' });
           }
         }
 

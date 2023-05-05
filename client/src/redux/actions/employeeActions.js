@@ -119,13 +119,8 @@ export const registerEmployee =
           dateOfAppointment,
           effectiveDate,
           paymentModel,
-          // basicSalary,
-          // pf,
           bank,
           accNo,
-          // advance,
-          // maxAdvance,
-          // noOfAdvances,
         },
         config
       );

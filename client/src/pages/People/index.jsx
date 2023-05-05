@@ -6,9 +6,11 @@ import { Alert, Paper, Snackbar, Table, TableBody, TableCell, TableContainer, Ta
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { selectCurrentUser } from '../../app/features/auth/authSelectors';
+import { useEmployeeListQuery, useRemoveEmployeeMutation } from '../../app/features/employees/employeeApiSlice';
+import { setEmployeeList, setRemoveEmployee } from '../../app/features/employees/employeeSlice';
 import { Button, Loader } from '../../components';
 import AlertDialog from '../../components/AlertDialog';
-import { getEmployeeList } from '../../redux/actions/employeeActions';
 
 
 function People() {
@@ -18,34 +20,42 @@ function People() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [open, setOpen] = useState(false);
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
+  const [employeeListChangeCount, setEmployeeListChangeCount] = useState(0)
 
-  const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo } = userLogin
+  const userInfo = useSelector(selectCurrentUser);
 
-  const { error } = useSelector((state) => state.removeEmployee);
+  const [removeEmployee, { error: errorRemoveEmployee }] = useRemoveEmployeeMutation()
+  const { data: employees, isLoading: isEmployeeListLoading, refetch: refetchEmployeeList } = useEmployeeListQuery({
+    refetchOnMountOrArgChange: true,
+  })
 
-  const { employees, loading } = useSelector((state) => state.employeeList);
   useEffect(() => {
     if (!userInfo) {
       navigate('/');
     } else {
       const storedUser = JSON.parse(localStorage.getItem('user'));
       if (!storedUser || storedUser.empNo !== userInfo.empNo) {
-        dispatch(getEmployeeList())
+        dispatch(setEmployeeList({ employees }))
       }
     }
   }, [userInfo])
 
   useEffect(() => {
-    if (error) {
-      setAlert({ open: true, message: error, severity: 'error' });
+    if (errorRemoveEmployee) {
+      setAlert({ open: true, message: errorRemoveEmployee?.data?.message, severity: 'error' });
     } else {
-      dispatch(getEmployeeList());
+      refetchEmployeeList()
     }
-  }, [error]);
+  }, [errorRemoveEmployee]);
+
+  useEffect(() => {
+    if (employeeListChangeCount > 0) {
+      refetchEmployeeList()
+    }
+  }, [employeeListChangeCount])
 
 
-  if (!userInfo || loading) {
+  if (!userInfo || isEmployeeListLoading) {
     return <Loader />
   }
 
@@ -115,7 +125,7 @@ function People() {
                 </TableCell>
                 <TableCell
                   align='center'
-                  style={{ minWidth: 90, backgroundColor: '#E8E8E8', fontWeight: 'bold' }}
+                  style={{ minWidth: 90, backgroundColor: '#e8e8e8', fontWeight: 'bold' }}
                 >
                   Action
                 </TableCell>
@@ -134,7 +144,7 @@ function People() {
                     <FontAwesomeIcon icon={faEdit} onClick={() => handleEdit(row)} className="mx-1 hover:text-[#1DB3AB] cursor-pointer" />
                     <FontAwesomeIcon icon={faTrash} onClick={() => setOpen(true)} className="mx-1 hover:text-[#FF6760] cursor-pointer" />
                     {open && (
-                      <AlertDialog open={open} handleClose={handleClose} setAlert={setAlert} empNo={row.empNo} />
+                      <AlertDialog open={open} handleClose={handleClose} setAlert={setAlert} id={row.empNo} title='Are you sure you want to remove this employee?' remove={removeEmployee} changeCount={setEmployeeListChangeCount} errorRemoveEmployee={errorRemoveEmployee} action={setRemoveEmployee} />
                     )}
                   </TableCell>
                 </TableRow>

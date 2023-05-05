@@ -11,7 +11,7 @@ employee: {
   },
   leaveType: {
     type: String,
-    enum: ['Casual', 'Annual', 'Maternity', 'Other'],
+    enum: ['Casual', 'Annual', 'Medical'],
     required: true,
   },
   startDate: {

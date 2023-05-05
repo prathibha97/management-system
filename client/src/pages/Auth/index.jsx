@@ -1,22 +1,39 @@
 /* eslint-disable react/no-unstable-nested-components */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Login, OTPInput, ResetPassword } from '../../components';
 
 function Auth() {
-  const [page, setPage] = useState('login')
+  const [page, setPage] = useState('login');
+  const navigate = useNavigate();
+
+  function checkUserInfo() {
+    const token = JSON.parse(localStorage.getItem('token'));
+    if (token) {
+      navigate('/dashboard');
+    }
+  }
+
+  useEffect(checkUserInfo, []);
 
   function NavigateComponents() {
-    if (page === "login") return <Login setPage={setPage} />;
-    if (page === "otp") return <OTPInput setPage={setPage} />;
-    if (page === "reset") return <ResetPassword setPage={setPage} />;
-
+    switch (page) {
+      case 'login':
+        return <Login setPage={setPage} />;
+      case 'otp':
+        return <OTPInput setPage={setPage} />;
+      case 'reset':
+        return <ResetPassword setPage={setPage} />;
+      default:
+        return null;
+    }
   }
 
   return (
     <div>
       <NavigateComponents />
     </div>
-  )
+  );
 }
 
-export default Auth
+export default Auth;
