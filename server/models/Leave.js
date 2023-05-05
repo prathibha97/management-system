@@ -11,7 +11,7 @@ employee: {
   },
   leaveType: {
     type: String,
-    enum: ['Casual', 'Annual', 'Maternity', 'Other'],
+    enum: ['Casual', 'Annual', 'Medical'],
     required: true,
   },
   startDate: {
@@ -49,6 +49,9 @@ employee: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Employee'
   },
+  rejectionReason: {
+    type: String
+  }
 });
 
 module.exports = mongoose.models.Leave || mongoose.model('Leave', leaveSchema)

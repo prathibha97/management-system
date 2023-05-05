@@ -1,10 +1,12 @@
+/* eslint-disable object-shorthand */
 import { faBriefcase, faBuilding, faEnvelope, faGift, faHouse, faHouseLaptop, faIdCard, faLock, faMars, faRightFromBracket, faScrewdriverWrench, faUser, faVenus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Alert, Snackbar } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { registerEmployee } from '../../redux/actions/employeeActions';
+import { useRegisterEmployeeMutation } from '../../app/features/employees/employeeApiSlice';
+import { setRegisterEmployee } from '../../app/features/employees/employeeSlice';
 import Loader from '../Loader';
 
 function ReviewNewEmployee({ prevStep, values }) {
@@ -12,7 +14,7 @@ function ReviewNewEmployee({ prevStep, values }) {
   const navigate = useNavigate()
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
 
-  const { error, loading } = useSelector((state) => state.registerEmployee);
+  const [registerEmployee, { error, isLoading }] = useRegisterEmployeeMutation()
 
   const { firstName,
     lastName,
@@ -40,18 +42,14 @@ function ReviewNewEmployee({ prevStep, values }) {
     dateOfAppointment,
     effectiveDate,
     paymentModel,
-    // basicSalary,
-    // pf,
     bank,
     accNo,
-    // advance,
-    // maxAdvance,
-    // noOfAdvances, 
   } = values
 
-  const saveEmployee = () => {
+  const saveEmployee = async () => {
     try {
-      dispatch(registerEmployee(firstName,
+      const employee = await registerEmployee({
+        firstName,
         lastName,
         birthDate,
         email,
@@ -77,18 +75,14 @@ function ReviewNewEmployee({ prevStep, values }) {
         dateOfAppointment,
         effectiveDate,
         paymentModel,
-        // basicSalary,
-        // pf,
         bank,
         accNo,
-        // advance,
-        // maxAdvance,
-        // noOfAdvances,
-      ))
+      }).unwrap()
+      dispatch(setRegisterEmployee({ employee }))
       navigate('/people')
       setAlert({ open: true, message: 'Employee Added Successfully', severity: 'success' });
     } catch (err) {
-      setAlert({ open: true, message: err.response.data.message, severity: 'error' });
+      setAlert({ open: true, message: error?.data?.message, severity: 'error' });
     }
 
   }
@@ -103,11 +97,11 @@ function ReviewNewEmployee({ prevStep, values }) {
 
   useEffect(() => {
     if (error) {
-      setAlert({ open: true, message: error, severity: 'error' });
+      setAlert({ open: true, message: error?.data?.message, severity: 'error' });
     }
   }, [error]);
 
-  if (loading) return <Loader />
+  if (isLoading) return <Loader />
 
   const birthdateString = birthDate;
   const birthdate = new Date(birthdateString);
@@ -205,7 +199,7 @@ function ReviewNewEmployee({ prevStep, values }) {
       subtitle: 'Leave Allocation',
     },
     {
-      id: 6,
+      id: 7,
       icon: faScrewdriverWrench,
       title: isAdmin === true ? 'Admin' : 'Employee',
       subtitle: 'Employee Status',
@@ -225,48 +219,18 @@ function ReviewNewEmployee({ prevStep, values }) {
       title: paymentModel,
       subtitle: 'Payment Model',
     },
-    // {
-    //   id: 3,
-    //   icon: faHouseLaptop,
-    //   title: basicSalary,
-    //   subtitle: 'Basic salary',
-    // },
-    // {
-    //   id: 4,
-    //   icon: faBuilding,
-    //   title: pf,
-    //   subtitle: 'Provident Fund',
-    // },
     {
-      id: 5,
+      id: 3,
       icon: faRightFromBracket,
       title: bank,
       subtitle: 'Bank Name',
     },
     {
-      id: 6,
+      id: 4,
       icon: faRightFromBracket,
       title: accNo,
       subtitle: 'Bank Account Number',
     },
-    // {
-    //   id: 7,
-    //   icon: faRightFromBracket,
-    //   title: advance,
-    //   subtitle: 'Salary Advance',
-    // },
-    // {
-    //   id: 8,
-    //   icon: faRightFromBracket,
-    //   title: maxAdvance,
-    //   subtitle: 'Maximum Advance Amount',
-    // },
-    // {
-    //   id: 9,
-    //   icon: faRightFromBracket,
-    //   title: noOfAdvances,
-    //   subtitle: 'Number of Advances',
-    // },
   ]
 
   return (

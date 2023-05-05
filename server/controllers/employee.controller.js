@@ -34,6 +34,7 @@ const getEmployeeById = async (req, res) => {
   try {
     const employee = await Employee.findOne({ empNo: id })
       .populate('designation')
+      .populate('projectHistory.project')
       .populate('department')
       .select('-password');
     if (employee) {

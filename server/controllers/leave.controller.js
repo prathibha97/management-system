@@ -6,6 +6,8 @@ const Leave = require('../models/Leave');
 const Employee = require('../models/Employee');
 const getNumberOfDays = require('../utils/getNumberOfDays');
 const io = require('../services/socket');
+const Notification = require('../models/Notification');
+const formatDate = require('../utils/formatDate');
 
 /* 
 ?@desc   Create a new leave request
@@ -111,20 +113,39 @@ const approveOrRejectLeave = async (req, res) => {
       leave.approvedBy = req.user.id;
 
       // Notify employee about leave approval
-      const message = `Your leave request has been approved for ${numberOfDays} days from ${startDate} to ${endDate}.`;
+      const message = `Your leave request has been approved for ${numberOfDays} days from ${formatDate(startDate)} to ${formatDate(endDate)}.`;
       const payload = { message };
       const channel = `private-${empNo}`;
       io.to(channel).emit('leave-approved', payload);
+
+      // Persist the notification
+      const notification = {
+        message,
+        type: 'leave-approved',
+        empNo,
+      };
+      await Notification.create(notification);
+
     } else {
+      const { reason } = req.body;
       leave.status = status;
       leave.rejectedOn = new Date();
       leave.rejectedBy = req.user.id;
+      leave.rejectionReason = reason;
 
       // Notify employee about leave rejection
-      const message = `Your leave request has been rejected.`;
+      const message = `Your leave request has been rejected due to ${reason}.`;
       const payload = { message };
       const channel = `private-${empNo}`;
       io.to(channel).emit('leave-rejected', payload);
+
+      // Persist the notification
+      const notification = {
+        message,
+        type: 'leave-rejected',
+        empNo,
+      };
+      await Notification.create(notification);
     }
 
     const updatedLeave = await leave.save();
@@ -165,6 +186,21 @@ const getLeaveRequestByIdAdmin = async (req, res) => {
   }
 };
 
+const deleteLeaveRequest = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const leaveRequest = await Leave.findById(id);
+    if (!leaveRequest) {
+      return res.status(404).json({ message: 'Leave request not found' });
+    }
+    await leaveRequest.remove();
+    res.status(200).json({ message: 'Leave request deleted successfully' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ message: 'Failed to delete leave request' });
+  }
+}
+
 
 module.exports = {
   createLeaveRequest,
@@ -172,4 +208,5 @@ module.exports = {
   getLeaveRequestById,
   approveOrRejectLeave,
   getLeaveRequestByIdAdmin,
+  deleteLeaveRequest,
 };

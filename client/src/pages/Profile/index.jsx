@@ -1,34 +1,48 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { selectCurrentUser } from '../../app/features/auth/authSelectors';
+import { useEmployeeProfileQuery } from '../../app/features/employees/employeeApiSlice';
+import { setEmployeeProfile } from '../../app/features/employees/employeeSlice';
+import { useGetUserExperiencesQuery } from '../../app/features/experiences/experienceApiSlice';
 import { EmployeeCard, ExperienceCard, Loader } from '../../components';
-import { getUserDetails } from '../../redux/actions/userActions';
+
 
 
 function Profile() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.userDetails) || {}
 
-  const userLogin = useSelector((state) => state.userLogin)
-  const { userInfo } = userLogin
+  const [experienceChangeCount, setExperienceChangeCount] = useState(0)
 
-  const { experiences, loading } = useSelector((state) => state.getExperience)
+  const userInfo = useSelector(selectCurrentUser)
 
+  const { data: experiences, isLoading, isFetching } = useGetUserExperiencesQuery(userInfo?.empNo, {
+    refetchOnMountOrArgChange: true,
+    refetchOnReconnect: true,
+    refetchOnFocus: true,
+    retryOnMount: true,
+    keepUnusedDataFor: 10 // Number of seconds to keep unused data for
+  });
 
+  const { data: user, isLoading: isProfileLoading, refetch } = useEmployeeProfileQuery(userInfo?.empNo)
+  
   useEffect(() => {
     if (!userInfo) {
       navigate('/')
     } else {
-      const storedUser = JSON.parse(localStorage.getItem('user'));
+      const storedUser = JSON.parse(localStorage.getItem('userInfo'));
       if (!storedUser || storedUser.empNo !== userInfo.empNo) {
-        dispatch(getUserDetails(userInfo?.employee?.empNo));
+        dispatch(setEmployeeProfile(userInfo?.empNo));
       }
     }
-  }, [userInfo, experiences])
+  }, [userInfo])
 
+  useEffect(() => {
+    refetch()
+  }, [experienceChangeCount, experiences])
 
-  if (!user || loading) {
+  if (!user || isLoading || isProfileLoading || isFetching) {
     return <Loader />
   }
 
@@ -38,7 +52,7 @@ function Profile() {
         <EmployeeCard employee={user} />
       </div>
       <div className="flex flex-col flex-1">
-        <ExperienceCard employee={user} />
+        <ExperienceCard employee={user} setExperienceChangeCount={setExperienceChangeCount} />
       </div>
     </div>
   );

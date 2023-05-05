@@ -54,7 +54,12 @@ const getExperienceById = async (req, res) => {
 const removeExperience = async (req, res) => {
   const { id } = req.params;
   try {
-    await Experience.findByIdAndDelete(id);
+    const deletedExperience = await Experience.findByIdAndDelete(id);
+    // Remove the deleted experience from the employmentHistory array on the Employee model
+    await Employee.findOneAndUpdate(
+      { empNo: deletedExperience.empNo },
+      { $pull: { employmentHistory: deletedExperience._id } }
+    );
     res.status(200).json({ message: 'Experience removed' });
   } catch (error) {
     console.error(error);

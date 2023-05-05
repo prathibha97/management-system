@@ -1,14 +1,108 @@
-/* eslint-disable no-shadow */
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-nested-ternary */
+import { CheckCircle } from '@mui/icons-material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { Badge, IconButton, List, ListItem, ListItemText, Popover } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { Badge, Button, Divider, IconButton, List, ListItem, ListItemText, Popover } from '@mui/material';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import io from 'socket.io-client';
+import { useClearNotificationsMutation, useReadNotificationMutation, useUserNotificationsQuery } from '../../app/features/notifications/notificationApiSlice';
+import { setClearNotifications, setReadNotification } from '../../app/features/notifications/notificationSlice';
+
+function NotificationItem({ notification, empNo }) {
+  const dispatch = useDispatch();
+  const [notificationCount, setNotificationCount] = useState(0)
+  const { data: userNotifications, refetch: refetchNotifications } = useUserNotificationsQuery(empNo)
+  const [readNotification] = useReadNotificationMutation()
+
+  const formattedDate = new Date(notification.createdAt).toLocaleString();
+
+  const handleMarkAsRead = async () => {
+    try {
+      const notificationData = await readNotification({ id: notification._id }).unwrap()
+      dispatch(setReadNotification({ notificationData }));
+    } catch (err) {
+      console.log('Error marking notification as read');
+    }
+  }
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        refetchNotifications()
+        setNotificationCount(notificationCount + 1);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchNotifications()
+  }, [])
+
+  return (
+    <>
+      <ListItem key={notification.id} sx={{ background: '#EEF2F5' }}>
+        <ListItemText
+          primary={notification.message}
+          secondary={formattedDate}
+        />
+        {!notification.isRead && (
+          <IconButton onClick={handleMarkAsRead}>
+            <CheckCircle color="primary" />
+          </IconButton>
+        )}
+      </ListItem>
+      <Divider />
+    </>
+  );
+}
 
 function Notifications({ empNo }) {
-  const [notifications, setNotifications] = useState([]);
+  const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
+  const [loading, setLoading] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(0)
+  const { data: userNotifications, refetch: refetchNotifications } = useUserNotificationsQuery(empNo)
+  const [clearNotifications] = useClearNotificationsMutation()
+
+  const unreadCount = userNotifications?.filter(notification => !notification.isRead).length;
+
+  const handleNotificationClick = useCallback((event) => {
+    setAnchorEl(event.currentTarget);
+  }, []);
+
+  const handleNotificationClose = useCallback(() => {
+    setAnchorEl(null);
+  }, []);
+
+  const handleClearNotifications = useCallback(async () => {
+    try {
+      const res = await clearNotifications({ empNo }).unwrap()
+      dispatch(setClearNotifications(res));
+      refetchNotifications()
+      setNotificationCount(0);
+      setAnchorEl(null);
+    } catch (err) {
+      console.error(err);
+    }
+  }, [empNo, dispatch]);
+
+
   useEffect(() => {
+    let isMounted = true;
+
+    const fetchNotifications = async () => {
+      try {
+        setLoading(true);
+        // await dispatch(getUserNotifications(empNo));
+        refetchNotifications()
+        setNotificationCount(notificationCount + 1);
+        setLoading(false);
+      } catch (err) {
+        console.error(err);
+        setLoading(false);
+      }
+    };
+
     const socket = io('http://localhost:5001', {
       query: { empNo },
     });
@@ -21,49 +115,73 @@ function Notifications({ empNo }) {
       console.log('Disconnected from server');
     });
 
-    socket.on('leave-approved', (data) => {
-      setNotifications((notifications) => [...notifications, data.message]);
+    socket.on('leaveApproved', async (_data) => {
+      try {
+        // await dispatch(getUserNotifications(empNo));
+        refetchNotifications()
+        setNotificationCount(notificationCount + 1);
+      } catch (err) {
+        console.error(err);
+      }
     });
 
-    socket.on('leave-rejected', (data) => {
-      setNotifications((notifications) => [...notifications, data.message]);
+    socket.on('leaveRejected', async (_data) => {
+      try {
+        // await dispatch(getUserNotifications(empNo));
+        refetchNotifications()
+        setNotificationCount(notificationCount + 1);
+      } catch (err) {
+        console.error(err);
+      }
     });
 
-    socket.on('meeting-created', (data) => {
-      setNotifications((notifications) => [...notifications, data.message]);
+    socket.on('meetingCreated', async (_data) => {
+      try {
+        // await dispatch(getUserNotifications(empNo));
+        refetchNotifications()
+        setNotificationCount(notificationCount + 1);
+      } catch (err) {
+        console.error(err);
+      }
     });
 
-    socket.on('meeting-updated', (data) => {
-      setNotifications((notifications) => [...notifications, data.message]);
+    socket.on('meetingUpdated', async (_data) => {
+      try {
+        // await dispatch(getUserNotifications(empNo));
+        refetchNotifications()
+        setNotificationCount(notificationCount + 1);
+      } catch (err) {
+        console.error(err);
+      }
     });
 
-    socket.on('meeting-cancelled', (data) => {
-      setNotifications((notifications) => [...notifications, data.message]);
+    socket.on('meetingCancelled', async (_data) => {
+      try {
+        // await dispatch(getUserNotifications(empNo));
+        refetchNotifications()
+        setNotificationCount(notificationCount + 1);
+      } catch (err) {
+        console.error(err);
+      }
     });
+
+    fetchNotifications();
 
     return () => {
+      isMounted = false;
       socket.disconnect();
     };
-  }, [empNo]);
-
-  const handleNotificationClick = (event) => {
-    setAnchorEl(event.currentTarget);
-    // setNotifications([]);
-  };
-
-  const handleNotificationClose = () => {
-    setAnchorEl(null);
-  };
+  }, [empNo, dispatch, userNotifications?.length, userNotifications?.isRead]);
 
   return (
     <>
       <IconButton color="inherit" onClick={handleNotificationClick}>
-        <Badge badgeContent={notifications.length} color="secondary">
+        <Badge badgeContent={unreadCount} color="secondary">
           <NotificationsIcon />
         </Badge>
       </IconButton>
       <Popover
-        open={open}
+        open={Boolean(anchorEl)}
         anchorEl={anchorEl}
         onClose={handleNotificationClose}
         anchorOrigin={{
@@ -78,19 +196,24 @@ function Notifications({ empNo }) {
           style: { minWidth: '20em', minHeight: '18em', overflowY: 'auto' },
         }}
       >
-        {notifications.length === 0 ? (
+        {loading ? (
+          <List>
+            <ListItem sx={{ justifyContent: 'center' }}>
+              <ListItemText primary="Loading..." />
+            </ListItem>
+          </List>
+        ) : userNotifications?.length > 0 ? (
+          <List sx={{ textAlign: 'center' }}>
+            {userNotifications?.map((notification) => (
+              <NotificationItem notification={notification} empNo={empNo} />
+            ))}
+            <Button onClick={handleClearNotifications}>Clear All</Button>
+          </List>
+        ) : (
           <List>
             <ListItem sx={{ textAlign: 'center' }}>
               <ListItemText primary="No new notifications" />
             </ListItem>
-          </List>
-        ) : (
-          <List>
-            {notifications.map((notification, index) => (
-              <ListItem key={index} sx={{ background: '#EEF2F5' }}>
-                <ListItemText primary={notification} />
-              </ListItem>
-            ))}
           </List>
         )}
       </Popover>

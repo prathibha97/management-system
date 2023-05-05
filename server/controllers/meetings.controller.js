@@ -114,7 +114,7 @@ const cancelMeeting = async (req, res) => {
     const meeting = await Meeting.findByIdAndDelete(id);
     const attendee = meeting?.attendee[0]?._id;
     const employee = await Employee.findById(attendee);
-    
+
     // Notify employee about meeting
 
     const message = `The meeting has been cancelled`;

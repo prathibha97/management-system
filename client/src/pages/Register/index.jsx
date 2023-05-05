@@ -43,6 +43,39 @@ function Register() {
     setStep(step - 1);
   };
 
+  // const handleIdInputChange = (e) => {
+  //   const file = e.target.files[0];
+  //   encodePDFToBase64(file)
+  //     .then((base64) => {
+  //       setIdCardPath(base64);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
+  // };
+
+  // const handleBankPassInputChange = (e) => {
+  //   const file = e.target.files[0];
+  //   encodePDFToBase64(file)
+  //     .then((base64) => {
+  //       setBankPassPath(base64);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
+  // };
+
+  // const handleResumeInputChange = (e) => {
+  //   const file = e.target.files[0];
+  //   encodePDFToBase64(file)
+  //     .then((base64) => {
+  //       setResumePath(base64);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
+  // };
+
   const handleChange = input => e => {
     switch (input) {
       case 'firstName':
@@ -150,7 +183,6 @@ function Register() {
       }));
     }
   };
-
 
   const values = { firstName, lastName, email, password, birthDate, phone, gender, nic, street, city, state, zip, empNo, dateOfAppointment, designation, workType, department, leaveAllocation, isAdmin, idCardPath, bankPassPath, resumePath, effectiveDate, paymentModel, basicSalary, pf, bank, accNo, advance, maxAdvance, noOfAdvances };
   switch (step) {

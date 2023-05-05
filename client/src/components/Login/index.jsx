@@ -3,8 +3,10 @@ import axios from "axios"
 import { useState } from "react"
 import { useDispatch } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
-import { login } from "../../redux/actions/userActions"
-import api from '../../utils/api'
+import { useLoginMutation } from "../../app/features/auth/authApiSlice"
+import { setCredentials } from "../../app/features/auth/authSlice"
+
+// import { setCredentials } from "../../features/auth/authSlice"
 
 function Login({ setPage }) {
   const [email, setEmail] = useState('')
@@ -12,27 +14,27 @@ function Login({ setPage }) {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
+  const [login] = useLoginMutation()
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      await api.post('/emp/auth/login', { email, password })
-      dispatch(login(email, password))
-      navigate('/dashboard')
+      const userData = await login({ email, password }).unwrap()
+      dispatch(setCredentials({ ...userData }))
+      // document.cookie = `jwt=${userData.token}`
+      if (password === '123456') {
+        navigate('/reset-password')
+      } else {
+        navigate('/dashboard')
+      }
     } catch (err) {
       console.log(err.message);
     }
   }
 
-  // function handlePasswordReset() {
-  //   // Perform login logic
-  //   // dispatch({ type: "SET_PAGE", payload: "otp" });
-  //   setPage('otp')
-  //   console.log('Password reset');
-  // }
-
   async function navigateToOtp() {
     if (email) {
-     const OTP = Math.floor(Math.random() * 9000 + 1000);
+      const OTP = Math.floor(Math.random() * 9000 + 1000);
       setPage('otp')
       try {
         dispatch({ type: "SET_PAGE", payload: 'otp' });
@@ -45,9 +47,11 @@ function Login({ setPage }) {
       } catch (err) {
         console.log(err)
       }
-      return alert("Please enter your email");
+      // return alert("Please enter your email");
     }
   }
+  // if (isLoading) return <div>Loading...</div>
+
   return (
     <div className="flex h-[100vh]">
       <div className="flex-1 bg-[#157e79]">left</div>

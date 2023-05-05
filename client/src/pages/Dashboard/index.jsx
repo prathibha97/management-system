@@ -24,13 +24,17 @@
 
 // export default Dashboard
 
-import React from 'react'
-import Calendar from '../../components/Calendar'
+import Calendar from '../../components/Calendar';
 
 function Dashboard() {
 
+  const handleGoogleLogin = () => {
+    window.location.href = 'http://localhost:5000/api/google';
+  };
+
   return (
     <div>
+      <button type='button' onClick={handleGoogleLogin}>Login with Google</button>
       <Calendar />
     </div>
   )

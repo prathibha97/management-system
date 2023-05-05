@@ -2,16 +2,16 @@
 import { InputLabel, TextField } from '@mui/material'
 import React from 'react'
 
-function DocumentUpload({ handleChange, values, nextStep, prevStep }) {
+function DocumentUpload({ nextStep, prevStep, handleChange, values }) {
   const handleNextStep = (e) => {
     e.preventDefault()
-    console.log(values.idCardPath, values.bankPassPath, values.resumePath)
     nextStep()
   }
   const handlePrevStep = (e) => {
     e.preventDefault()
     prevStep()
   }
+
   return (
     <div className='bg-[#EEF2F5] h-[90%] w-[95%] rounded-xl m-auto'>
       <div className='flex flex-col mt-6 ml-[55px]'>
@@ -28,8 +28,10 @@ function DocumentUpload({ handleChange, values, nextStep, prevStep }) {
             <TextField
               type='file'
               accept=".pdf,.doc,.docx,.jpeg,.jpg,.png"
+              defaultValue={values.idCardPath}
               onChange={handleChange('idCardPath')}
-              defaultValue={values.idCardPath} />
+
+            />
           </div>
           <div className='flex flex-col w-[45%]'>
             <InputLabel
@@ -39,8 +41,9 @@ function DocumentUpload({ handleChange, values, nextStep, prevStep }) {
             <TextField
               type='file'
               accept=".pdf,.doc,.docx,.jpeg,.jpg,.png"
+              defaultValue={values.bankPassPath}
               onChange={handleChange('bankPassPath')}
-              defaultValue={values.bankPassPath} />
+            />
           </div>
           <div className='flex flex-col w-[45%]'>
             <InputLabel
@@ -50,8 +53,10 @@ function DocumentUpload({ handleChange, values, nextStep, prevStep }) {
             <TextField
               type='file'
               accept=".pdf,.doc,.docx,.jpeg,.jpg,.png"
+              defaultValue={values.resumePath}
               onChange={handleChange('resumePath')}
-              defaultValue={values.resumePath} />
+            />
+
           </div>
         </div>
       </div>

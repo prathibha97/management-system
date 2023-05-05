@@ -1,30 +1,41 @@
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Menu, Transition } from '@headlessui/react'
+import { Button } from '@mui/material'
 import {
   format, parseISO
 } from 'date-fns'
 
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import CustomAvatar from '../CustomAvatar'
+import EditMeeting from '../EditMeeting'
 
-function Meeting({ meeting, handleMeetingCancel, currentUser }) {
-  const startDateTime = parseISO(meeting.startDatetime)
-  const endDateTime = parseISO(meeting.endDatetime)
+function Meeting({ meeting, handleMeetingCancel, currentUser, people,  handleMeetingEdit }) {
+  const startDateTime = parseISO(meeting.start.dateTime)
+  const endDateTime = parseISO(meeting.end.dateTime)
+
+  const [isOpen, setIsOpen] = useState(false)
 
   function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
   }
 
-  const isCreator = meeting?.creator?._id === currentUser;
+  const isCreator = meeting?.organizer?.email === currentUser?.email;
 
+  const handleJoinMeeting = () => {
+    window.open(meeting.hangoutLink, '_blank')
+  }
+  const handleGoogleCalendar = () => {
+    window.open(meeting.htmlLink, '_blank')
+  }
 
   return (
     <li className="flex items-center px-4 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100">
-      <CustomAvatar name={`${meeting?.creator?.name?.first} ${meeting?.creator?.name?.last}`} />
+      <CustomAvatar name={`${currentUser?.name?.first} ${currentUser?.name?.last}`} />
       <div className="flex-auto">
-        <p className="text-gray-900">{meeting?.creator?.name?.first} {meeting?.creator?.name?.last}</p>
-        <p className="mt-0.5">
+        <p className='text-lg text-black'>{meeting.summary}</p>
+        <p>Organized by: {meeting?.organizer?.email}</p>
+        <p className="mt-0.5">Duration: {" "}
           <time dateTime={meeting.startDatetime}>
             {format(startDateTime, 'h:mm a')}
           </time>{' '}
@@ -33,11 +44,17 @@ function Meeting({ meeting, handleMeetingCancel, currentUser }) {
             {format(endDateTime, 'h:mm a')}
           </time>
         </p>
+        <Button onClick={handleJoinMeeting}>
+          Join Meeting
+        </Button>
+        <Button onClick={handleGoogleCalendar}>
+          View in Google Calendar
+        </Button>
       </div>
       {meeting?.attendee?.length > 0 && (
         <div className="flex mt-2">
-          {meeting?.attendee?.map((attendee) => (
-            <CustomAvatar key={attendee._id} name={`${attendee.name.first} ${attendee.name.last}`} size={28} style={{ fontSize: 12 }} />
+          {meeting?.attendees?.map((attendee, index) => (
+            <CustomAvatar key={index} name={`${attendee.email}`} size={28} style={{ fontSize: 12 }} />
           ))}
         </div>
       )}
@@ -72,6 +89,7 @@ function Meeting({ meeting, handleMeetingCancel, currentUser }) {
                         active ? 'bg-gray-100  text-gray-900' : 'text-gray-700',
                         'block px-4 py-2 text-sm w-full'
                       )}
+                      onClick={() => setIsOpen(true)}
                     >
                       Edit
                     </button>
@@ -85,7 +103,7 @@ function Meeting({ meeting, handleMeetingCancel, currentUser }) {
                         active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                         'block px-4 py-2 text-sm w-full'
                       )}
-                      onClick={() => handleMeetingCancel(meeting?._id)}
+                      onClick={() => handleMeetingCancel(meeting?.id)}
                     >
                       Cancel
                     </button>
@@ -95,6 +113,9 @@ function Meeting({ meeting, handleMeetingCancel, currentUser }) {
             </Menu.Items>
           </Transition>
         </Menu>
+      )}
+      {isOpen && (
+        <EditMeeting isOpen={isOpen} people={people} setIsOpen={setIsOpen} handleMeetingEdit={handleMeetingEdit} meeting={meeting}/>
       )}
     </li>
   )

@@ -1,30 +1,33 @@
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { AttendanceCalendar, EmployeeDetails, LeaveBalance, Loader, SalaryDetails } from '../../components';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
+import { selectCurrentUser } from '../../app/features/auth/authSelectors';
+import { useEmployeeDetailsAdminQuery } from '../../app/features/employees/employeeApiSlice';
+import { setEmployeeDetailsAdmin } from '../../app/features/employees/employeeSlice';
+import { AttendanceCalendar, EmployeeDetails, LeaveBalance, Loader, ProjectHistory, SalaryDetails } from '../../components';
 
 function EmpProfile() {
   const navigate = useNavigate()
-  // const dispatch = useDispatch()
-  const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo } = userLogin
-  // const { empNo } = useParams();
+  const dispatch = useDispatch()
+  const userInfo = useSelector(selectCurrentUser);
+  const { empNo } = useParams();
 
-  const { user, loading } = useSelector((state) => state.userDetailsAdmin);
-
+  const { data: user, isLoading: isUserdetailsLoading } = useEmployeeDetailsAdminQuery(empNo, {
+    refetchOnMountOrArgChange: true,
+  })
 
   useEffect(() => {
     if (!userInfo) {
       navigate('/');
     } else {
-      const storedUser = JSON.parse(localStorage.getItem('user'));
+      const storedUser = JSON.parse(localStorage.getItem('userInfo'));
       if (!storedUser || storedUser.empNo !== userInfo.empNo) {
-        // dispatch(getUserDetailsAdmin(empNo))
+        dispatch(setEmployeeDetailsAdmin({ employee: user }))
       }
     }
-  }, [userInfo, user])
+  }, [userInfo])
 
-  if (loading) return <Loader />
+  if (isUserdetailsLoading) return <Loader />
   return (
     <div className='h-[90%]'>
       <div className='bg-[#EEF2F5]  w-[95%] rounded-xl mt-6 m-auto overflow-y-auto'>
@@ -32,6 +35,7 @@ function EmpProfile() {
         <AttendanceCalendar user={user} />
         <LeaveBalance user={user} />
         <SalaryDetails />
+        <ProjectHistory user={user} />
       </div>
     </div>
   )

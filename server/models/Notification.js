@@ -5,13 +5,23 @@ const notificationSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  receiver: {
-    type: String,
-    default: false,
-  },
   type: {
     type: String,
     required: true,
+  },
+  empNo: {
+    type: String,
+    required: true,
+  },
+  isRead:{
+    type: Boolean,
+    required: true,
+    default: false,
+  },
+  createdAt: {
+    type: Date,
+    required: true,
+    default: Date.now,
   },
 });
 

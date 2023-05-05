@@ -18,10 +18,12 @@ import {
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { getEmployeeList } from '../../redux/actions/employeeActions'
-import { cancelMeeting, getMyMeetings, scheduleMeeting } from '../../redux/actions/meetingActions'
+import { useEmployeeListQuery } from '../../app/features/employees/employeeApiSlice'
+import { useCancelMeetingMutation, useMyMeetingQuery, useScheduleMeetingMutation } from '../../app/features/meetings/meetingApiSlice'
+import { setMyMeetings, setScheduleMeeting, setcancelMeeting } from '../../app/features/meetings/meetingSlice'
+import { editMeeting } from '../../redux/actions/meetingActions'
 import Loader from '../Loader'
-import Meeting from '../Meetings'
+import Meetings from '../Meetings'
 import ScheduleMeeting from '../ScheduleMeeting'
 
 function classNames(...classes) {
@@ -37,36 +39,45 @@ function Calendar() {
   const [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
   const firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date())
+  const [scheduleMeeting, { isLoading: scheduleMeetingLoading, error }] = useScheduleMeetingMutation()
 
   // Define a state variable to keep track of whether new meetings have been added or removed
   const [meetingChangeCount, setMeetingChangeCount] = useState(0);
 
-  const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo } = userLogin
+  const { user } = useSelector((state) => state.auth);
 
-  const { employees } = useSelector((state) => state.employeeList);
-  const { meetings, loading } = useSelector((state) => state.myMeetings);
+  const { data: meetings, refetch: refetchMeetings } = useMyMeetingQuery({
+    refetchOnMountOrArgChange: true,
+    refetchOnReconnect: true,
+    refetchOnFocus: true,
+    refetchOnWindowFocus: true,
+  })
+  const { data: employees, isLoading } = useEmployeeListQuery()
+
+  const [cancelMeeting, { isLoading: isCancelMeetingLoading }] = useCancelMeetingMutation()
 
   // First useEffect hook to get employee list and meetings
   useEffect(() => {
-    if (!userInfo) {
+    if (!user) {
       navigate('/');
     } else {
-      const storedUser = JSON.parse(localStorage.getItem('user'));
-      if (!storedUser || storedUser.empNo !== userInfo.empNo) {
-        dispatch(getMyMeetings())
-        dispatch(getEmployeeList())
+      const storedUser = JSON.parse(localStorage.getItem('userInfo'));
+      if (!storedUser || storedUser.empNo !== user.empNo) {
+        dispatch(setMyMeetings({ meetings }))
       }
     }
-  }, [userInfo, meetingChangeCount])
+  }, [user])
 
   // Second useEffect hook to get meetings again and reset meetingChangeCount
   useEffect(() => {
-    dispatch(getMyMeetings())
-    setMeetingChangeCount(0);
-  }, [dispatch, meetingChangeCount])
+    if (meetingChangeCount > 0) {
+      refetchMeetings()
+      setMeetingChangeCount(0);
+    }
+  }, [meetingChangeCount])
 
-  if (loading) return <Loader />
+ 
+  if (isLoading || scheduleMeetingLoading) return <Loader />
 
   const days = eachDayOfInterval({
     start: firstDayCurrentMonth,
@@ -83,8 +94,8 @@ function Calendar() {
     setCurrentMonth(format(firstDayNextMonth, 'MMM-yyyy'))
   }
 
-  const selectedDayMeetings = meetings.filter((meeting) =>
-    isSameDay(parseISO(meeting.startDatetime), selectedDay)
+  const selectedDayMeetings = meetings?.filter((meeting) =>
+    isSameDay(parseISO(meeting?.start?.dateTime), selectedDay)
   )
 
   const handleAlertClose = () => {
@@ -92,28 +103,38 @@ function Calendar() {
   };
 
 
-  const handleMeetingCancel = (id) => {
+  const handleMeetingCancel = async (id) => {
     try {
-      dispatch(cancelMeeting(id));
-      setMeetingChangeCount(1);
+      const res = await cancelMeeting({ id }).unwrap();
+      dispatch(setcancelMeeting({ meetingId: res._id }));
+      setMeetingChangeCount(prev => prev + 1);
       setAlert({ open: true, message: 'Meeting Cancelled Successfully', severity: 'success' });
     } catch (err) {
       setAlert({ open: true, message: err.response.data.message, severity: 'error' });
     }
   }
 
-  const handleSubmit = (selectedPerson, startValue, endValue) => {
+  const handleMeetingEdit = (id, summary, selectedPeople, startValue, endValue) => {
     try {
-      dispatch(scheduleMeeting(selectedPerson, startValue, endValue))
-      console.log(`meeting scheduled with ${selectedPerson?.name?.first} ${selectedPerson?.name?.last} on ${startValue} to ${endValue}`);
-      setMeetingChangeCount(1);
-      setAlert({ open: true, message: `meeting scheduled with ${selectedPerson?.name?.first} ${selectedPerson?.name?.last} on ${startValue} to ${endValue}`, severity: 'success' });
+      dispatch(editMeeting(id, summary, selectedPeople.map((person) => person.email), startValue, endValue));
+      setMeetingChangeCount(prev => prev + 1);
+      setAlert({ open: true, message: 'Meeting Edited Successfully', severity: 'success' });
     } catch (err) {
-      setAlert({ open: true, message: err?.response?.data?.message, severity: 'error' });
+      setAlert({ open: true, message: err.response.data.message, severity: 'error' });
+    }
+  }
+
+  const handleSubmit = async (summary, selectedPeople, startValue, endValue) => {
+    try {
+      const meeting = await scheduleMeeting({ summary, attendee: selectedPeople.map((person) => person.email), startDatetime: startValue, endDatetime: endValue }).unwrap()
+      dispatch(setScheduleMeeting({ meeting }))
+      setMeetingChangeCount(prev => prev + 1);
+      setAlert({ open: true, message: `meeting scheduled with ${selectedPeople?.map((person) => person?.name?.first)} ${selectedPeople?.map((person) => person?.name?.last)} on ${startValue} to ${endValue}`, severity: 'success' });
+    } catch (err) {
+      setAlert({ open: true, message: error?.data?.messeage, severity: 'error' });
     }
     setIsOpen(false)
   }
-
 
   const colStartClasses = [
     '',
@@ -124,6 +145,8 @@ function Calendar() {
     'col-start-6',
     'col-start-7',
   ]
+
+  if (isCancelMeetingLoading) return <Loader />
 
   return (
     <div className=" pt-12">
@@ -202,11 +225,9 @@ function Calendar() {
                   </button>
 
                   <div className="w-1 h-1 mx-auto mt-1">
-                    {meetings.some((meeting) =>
-                      isSameDay(parseISO(meeting.startDatetime), day)
-                    ) && (
-                        <div className="w-1 h-1 rounded-full bg-sky-500" />
-                      )}
+                    {meetings?.some((meeting) => isSameDay(parseISO(meeting.start.dateTime), day)) ? (
+                      <div className="w-1 h-1 rounded-full bg-sky-500" />
+                    ) : null}
                   </div>
                 </div>
               ))}
@@ -229,9 +250,9 @@ function Calendar() {
             )}
             <div>
               <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
-                {selectedDayMeetings.length > 0 ? (
-                  selectedDayMeetings.map((meeting) => (
-                    <Meeting meeting={meeting} key={meeting._id} handleMeetingCancel={handleMeetingCancel} currentUser={userInfo?.employee?._id} />
+                {selectedDayMeetings?.length > 0 ? (
+                  selectedDayMeetings?.map((meeting) => (
+                    <Meetings meeting={meeting} key={meeting.id} handleMeetingCancel={handleMeetingCancel} currentUser={user} handleMeetingEdit={handleMeetingEdit} people={employees} />
                   ))
                 ) : (
                   <p>No meetings for today.</p>

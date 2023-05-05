@@ -23,6 +23,7 @@ function DataTable({ data, columns }) {
     setPage(0);
   };
 
+
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
       <TableContainer sx={{ maxHeight: 440 }}>

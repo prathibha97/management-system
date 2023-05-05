@@ -1,5 +1,7 @@
 import { useSelector } from 'react-redux';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { selectCurrentUser } from './app/features/auth/authSelectors';
+import { CreateProject } from './components';
 import {
   Attendance,
   Auth,
@@ -8,9 +10,11 @@ import {
   EmpProfile,
   Layout,
   Leaves,
+  PasswordReset,
   Payroll,
   People,
   Profile,
+  Project,
   Projects,
   Register,
   Settings,
@@ -18,8 +22,8 @@ import {
 import Leave from './pages/Leave';
 
 function App() {
-  const { userInfo } = useSelector((state) => state.userLogin);
-  // if (loading) return <Loader />;
+  const userInfo = useSelector(selectCurrentUser);
+
   return (
     <Router>
       <Routes>
@@ -31,11 +35,14 @@ function App() {
           <Route path="/attendance" element={<Attendance />} />
           <Route path="/leave" element={<Leave />} />
           <Route path="/settings" element={<Settings />} />
-          {userInfo?.employee.isAdmin && (
+          <Route path="/reset-password" element={<PasswordReset />} />
+          {userInfo?.isAdmin && (
             <>
               <Route path="/people" element={<People />} />
               <Route path="/people/:empNo" element={<EmpProfile />} />
               <Route path="/projects" element={<Projects />} />
+              <Route path="/projects/create" element={<CreateProject />} />
+              <Route path="/projects/:id" element={<Project />} />
               <Route path="/payroll" element={<Payroll />} />
               <Route path="/leaves" element={<Leaves />} />
               <Route path="/register" element={<Register />} />
