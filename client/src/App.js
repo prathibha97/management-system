@@ -23,9 +23,7 @@ import Leave from './pages/Leave';
 
 function App() {
   const userInfo = useSelector(selectCurrentUser);
-  // const user = localStorage.getItem('userInfo');
-  // console.log(user?.name?.first);
-  // if (loading) return <Loader />;
+
   return (
     <Router>
       <Routes>
