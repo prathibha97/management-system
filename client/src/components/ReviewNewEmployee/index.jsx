@@ -46,8 +46,6 @@ function ReviewNewEmployee({ prevStep, values }) {
     accNo,
   } = values
 
-  console.log(values);
-
   const saveEmployee = async () => {
     try {
       const employee = await registerEmployee({

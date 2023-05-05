@@ -54,13 +54,16 @@ const registerEmployee = async (req, res) => {
       return res.status(400).json({ message: 'Employee already exists' });
     }
 
-    // Upload files using the "upload" middleware
-    await upload.any()(req, res, () => {});
-
-    // // Upload files using the "upload" middleware
     const idCardPath = req.files?.idCardPath?.[0]?.path ?? '';
     const bankPassPath = req.files?.bankPassPath?.[0]?.path ?? '';
     const resumePath = req.files?.resumePath?.[0]?.path ?? '';
+
+    // Upload files using the "upload" middleware
+    await upload.any()(req, res, () => {});
+
+    if (!idCardPath || !bankPassPath || !resumePath) {
+      return res.status(400).json({ message: 'Documents are required' });
+    }
 
     // Create a new employee object
     const newEmployee = await Employee.create({
@@ -76,7 +79,7 @@ const registerEmployee = async (req, res) => {
       designation,
       isAdmin,
       employmentHistory,
-      projectHistory,
+      projectHistory: Array.isArray(projectHistory) ? projectHistory : [],
       idCardPath,
       bankPassPath,
       resumePath,
@@ -88,10 +91,6 @@ const registerEmployee = async (req, res) => {
       bank,
       accountNo: accNo,
     });
-
-    // console.log(req.files?.idCardPath[0].path);
-    // console.log(req.files?.bankPassPath[0].path);
-    // console.log(req.files?.resumePath[0].path);
 
     const dept = await Department.findById(department);
     dept.employees.push(newEmployee._id);
@@ -116,6 +115,7 @@ const registerEmployee = async (req, res) => {
     console.error(err.message);
   }
 };
+
 /* 
 ?@desc   Login a user
 *@route  Post /api/emp/auth/login
