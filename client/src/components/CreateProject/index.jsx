@@ -29,8 +29,6 @@ function CreateProject() {
   const [nftTradeCount, setNftTradeCount] = useState(0)
   const [nftCollectionSize, setnftCollectionSize] = useState(0)
 
-
-
   const userInfo = useSelector(selectCurrentUser);
 
   const { data: employees } = useGetDepartmentEmployeeListQuery(department)
