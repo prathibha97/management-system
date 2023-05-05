@@ -3,6 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const path = require('path');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 
 const fs = require('fs');
 const api = require('./routes/api');
@@ -19,15 +21,18 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json({ limit: '25mb' }));
-app.use(express.urlencoded({ extended: false, limit: '25mb' }));
+app.use(cookieParser());
+app.use(bodyParser());
+// app.use(express.urlencoded({ extended: false, limit: '25mb' }));
 app.use(morgan('dev'));
 
 // app.use(setCache);
 
-app.use('/api', api);
-
 // Serve the PDF files from the uploads folder
 app.use('/uploads', express.static(path.join(__dirname, '..', 'server', 'uploads')));
+
+app.use('/api', api);
+
 
 // API endpoint to get the URL of a PDF file
 app.get('/pdf', (req, res) => {

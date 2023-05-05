@@ -3,18 +3,18 @@ import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { getClientList } from '../../redux/actions/clientActions'
-import { getDepartmentDetails, getDepartmentEmployeeList } from '../../redux/actions/departmentActions'
-import encodePDFToBase64 from '../../utils/encodePDFToBase64'
-import { createNewProject } from '../../redux/actions/projectActions'
+import { selectCurrentUser } from '../../app/features/auth/authSelectors'
+import { useGetClientsQuery } from '../../app/features/clients/clientApiSlice'
+import { getClients } from '../../app/features/clients/clientSlice'
+import { useGetDepartmentEmployeeListQuery, useGetDepartmentsQuery } from '../../app/features/departments/departmentApiSlice'
+import { departmentEmployeeList, getDepartments } from '../../app/features/departments/departmentSlice'
+import { useCreateProjectMutation } from '../../app/features/projects/projectApiSlice'
+import { setCreateProject } from '../../app/features/projects/projectSlice'
+import Loader from '../Loader'
 
 function CreateProject() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
-
-  const { departments } = useSelector((state) => state.departmentDetails)
-  const { clients } = useSelector((state) => state.clientList)
-  const { employees } = useSelector((state) => state.departmentEmployeeList)
 
   const [title, setTitle] = useState('')
   const [department, setDepartment] = useState('')
@@ -29,61 +29,56 @@ function CreateProject() {
   const [nftTradeCount, setNftTradeCount] = useState(0)
   const [nftCollectionSize, setnftCollectionSize] = useState(0)
 
-  const handleCancel = () => {
-    navigate('/projects')
-  }
+  const userInfo = useSelector(selectCurrentUser);
 
-  const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo } = userLogin
+  const { data: employees } = useGetDepartmentEmployeeListQuery(department)
+  const { data: clients } = useGetClientsQuery()
+  const { data: departments } = useGetDepartmentsQuery()
+
+  const [createProject, { isLoading: isProjectCreateLoading }] = useCreateProjectMutation()
 
   useEffect(() => {
     if (!userInfo) {
       navigate('/');
     } else {
-      const storedUser = JSON.parse(localStorage.getItem('user'));
+      const storedUser = JSON.parse(localStorage.getItem('userInfo'));
       if (!storedUser || storedUser.empNo !== userInfo.empNo) {
-        dispatch(getDepartmentDetails())
-        dispatch(getClientList())
-        dispatch(getDepartmentEmployeeList(department))
+        dispatch(getDepartments({ departments }))
+        dispatch(getClients({ clients }))
+        dispatch(departmentEmployeeList({ departmentId: department._id, employeeList: employees }))
       }
     }
   }, [userInfo, department])
 
 
-  const handleFileInputChange = (e) => {
-    const file = e.target.files[0];
-    encodePDFToBase64(file)
-      .then((base64) => {
-        setProjectScope(base64);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
-  const handleCreateProject = () =>{
-    const project = {
-      title,
-      category,
-      department,
-      client,
-      deadline,
-      team,
-      designLink,
-      specialNotes,
-      projectScope,
-      nftBaseDesignCount,
-      nftTradeCount,
-      nftCollectionSize
-    }
+  const handleCreateProject = async () => {
     try {
-      console.log(project);
-      dispatch(createNewProject(project))
+      const projectData = await createProject({
+        title,
+        category,
+        department,
+        client,
+        deadline,
+        team,
+        designLink,
+        specialNotes,
+        projectScope,
+        nftBaseDesignCount,
+        nftTradeCount,
+        nftCollectionSize
+      }).unwrap()
+      dispatch(setCreateProject({ project: projectData }))
       navigate('/projects')
     } catch (error) {
       console.log(error);
     }
   }
+
+  const handleCancel = () => {
+    navigate('/projects')
+  }
+
+  if (isProjectCreateLoading) return <Loader />
 
   return (
     <div className='bg-[#EEF2F5] h-[90%] w-[95%] mt-6 rounded-xl m-auto overflow-y-auto'>
@@ -109,7 +104,7 @@ function CreateProject() {
               Department
             </InputLabel>
             <Select labelid="gender-lable" id="gender-lable" onChange={(e) => setDepartment(e.target.value)} value={department}>
-              {departments.map((item) => (
+              {departments?.map((item) => (
                 <MenuItem key={item?._id} value={item?._id}>{item?.name}</MenuItem>
               ))}
             </Select>
@@ -166,7 +161,7 @@ function CreateProject() {
               Client
             </InputLabel>
             <Select labelid="gender-lable" id="gender-lable" onChange={(e) => setClient(e.target.value)} value={client}>
-              {clients.map((item) => (
+              {clients?.map((item) => (
                 <MenuItem key={item?._id} value={item?._id}>{item?.name}</MenuItem>
               ))}
             </Select>
@@ -188,7 +183,7 @@ function CreateProject() {
               Assignees
             </InputLabel>
             <Select labelid="gender-lable" id="gender-lable" multiple onChange={(e) => setTeam(e.target.value)} value={team}>
-              {employees.map((employee) => (
+              {employees?.map((employee) => (
                 <MenuItem key={employee?._id} value={employee?._id}>{employee?.name?.first} {employee?.name?.last}</MenuItem>
               ))}
             </Select>
@@ -201,6 +196,7 @@ function CreateProject() {
             <TextField
               value={designLink}
               onChange={(e) => setDesignLink(e.target.value)}
+              placeholder='https://www.figma.com/'
             />
           </div>
           <div className='flex flex-col w-[45%]'>
@@ -212,7 +208,7 @@ function CreateProject() {
               type='file'
               id='pdf-file-input'
               accept=".pdf,.doc,.docx,.jpeg,.jpg,.png"
-              onChange={handleFileInputChange}
+              onChange={(e) => setProjectScope(e.target.files[0])}
             />
           </div>
           <div className='flex flex-col w-[100%]'>

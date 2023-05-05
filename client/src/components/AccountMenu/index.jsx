@@ -10,14 +10,20 @@ import Tooltip from '@mui/material/Tooltip';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { logout } from '../../redux/actions/userActions';
 import CustomAvatar from '../CustomAvatar';
+import Loader from '../Loader';
+import api from '../../utils/api';
+import { setLogout } from '../../app/features/auth/authSlice';
+import { useLogoutQuery } from '../../app/features/auth/authApiSlice';
 
 export default function AccountMenu({ userInfo }) {
   const dispatch = useDispatch()
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+
+  const { isLoading, isSuccess } = useLogoutQuery()
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -25,11 +31,16 @@ export default function AccountMenu({ userInfo }) {
     setAnchorEl(null);
   };
 
-  const handleLogout = () => {
-    dispatch(logout())
-    navigate('/')
+  const handleLogout = async () => {
+    await api.get('/emp/auth/logout')
+    if (isSuccess) {
+      dispatch(setLogout())
+      navigate('/')
+    }
   }
-  
+
+  if (isLoading) return <Loader />
+
   return (
     <>
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
@@ -42,7 +53,7 @@ export default function AccountMenu({ userInfo }) {
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
           >
-            <CustomAvatar name={`${userInfo?.employee?.name?.first} ${userInfo?.employee?.name?.last}`}/>
+            <CustomAvatar name={`${userInfo?.name?.first} ${userInfo?.name?.last}`} />
           </IconButton>
         </Tooltip>
       </Box>

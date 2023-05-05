@@ -1,5 +1,7 @@
 import { useSelector } from 'react-redux';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { selectCurrentUser } from './app/features/auth/authSelectors';
+import { CreateProject } from './components';
 import {
   Attendance,
   Auth,
@@ -18,10 +20,11 @@ import {
   Settings,
 } from './pages';
 import Leave from './pages/Leave';
-import { CreateProject } from './components';
 
 function App() {
-  const { userInfo } = useSelector((state) => state.userLogin);
+  const userInfo = useSelector(selectCurrentUser);
+  // const user = localStorage.getItem('userInfo');
+  // console.log(user?.name?.first);
   // if (loading) return <Loader />;
   return (
     <Router>

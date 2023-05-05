@@ -6,9 +6,11 @@ import { Alert, Paper, Snackbar, Table, TableBody, TableCell, TableContainer, Ta
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { selectCurrentUser } from '../../app/features/auth/authSelectors';
+import { useDeleteProjectMutation, useGetAllProjectsQuery } from '../../app/features/projects/projectApiSlice';
+import { setDeleteProject, setProjects } from '../../app/features/projects/projectSlice';
 import { Button, Loader } from '../../components';
 import AlertDialog from '../../components/AlertDialog';
-import { deleteProject, getAllProjects } from '../../redux/actions/projectActions';
 import { formatDate } from '../../utils/formatDate';
 
 
@@ -19,34 +21,44 @@ function Projects() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [open, setOpen] = useState(false);
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
+  const [projectChangeCount, setProjectChangeCount] = useState(0)
 
-  const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo } = userLogin
+  const userInfo = useSelector(selectCurrentUser);
 
-  const { error } = useSelector((state) => state.removeEmployee);
 
-  const { projects, loading } = useSelector((state) => state.allProjectDetails);
+  const { data: projects, isloading: isProjectsLoading, isFetching: isProjectsFetching, refetch: refetchProjects } = useGetAllProjectsQuery({
+    refetchOnMountOrArgChange: true,
+  });
+
+  const [deleteProject, { isloading: isProjectDeleteLoading, error }] = useDeleteProjectMutation()
+
   useEffect(() => {
     if (!userInfo) {
       navigate('/');
     } else {
       const storedUser = JSON.parse(localStorage.getItem('user'));
       if (!storedUser || storedUser.empNo !== userInfo.empNo) {
-        dispatch(getAllProjects())
+        dispatch(setProjects({ projects }))
       }
     }
   }, [userInfo])
 
   useEffect(() => {
     if (error) {
-      setAlert({ open: true, message: error, severity: 'error' });
+      setAlert({ open: true, message: error?.data?.message, severity: 'error' });
     } else {
-      dispatch(getAllProjects());
+      refetchProjects()
     }
   }, [error]);
 
+  useEffect(() => {
+    if (projectChangeCount > 0) {
+      refetchProjects()
+    }
+  }, [projectChangeCount])
 
-  if (!userInfo || loading) {
+
+  if (!userInfo || isProjectsLoading || isProjectsFetching || isProjectDeleteLoading) {
     return <Loader />
   }
 
@@ -135,7 +147,7 @@ function Projects() {
                     <FontAwesomeIcon icon={faEdit} onClick={() => handleEdit(row)} className="mx-1 hover:text-[#1DB3AB] cursor-pointer" />
                     <FontAwesomeIcon icon={faTrash} onClick={() => setOpen(true)} className="mx-1 hover:text-[#FF6760] cursor-pointer" />
                     {open && (
-                      <AlertDialog open={open} handleClose={handleClose} setAlert={setAlert} id={row._id} title='Are you sure you want to remove this project?' remove={deleteProject}/>
+                      <AlertDialog open={open} handleClose={handleClose} setAlert={setAlert} id={row._id} title='Are you sure you want to remove this project?' remove={deleteProject} changeCount={setProjectChangeCount} action={setDeleteProject} />
                     )}
                   </TableCell>
                 </TableRow>

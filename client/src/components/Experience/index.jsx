@@ -2,21 +2,27 @@ import { faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { removeExperience } from '../../redux/actions/experienceActions'
+import Loader from '../Loader'
+import { setRemoveExperience } from '../../app/features/experiences/experienceSlice'
+import { useRemoveExperienceMutation } from '../../app/features/experiences/experienceApiSlice'
 
 function Experience({ item, formatDate, setAlert, setExperienceChangeCount }) {
   const dispatch = useDispatch()
   const [isHovering, setIsHovering] = useState(false)
+  const [removeExperience, {isLoading}] = useRemoveExperienceMutation()
 
-  const handleExperienceDelete = () => {
+  const handleExperienceDelete = async () => {
     try {
-      dispatch(removeExperience(item._id))
+      await removeExperience(item._id).unwrap()
+      dispatch(setRemoveExperience({ id: item._id }))
       setExperienceChangeCount((prevCount) => prevCount + 1)
       setAlert({ open: true, message: 'Experience deleted successfully', severity: 'success' })
     } catch (err) {
       setAlert({ open: true, message: err.response.data.message, severity: 'error' })
     }
   }
+
+  if(isLoading) return <Loader/>
 
   return (
     <div

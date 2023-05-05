@@ -1,13 +1,12 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import { InputLabel, MenuItem, Select, TextField } from '@mui/material'
 import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { getDepartmentDetails } from '../../redux/actions/departmentActions'
+import { selectCurrentUser } from '../../app/features/auth/authSelectors'
 
 function SalaryStructure({ handleChange, values, nextStep, prevStep }) {
   const navigate = useNavigate()
-  const dispatch = useDispatch()
 
   const handleNextStep = (e) => {
     e.preventDefault()
@@ -18,8 +17,7 @@ function SalaryStructure({ handleChange, values, nextStep, prevStep }) {
     prevStep()
   }
 
-  const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo } = userLogin
+  const userInfo = useSelector(selectCurrentUser);
 
   useEffect(() => {
     if (!userInfo) {
@@ -27,7 +25,7 @@ function SalaryStructure({ handleChange, values, nextStep, prevStep }) {
     } else {
       const storedUser = JSON.parse(localStorage.getItem('user'));
       if (!storedUser || storedUser.empNo !== userInfo.empNo) {
-        dispatch(getDepartmentDetails())
+        // dispatch(getDepartmentDetails())
       }
     }
   }, [userInfo])

@@ -4,11 +4,11 @@ import { Outlet } from 'react-router-dom';
 import { Header, Loader, Sidebar } from '../../components';
 
 function Layout() {
-  const { userInfo, loading } = useSelector((state) => state.userLogin)
-  if (loading || !userInfo) return <Loader />
+  const { user, loading } = useSelector((state) => state.auth)
+  if (loading || !user) return <Loader />
   return (
     <div className="flex h-screen">
-      <Sidebar user={userInfo?.employee} />
+      <Sidebar user={user} />
       <div className="flex flex-col flex-1 h-screen overflow-y-auto">
         <div className='fixed w-[82%]'>
           <Header />

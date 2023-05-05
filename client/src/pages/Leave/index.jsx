@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { selectCurrentUser } from '../../app/features/auth/authSelectors';
+import { useEmployeeProfileQuery } from '../../app/features/employees/employeeApiSlice';
+import { useGetUserLeavesQuery } from '../../app/features/leaves/leaveApiSlice';
+import { getUserLeaves } from '../../app/features/leaves/leaveSlice';
 import { ApplyLeave, LeaveInformation, Loader } from '../../components';
-import { getUserLeaveDetails } from '../../redux/actions/leaveActions';
-import { getUserDetails } from '../../redux/actions/userActions';
 
 function Leave() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.userDetails) || {}
 
-  const {userInfo} = useSelector((state) => state.userLogin)
+  const userInfo = useSelector(selectCurrentUser)
 
-  const leaveDetails = useSelector((state) => state.leaveDetails)
-  const { leaves , loading} = leaveDetails
+  const { data: user, isLoading: isProfileLoading, refetch: fetchProfile } = useEmployeeProfileQuery(userInfo?.empNo)
+
+  const { data: leaves, isLoading: isLeavesLoading, refetch: fetchLeaves } = useGetUserLeavesQuery(userInfo?.empNo, {
+    refetchOnMountOrArgChange: true,
+  })
 
   const [leaveChangeCount, setLeaveChangeCount] = useState(0);
 
@@ -23,29 +27,29 @@ function Leave() {
     } else {
       const storedUser = JSON.parse(localStorage.getItem('user'));
       if (!storedUser || storedUser.empNo !== userInfo.empNo) {
-        dispatch(getUserDetails(userInfo?.employee.empNo));
-        dispatch(getUserLeaveDetails(userInfo?.employee.empNo));
+        dispatch(getUserLeaves({ leaves }));
       }
     }
   }, [userInfo])
 
-  // Second useEffect hook to get meetings again and reset meetingChangeCount
+  // Second useEffect hook to get leaves again and reset leaveChangeCount
   useEffect(() => {
-    dispatch(getUserLeaveDetails(userInfo?.employee.empNo))
+    fetchProfile()
+    fetchLeaves()
     setLeaveChangeCount(0);
-  }, [dispatch, leaveChangeCount])
+  }, [leaveChangeCount])
 
-  if (!user || loading) {
+  if (!user || isLeavesLoading || isProfileLoading) {
     return <Loader />
   }
 
   return (
     <div className="flex h-[90vh]">
       <div className="flex flex-col flex-1">
-        <LeaveInformation user={user} leaves={leaves}/>
+        <LeaveInformation user={user} leaves={leaves} />
       </div>
       <div className="flex flex-col flex-1">
-        <ApplyLeave user={user} setLeaveChangeCount={setLeaveChangeCount}/>
+        <ApplyLeave user={user} setLeaveChangeCount={setLeaveChangeCount} />
       </div>
     </div>
   )
