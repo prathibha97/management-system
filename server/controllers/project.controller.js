@@ -169,7 +169,6 @@ const getProjectByEmpId = async (req, res) => {
 
 const deleteProject = async (req, res) => {
   const { id } = req.params;
-  console.log(id);
 
   try {
     const project = await Project.findById(id);
