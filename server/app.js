@@ -5,12 +5,10 @@ const morgan = require('morgan');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-
 const fs = require('fs');
 const api = require('./routes/api');
 const { errorHandler, notFound } = require('./middleware/error.middleware');
 const sendEmail = require('./services/sendEmail');
-// const setCache = require('./middleware/cache.middleware');
 
 const app = express();
 
@@ -36,7 +34,6 @@ app.use('/api', api);
 // API endpoint to get the URL of a PDF file
 app.get('/pdf', (req, res) => {
   const { filepath } = req.query;
-  // res.json({ filepath });
   const stat = fs.statSync(filepath);
 
   res.writeHead(200, {
@@ -50,7 +47,6 @@ app.get('/pdf', (req, res) => {
 });
 
 app.post('/send_recovery_email', (req, res) => {
-  console.log(req.body);
   const { OTP, email } = req.body;
   sendEmail({ OTP, email })
     .then((response) => res.send(response.message))
