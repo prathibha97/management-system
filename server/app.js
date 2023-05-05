@@ -33,7 +33,6 @@ app.use('/uploads', express.static(path.join(__dirname, '..', 'server', 'uploads
 
 app.use('/api', api);
 
-
 // API endpoint to get the URL of a PDF file
 app.get('/pdf', (req, res) => {
   const { filepath } = req.query;
