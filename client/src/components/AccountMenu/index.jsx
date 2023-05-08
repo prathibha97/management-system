@@ -10,11 +10,10 @@ import Tooltip from '@mui/material/Tooltip';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { useLazyLogoutQuery } from '../../app/features/auth/authApiSlice';
+import { setLogout } from '../../app/features/auth/authSlice';
 import CustomAvatar from '../CustomAvatar';
 import Loader from '../Loader';
-import api from '../../utils/api';
-import { setLogout } from '../../app/features/auth/authSlice';
-import { useLogoutQuery } from '../../app/features/auth/authApiSlice';
 
 export default function AccountMenu({ userInfo }) {
   const dispatch = useDispatch()
@@ -22,7 +21,7 @@ export default function AccountMenu({ userInfo }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
-  const { isLoading, isSuccess } = useLogoutQuery()
+  const [trigger, { isLoading }] = useLazyLogoutQuery()
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -32,12 +31,15 @@ export default function AccountMenu({ userInfo }) {
   };
 
   const handleLogout = async () => {
-    await api.get('/emp/auth/logout')
-    if (isSuccess) {
-      dispatch(setLogout())
-      navigate('/')
+    try {
+      trigger().unwrap();
+      dispatch(setLogout());
+      navigate('/');
+    } catch (error) {
+      console.log('Logout failed', error);
     }
-  }
+  };
+
 
   if (isLoading) return <Loader />
 

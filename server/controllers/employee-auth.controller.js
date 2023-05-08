@@ -211,6 +211,7 @@ const loginEmployee = async (req, res) => {
 
 const logoutEmployee = async (req, res) => {
   const { cookies } = req;
+  console.log(cookies);
   if (!cookies?.jwt) return res.sendStatus(204);
 
   const refreshToken = cookies.jwt;
@@ -221,12 +222,19 @@ const logoutEmployee = async (req, res) => {
     return res.sendStatus(204);
   }
 
-  foundUser.refreshToken = foundUser.refreshToken.filter((rt) => rt !== refreshToken);
-  await foundUser.save();
+  // Remove all refresh tokens associated with the user
+  await Employee.findOneAndUpdate(
+    { _id: foundUser._id },
+    { $pull: { refreshToken } },
+    { new: true }
+  ).exec();
 
   res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
-  res.sendStatus(204);
+  // res.sendStatus(204);
 };
+
+
+
 
 /* 
 ?@desc   Reset password

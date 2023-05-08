@@ -17,9 +17,9 @@ const corsOptions = {
   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
+app.use(cookieParser());
 app.use(cors(corsOptions));
 app.use(express.json({ limit: '25mb' }));
-app.use(cookieParser());
 app.use(bodyParser());
 // app.use(express.urlencoded({ extended: false, limit: '25mb' }));
 app.use(morgan('dev'));

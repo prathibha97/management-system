@@ -1,12 +1,11 @@
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, Snackbar, TextField } from '@mui/material';
 import React, { useRef, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { useGetProjectBoardsByIdQuery } from '../../app/features/boards/boardApiSlice';
 import { useCreateTaskMutation } from '../../app/features/tasks/taskApiSlice';
 import { setCreateTask } from '../../app/features/tasks/taskSlice';
 import Loader from '../Loader';
 
-function AddTaskModal({ open, handleClose, boardId, setNumTasks }) {
+function AddTaskModal({ open, handleClose, boardId, setNumTasks, refetchProjectBoards }) {
   const user = JSON.parse(localStorage.getItem('userInfo'));
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -20,9 +19,9 @@ function AddTaskModal({ open, handleClose, boardId, setNumTasks }) {
   // const { tasks } = useSelector((state) => state.getTasksByProject);
 
   const [createTask, { isLoading: isCreateTaskLoading, error: taskCreateError }] = useCreateTaskMutation()
-  const { refetch: refetchProjectBoards } = useGetProjectBoardsByIdQuery(projectId, {
-    refetchOnMountOrArgChange: true,
-  })
+  // const { refetch: refetchProjectBoards } = useGetProjectBoardsByIdQuery(projectId, {
+  //   refetchOnMountOrArgChange: true,
+  // })
 
 
 
@@ -49,8 +48,8 @@ function AddTaskModal({ open, handleClose, boardId, setNumTasks }) {
       // Add the task and close the dialog
       const { task } = await createTask({ boardId, projectId, title, description, status, assignee: { _id: assignee } }).unwrap();
       dispatch(setCreateTask({ task }));
-      refetchProjectBoards();
       setNumTasks(1);
+      refetchProjectBoards();
       setAlert({ open: true, message: 'Attendance marked successfully', severity: 'success' });
       handleClose();
     } catch (err) {
