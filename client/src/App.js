@@ -10,6 +10,7 @@ import {
   EmpProfile,
   Layout,
   Leaves,
+  Meetings,
   PasswordReset,
   Payroll,
   People,
@@ -30,6 +31,7 @@ function App() {
         <Route path="/" element={<Auth />} />
         <Route element={<Layout />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/meetings" element={<Meetings />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/board" element={<Board />} />
           <Route path="/attendance" element={<Attendance />} />

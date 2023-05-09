@@ -1,6 +1,7 @@
 import {
   faArrowRightFromBracket,
   faBriefcase,
+  faCalendarDays,
   faChartPie,
   faCog,
   faColumns,
@@ -46,6 +47,11 @@ function Sidebar({ user }) {
       name: "Dashboard",
       link: "/dashboard",
       icon: faHome,
+    },
+    {
+      name: "Meetings",
+      link: "/meetings",
+      icon: faCalendarDays,
     },
     {
       name: "Profile",
