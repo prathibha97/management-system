@@ -28,6 +28,7 @@ export { default as Loader } from './Loader';
 export { default as Login } from './Login';
 export { default as Meetings } from './Meetings';
 export { default as MenuButton } from './MenuButton';
+export { default as MonthTotals } from './MonthTotals';
 export { default as Notifications } from './Notifications';
 export { default as OTPInput } from './OTPInput';
 export { default as PasswordRecovered } from './PasswordRecovered';
