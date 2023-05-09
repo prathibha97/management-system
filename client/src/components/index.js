@@ -34,6 +34,7 @@ export { default as PasswordRecovered } from './PasswordRecovered';
 export { default as PersonalInfoForm } from './PersonalInfoForm';
 export { default as ProfessionalInfoForm } from './ProfessionalInfoForm';
 export { default as ProjectHistory } from './ProjectHistory';
+export { default as RecentlyActiveProjects } from './RecentlyActiveProjects';
 export { default as ResetPassword } from './ResetPassword';
 export { default as ReviewNewEmployee } from './ReviewNewEmployee';
 export { default as SalaryDetails } from './SalaryDetails';
