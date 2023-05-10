@@ -23,15 +23,22 @@ function Login({ setPage }) {
     try {
       const userData = await login({ email, password }).unwrap()
       dispatch(setCredentials({ ...userData }))
+
       if (password === '123456') {
         navigate('/reset-password')
       } else {
         navigate('/dashboard')
       }
     } catch (err) {
-      setError(err.message);
+      if (err.status === 401) {
+        setError('Session expired. Please login again.');
+        navigate('/login');
+      } else {
+        setError(err.message);
+      }
     }
   }
+
 
   async function navigateToOtp() {
     if (email) {

@@ -4,24 +4,28 @@ const cors = require('cors');
 const morgan = require('morgan');
 const path = require('path');
 const cookieParser = require('cookie-parser');
-const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
 const fs = require('fs');
 const api = require('./routes/api');
 const { errorHandler, notFound } = require('./middleware/error.middleware');
 const sendEmail = require('./services/sendEmail');
+const { logger } = require('./middleware/logEvents');
+const credentials = require('./middleware/credentials.middleware');
+const corsOptions = require('./config/corsOptions');
 
 const app = express();
 
-const corsOptions = {
-  origin: 'http://localhost:3000', // replace with your React app's URL
-  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-};
+app.use(logger)
 
-app.use(cookieParser());
+// Handle options credentials check - before CORS! and fetch cookies credentials requirement
+app.use(credentials);
 app.use(cors(corsOptions));
+
 app.use(express.json({ limit: '25mb' }));
-app.use(bodyParser());
-// app.use(express.urlencoded({ extended: false, limit: '25mb' }));
+// app.use(bodyParser());
+app.use(express.urlencoded({ extended: false, limit: '25mb' }));
+app.use(express.json());
+app.use(cookieParser());
 app.use(morgan('dev'));
 
 // app.use(setCache);
@@ -30,6 +34,9 @@ app.use(morgan('dev'));
 app.use('/uploads', express.static(path.join(__dirname, '..', 'server', 'uploads')));
 
 app.use('/api', api);
+
+app.use(notFound);
+app.use(errorHandler);
 
 // API endpoint to get the URL of a PDF file
 app.get('/pdf', (req, res) => {
@@ -60,6 +67,4 @@ if (process.env.NODE_ENV !== 'development') {
   });
 }
 
-app.use(notFound);
-app.use(errorHandler);
 module.exports = app;
