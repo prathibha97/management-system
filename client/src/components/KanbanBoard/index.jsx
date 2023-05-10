@@ -50,7 +50,7 @@ function Kanban({ numTasks, setNumTasks }) {
   useEffect(() => {
     setShowCreateForms(new Array(boards?.length).fill(false));
     dispatch(getBoardsByProjectId({ boards }))
-  }, []);
+  }, [boards]);
 
   // Track changes in the number of tasks
   useEffect(() => {
@@ -83,7 +83,7 @@ function Kanban({ numTasks, setNumTasks }) {
       // Update the destinationBoard object before dispatching the updateTask action
       const taskData = await updateTaskBoard({ id: task._id, boardId: destinationBoard._id }).unwrap();
       dispatch(setUpdateTaskBoard({ task: taskData }));
-      // refetchProjectBoards();
+      refetchProjectBoards();
     } catch (err) {
       console.log(err);
       // If there's an error, undo the changes made to the local state

@@ -43,19 +43,19 @@ function AddTaskModal({ open, handleClose, boardId, setNumTasks, refetchProjectB
     setAssignee(event.target.value);
   };
 
-  const handleAddButtonClick = async () => {
-    try {
-      // Add the task and close the dialog
-      const { task } = await createTask({ boardId, projectId, title, description, status, assignee: { _id: assignee } }).unwrap();
-      dispatch(setCreateTask({ task }));
-      setNumTasks(1);
-      refetchProjectBoards();
-      setAlert({ open: true, message: 'Attendance marked successfully', severity: 'success' });
-      handleClose();
-    } catch (err) {
-      setAlert({ open: true, message: taskCreateError?.data?.message, severity: 'error' });
-    }
-  };
+  // const handleAddButtonClick = async () => {
+  //   try {
+  //     // Add the task and close the dialog
+  //     const { task } = await createTask({ boardId, projectId, title, description, status, assignee: { _id: assignee } }).unwrap();
+  //     dispatch(setCreateTask({ task }));
+  //     setNumTasks(1);
+  //     refetchProjectBoards();
+  //     setAlert({ open: true, message: 'Attendance marked successfully', severity: 'success' });
+  //     handleClose();
+  //   } catch (err) {
+  //     setAlert({ open: true, message: taskCreateError?.data?.message, severity: 'error' });
+  //   }
+  // };
 
   const handleEnterKey = (event) => {
     // If the user presses Enter while typing in the task name input field,
@@ -125,7 +125,19 @@ function AddTaskModal({ open, handleClose, boardId, setNumTasks, refetchProjectB
           </Button>
           <Button
             variant="contained"
-            onClick={handleAddButtonClick}
+            onClick={() => {
+              const { task } = createTask({ boardId, projectId, title, description, status, assignee: { _id: assignee } }).unwrap()
+                .then(() => {
+                  dispatch(setCreateTask({ task }));
+                  setNumTasks(1);
+                  refetchProjectBoards();
+                  setAlert({ open: true, message: 'Attendance marked successfully', severity: 'success' });
+                  handleClose();
+                })
+                .catch((err) => {
+                  setAlert({ open: true, message: taskCreateError?.data?.message || err, severity: 'error' });
+                })
+            }}
             disabled={!title}
             style={{ backgroundColor: '#1EB3AB', color: 'white' }}
           >
