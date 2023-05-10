@@ -1,4 +1,4 @@
-import { Legend, Pie, PieChart, ResponsiveContainer } from 'recharts';
+import { Legend, Pie, PieChart, ResponsiveContainer } from "recharts";
 
 function MonthTotals() {
   const data = [
@@ -33,6 +33,7 @@ function MonthTotals() {
           <Legend payload={legendItems} />
         </PieChart>
       </ResponsiveContainer>
+      {/* <CustomPieChart data={data} innerRadius={60} outerRadius={80} legendItems={legendItems} /> */}
       FULL TIME SHEET
     </div>
   )
