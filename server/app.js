@@ -9,13 +9,13 @@ const fs = require('fs');
 const api = require('./routes/api');
 const { errorHandler, notFound } = require('./middleware/error.middleware');
 const sendEmail = require('./services/sendEmail');
-const { logger } = require('./middleware/logEvents');
+// const { logger } = require('./middleware/logEvents');
 const credentials = require('./middleware/credentials.middleware');
 const corsOptions = require('./config/corsOptions');
 
 const app = express();
 
-app.use(logger)
+// app.use(logger)
 
 // Handle options credentials check - before CORS! and fetch cookies credentials requirement
 app.use(credentials);
