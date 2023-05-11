@@ -78,6 +78,9 @@ function Header() {
     case '/meetings':
       heading = 'Schedule / Join Meetings';
       break;
+    case '/timesheet':
+      heading = 'Time Sheet';
+      break;
     case '/profile':
       heading = 'Profile';
       break;

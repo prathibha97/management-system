@@ -32,7 +32,7 @@ function Login({ setPage }) {
     } catch (err) {
       if (err.status === 401) {
         setError('Session expired. Please login again.');
-        navigate('/login');
+        navigate('/');
       } else {
         setError(err.message);
       }

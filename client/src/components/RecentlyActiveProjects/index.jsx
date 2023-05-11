@@ -1,8 +1,10 @@
-import { faClock, faPlay } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { IconButton, Tooltip } from '@mui/material'
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import { useNavigate } from 'react-router-dom';
+import { IconButton, Tooltip } from '@mui/material';
 
 function RecentlyActiveProjects() {
+  const navigate = useNavigate()
   return (
     <div className="flex flex-row justify-between items-start flex-nowrap flex-grow-0 flex-shrink-1 w-full mb-1 bg-white py-[9px] px-[7px] rounded">
       <span className="mr-[5px]">
@@ -14,13 +16,13 @@ function RecentlyActiveProjects() {
         <div className="mt-[-1px] break-words">
           <div className="flex float-right gap-1">
             <Tooltip title='View full log for this project'>
-              <IconButton>
-                <FontAwesomeIcon icon={faClock} />
+              <IconButton onClick={()=>navigate('/timesheet')}>
+                <AccessTimeIcon />
               </IconButton>
             </Tooltip>
             <Tooltip title='Proceed working'>
               <IconButton>
-                <FontAwesomeIcon icon={faPlay} />
+                <PlayArrowIcon fontSize='medium' />
               </IconButton>
             </Tooltip>
           </div>

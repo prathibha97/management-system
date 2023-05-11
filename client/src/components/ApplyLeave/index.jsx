@@ -4,7 +4,7 @@ import { Alert, FormControl, InputLabel, MenuItem, Select, Snackbar, TextField }
 import { DesktopDatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useRequestLeaveMutation } from '../../app/features/leaves/leaveApiSlice';
@@ -13,8 +13,8 @@ import Button from '../Button';
 
 function ApplyLeave({ user, setLeaveChangeCount }) {
   const [leaveType, setLeaveType] = useState('')
-  const [startDate, setStartDate] = useState(moment().format())
-  const [endDate, setEndDate] = useState(moment().add(1, 'd').format())
+  const [startDate, setStartDate] = useState(dayjs().format())
+  const [endDate, setEndDate] = useState(dayjs().add(1, 'day').format())
   const [reason, setReason] = useState('')
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
   const dispatch = useDispatch()
@@ -30,8 +30,8 @@ function ApplyLeave({ user, setLeaveChangeCount }) {
       setAlert({ open: true, message: 'Leave reaquest created successfully', severity: 'success' });
       setLeaveChangeCount(1)
       setLeaveType('')
-      setStartDate(moment().format())
-      setEndDate(moment().add(1, 'd').format())
+      setStartDate(dayjs().format())
+      setEndDate(dayjs().add(1, 'day').format())
       setReason('')
     } catch (err) {
       setAlert({ open: true, message: error.data.message, severity: 'error' });

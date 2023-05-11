@@ -1,11 +1,11 @@
-import { Legend, Pie, PieChart, ResponsiveContainer } from "recharts";
+import { Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 
 function MonthTotals() {
   const data = [
-    { name: 'Project A', hours: 10 },
-    { name: 'Project B', hours: 8 },
-    { name: 'Project C', hours: 15 },
-    { name: 'Project D', hours: 5 },
+    { name: 'Project A', hours: 10, tag: 'Tag A' },
+    { name: 'Project B', hours: 8, tag: 'Tag B' },
+    { name: 'Project C', hours: 15, tag: 'Tag C' },
+    { name: 'Project D', hours: 5, tag: 'Tag D' },
   ];
 
   const totalHours = data.reduce((acc, curr) => acc + curr.hours, 0);
@@ -15,6 +15,7 @@ function MonthTotals() {
     { value: `Projects: ${projectCount}`, type: 'star', id: 'projects' },
     { value: `Total Hours: ${totalHours}`, type: 'star', id: 'hours' }
   ];
+
   return (
     <div className="w-full h-[400px]" >
       <ResponsiveContainer width="100%" height={400} style={{ margin: 'auto' }}>
@@ -25,16 +26,15 @@ function MonthTotals() {
             nameKey="name"
             cx="50%"
             cy="50%"
-            innerRadius={60}
+            innerRadius={50}
             outerRadius={80}
             fill="#8884d8"
             label
           />
           <Legend payload={legendItems} />
+          <Tooltip label="name" formatter={(value, name, props) => [`${value} hours`, name, props.payload.tag]} />
         </PieChart>
       </ResponsiveContainer>
-      {/* <CustomPieChart data={data} innerRadius={60} outerRadius={80} legendItems={legendItems} /> */}
-      FULL TIME SHEET
     </div>
   )
 }

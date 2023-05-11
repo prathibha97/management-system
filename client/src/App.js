@@ -19,6 +19,7 @@ import {
   Projects,
   Register,
   Settings,
+  TimeSheet,
 } from './pages';
 import Leave from './pages/Leave';
 
@@ -32,6 +33,7 @@ function App() {
         <Route element={<RequireAuth />}>
           <Route element={<Layout />}>
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/timesheet" element={<TimeSheet />} />
             <Route path="/meetings" element={<Meetings />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/board" element={<Board />} />

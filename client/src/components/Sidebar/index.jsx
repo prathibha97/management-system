@@ -9,7 +9,8 @@ import {
   faIdBadge,
   faMoneyBillAlt,
   faPersonWalkingArrowRight,
-  faUsers
+  faUsers,
+  faClockFour
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
@@ -47,6 +48,11 @@ function Sidebar({ user }) {
       name: "Dashboard",
       link: "/dashboard",
       icon: faHome,
+    },
+    {
+      name: "Time Sheet",
+      link: "/timesheet",
+      icon: faClockFour,
     },
     {
       name: "Meetings",
