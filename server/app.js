@@ -6,6 +6,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 // const bodyParser = require('body-parser');
 const fs = require('fs');
+const bodyParser = require('body-parser');
 const api = require('./routes/api');
 const { errorHandler, notFound } = require('./middleware/error.middleware');
 const sendEmail = require('./services/sendEmail');
@@ -22,8 +23,8 @@ app.use(credentials);
 app.use(cors(corsOptions));
 
 app.use(express.json({ limit: '25mb' }));
-// app.use(bodyParser());
-app.use(express.urlencoded({ extended: false, limit: '25mb' }));
+app.use(bodyParser());
+// app.use(express.urlencoded({ extended: false, limit: '25mb' }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan('dev'));
@@ -34,9 +35,6 @@ app.use(morgan('dev'));
 app.use('/uploads', express.static(path.join(__dirname, '..', 'server', 'uploads')));
 
 app.use('/api', api);
-
-app.use(notFound);
-app.use(errorHandler);
 
 // API endpoint to get the URL of a PDF file
 app.get('/pdf', (req, res) => {
@@ -59,6 +57,9 @@ app.post('/send_recovery_email', (req, res) => {
     .then((response) => res.send(response.message))
     .catch((error) => res.status(500).send(error.message));
 });
+
+app.use(notFound);
+app.use(errorHandler);
 
 if (process.env.NODE_ENV !== 'development') {
   app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
