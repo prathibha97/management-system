@@ -23,20 +23,20 @@ function ApplyLeave({ user, setLeaveChangeCount }) {
   const [requestLeave, { error }] = useRequestLeaveMutation()
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
-      const leaveData = await requestLeave({ leaveType, startDate, endDate, reason }).unwrap()
-      dispatch(setLeaveRequest({ newLeave: leaveData }))
-      setAlert({ open: true, message: 'Leave reaquest created successfully', severity: 'success' });
-      setLeaveChangeCount(1)
-      setLeaveType('')
-      setStartDate(dayjs().format())
-      setEndDate(dayjs().add(1, 'day').format())
-      setReason('')
+      const leaveData = await requestLeave({ leaveType, startDate, endDate, reason }).unwrap();
+      dispatch(setLeaveRequest({ newLeave: leaveData }));
+      setAlert({ open: true, message: 'Leave request created successfully', severity: 'success' });
+      setLeaveChangeCount(1);
+      setLeaveType('');
+      setStartDate(dayjs().format());
+      setEndDate(dayjs().add(1, 'day').format());
+      setReason('');
     } catch (err) {
       setAlert({ open: true, message: error.data.message, severity: 'error' });
     }
-  }
+  };
 
   const handleAlertClose = () => {
     setAlert({ ...alert, open: false });
@@ -77,8 +77,8 @@ function ApplyLeave({ user, setLeaveChangeCount }) {
               <DesktopDatePicker
                 label="Start Date"
                 inputFormat="MM/DD/YYYY"
-                value={startDate}
-                onChange={(date) => setStartDate(date)}
+                value={dayjs(startDate)} // Convert startDate to Dayjs object
+                onChange={(date) => setStartDate(date.format())} // Convert date to string before updating state
                 renderInput={(params) => <TextField {...params} />}
               />
             </LocalizationProvider>
@@ -86,8 +86,8 @@ function ApplyLeave({ user, setLeaveChangeCount }) {
               <DesktopDatePicker
                 label="End Date"
                 inputFormat="MM/DD/YYYY"
-                value={endDate}
-                onChange={(date) => setEndDate(date)}
+                value={dayjs(endDate)} // Convert endDate to Dayjs object
+                onChange={(date) => setEndDate(date.format())} // Convert date to string before updating state
                 renderInput={(params) => <TextField {...params} />}
               />
             </LocalizationProvider>
