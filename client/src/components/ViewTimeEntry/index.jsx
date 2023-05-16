@@ -1,58 +1,64 @@
 import { AccessTime, CalendarMonth } from '@mui/icons-material';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 import React from 'react';
 
-
 function ViewTimeEntry({ openDialog, handleCloseDialog, params }) {
-  const { client, project, task, workPerformed, date, timeSpent } = params.row
+  const { client, project, task, workPerformed, date, timeSpent } = params.row;
+
   return (
-    <Dialog open={openDialog} onClose={handleCloseDialog}>
-      <DialogTitle sx={{ padding: 5 }}>Time View Entry</DialogTitle>
-      <DialogContent>
-        <div className='bg-slate-100 p-4 w-[550px]'>
-          <div className='flex gap-9'>
-            <span className='text-gray-500'>Client</span>
-            <span>{client}</span>
+    <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
+      <DialogTitle sx={{ padding: 3 }}>Time View Entry</DialogTitle>
+      <DialogContent sx={{ padding: '20px 30px' }}>
+        <div className="flex flex-col gap-2 bg-slate-100 p-4 rounded-md">
+          <div className="flex items-center">
+            <Typography variant="subtitle1" color="textSecondary" sx={{ width: 100 }}>
+              Client:
+            </Typography>
+            <Typography variant="body1">{client}</Typography>
           </div>
-          <div className='flex gap-9'>
-            <span className='text-gray-500'>Project</span>
-            <span>{project}</span>
+          <div className="flex items-center">
+            <Typography variant="subtitle1" color="textSecondary" sx={{ width: 100 }}>
+              Project:
+            </Typography>
+            <Typography variant="body1">{project}</Typography>
           </div>
-          <div className='flex gap-9'>
-            <span className='text-gray-500'>Task</span>
-            <span>{task}</span>
+          <div className="flex items-center">
+            <Typography variant="subtitle1" color="textSecondary" sx={{ width: 100 }}>
+              Task:
+            </Typography>
+            <Typography variant="body1">{task}</Typography>
           </div>
-          <div className='flex gap-9'>
-            <span className='text-gray-500'>Comments</span>
-            <span>{workPerformed}</span>
+          <div className="flex items-center">
+            <Typography variant="subtitle1" color="textSecondary" sx={{ width: 100 }}>
+              Comments:
+            </Typography>
+            <Typography variant="body1">{workPerformed}</Typography>
           </div>
         </div>
-        <div className='flex justify-between items-center w-[350px] mt-3 p-4'>
-          <div className='flex flex-col '>
-            <span className='text-gray-500'>
-              <CalendarMonth />
-              {' '}
-              Date
-            </span>
-            <span>{date}</span>
+        <div className="flex justify-between items-center mt-4">
+          <div className="flex flex-col">
+            <Typography variant="subtitle1" color="textSecondary" sx={{ display: 'flex', alignItems: 'center' }}>
+              <CalendarMonth sx={{ mr: 1 }} />
+              Date:
+            </Typography>
+            <Typography variant="body1">{date}</Typography>
           </div>
-          <div className='flex flex-col'>
-            <span className='text-gray-500'>
-              <AccessTime />
-              {' '}
-              Reported Time
-            </span>
-            <span>{timeSpent}</span>
+          <div className="flex flex-col">
+            <Typography variant="subtitle1" color="textSecondary" sx={{ display: 'flex', alignItems: 'center' }}>
+              <AccessTime sx={{ mr: 1 }} />
+              Reported Time:
+            </Typography>
+            <Typography variant="body1">{timeSpent}</Typography>
           </div>
         </div>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleCloseDialog} autoFocus sx={{ padding: 2 }}>
+        <Button onClick={handleCloseDialog} autoFocus>
           Close
         </Button>
       </DialogActions>
     </Dialog>
-  )
+  );
 }
 
-export default ViewTimeEntry
+export default ViewTimeEntry;
