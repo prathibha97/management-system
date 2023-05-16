@@ -15,7 +15,7 @@ function Dashboard() {
 
 
   return (
-    <div>
+    <div className="mt-5">
       {/* <MonthSelector /> */}
       <div className="flex gap-2 w-full items-stretch flex-nowrap flex-grow-0 flex-shrink-0">
         <div className="bg-[#ecf1f4] w-[300px] p-5  flex-shrink-0">

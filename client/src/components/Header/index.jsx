@@ -13,7 +13,7 @@ import { useGetEmployeeAttendanceQuery, useLazyMarkAttendanceQuery } from '../..
 import { setEmployeeAttendance, setMarkAttendance } from '../../app/features/attendance/attendanceSlice';
 import { useGetEmployeeProjectsQuery } from '../../app/features/projects/projectApiSlice';
 import { setProjects, setSelectedProject } from '../../app/features/projects/projectSlice';
-import { AccountMenu, Button, Notifications } from '../../components';
+import { AccountMenu, Button, Notifications, Timer } from '../../components';
 
 function Header() {
   const location = useLocation();
@@ -157,6 +157,7 @@ function Header() {
         )}
       </div>
       <div className="flex items-center gap-10">
+        <Timer />
         <Button title="Log Time" onClick={handleMarkAttendance} icon={faClock} />
         <Notifications empNo={empNo} />
         <AccountMenu userInfo={userInfo} />
