@@ -1,6 +1,6 @@
 import { faCalendarDays, faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Paper, Popper, Typography } from "@mui/material";
+import { Box, Paper, Popper, Typography } from "@mui/material";
 import { useEffect } from "react";
 
 function DatePopover(props) {
@@ -8,7 +8,6 @@ function DatePopover(props) {
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popper' : undefined;
-
 
   useEffect(() => {
     const handleClose = (event) => {
@@ -23,30 +22,27 @@ function DatePopover(props) {
   }, [anchorEl, onClose]);
 
   return (
-    <Popper id={id} open={open} anchorEl={anchorEl} placement="top-start"
-      sx={{ zIndex: 1000 }}
-    >
-      <Paper sx={{ p: 1 }}>
-        <Typography variant="h7" color='GrayText'>
-          <FontAwesomeIcon icon={faCalendarDays} />
-          {' '}
-          {date}
-        </Typography>
+    <Popper id={id} open={open} anchorEl={anchorEl} placement="top-start" sx={{ zIndex: 1000 }}>
+      <Paper sx={{ p: 2, minWidth: '200px' }}>
+        <Box display="flex" alignItems="center" mb={1}>
+          <FontAwesomeIcon icon={faCalendarDays} color="#878b8e" style={{ marginRight: '8px' }} />
+          <Typography variant="subtitle1" color="text.secondary">{date}</Typography>
+        </Box>
         {isDataAvailable ? (
           <Typography variant="body1">
             Total Logged Hours: {hours}
           </Typography>
         ) : (
-          <Typography variant="body1">
+          <Typography variant="body1" color="text.secondary">
             No data available for this date
           </Typography>
         )}
-
-        {hours < 8 && <Typography variant="body1" color='red'>
-          <FontAwesomeIcon icon={faCircleExclamation} />
-          {' '}
-          08:00 hours required as minimum
-        </Typography>}
+        {hours < 8 && (
+          <Typography variant="body1" color="error" mt={1}>
+            <FontAwesomeIcon icon={faCircleExclamation} color="error" style={{ marginRight: '8px' }} />
+            08:00 hours required as a minimum
+          </Typography>
+        )}
       </Paper>
     </Popper>
   );
