@@ -1,11 +1,8 @@
 import { AccessTime, CalendarMonth } from '@mui/icons-material';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 import React from 'react';
-import { formatDateShort } from '../../utils/formatDate';
 
-function ViewTimeEntry({ openDialog, handleCloseDialog, params }) {
-  const { client, project, task, workPerformed, date, timeSpent } = params.row;
-
+function AddTimeRecord({ openDialog, handleCloseDialog }) {
   return (
     <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
       <DialogTitle sx={{ padding: 3 }}>Time View Entry</DialogTitle>
@@ -15,25 +12,25 @@ function ViewTimeEntry({ openDialog, handleCloseDialog, params }) {
             <Typography variant="subtitle1" color="textSecondary" sx={{ width: 100 }}>
               Client:
             </Typography>
-            <Typography variant="body1">{client}</Typography>
+            <Typography variant="body1">sample</Typography>
           </div>
           <div className="flex items-center">
             <Typography variant="subtitle1" color="textSecondary" sx={{ width: 100 }}>
               Project:
             </Typography>
-            <Typography variant="body1">{project}</Typography>
+            <Typography variant="body1">sample</Typography>
           </div>
           <div className="flex items-center">
             <Typography variant="subtitle1" color="textSecondary" sx={{ width: 100 }}>
               Task:
             </Typography>
-            <Typography variant="body1">{task}</Typography>
+            <Typography variant="body1">sample</Typography>
           </div>
           <div className="flex items-center">
             <Typography variant="subtitle1" color="textSecondary" sx={{ width: 100 }}>
               Comments:
             </Typography>
-            <Typography variant="body1">{workPerformed}</Typography>
+            <Typography variant="body1">sample</Typography>
           </div>
         </div>
         <div className="flex justify-between items-center mt-4">
@@ -42,14 +39,14 @@ function ViewTimeEntry({ openDialog, handleCloseDialog, params }) {
               <CalendarMonth sx={{ mr: 1 }} />
               Date:
             </Typography>
-            <Typography variant="body1">{formatDateShort(date)}</Typography>
+            <Typography variant="body1">sample</Typography>
           </div>
           <div className="flex flex-col">
             <Typography variant="subtitle1" color="textSecondary" sx={{ display: 'flex', alignItems: 'center' }}>
               <AccessTime sx={{ mr: 1 }} />
               Reported Time:
             </Typography>
-            <Typography variant="body1">{timeSpent}</Typography>
+            <Typography variant="body1">sample</Typography>
           </div>
         </div>
       </DialogContent>
@@ -62,4 +59,4 @@ function ViewTimeEntry({ openDialog, handleCloseDialog, params }) {
   );
 }
 
-export default ViewTimeEntry;
+export default AddTimeRecord

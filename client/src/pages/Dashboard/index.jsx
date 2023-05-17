@@ -13,7 +13,7 @@ function Dashboard() {
     <div className="mt-5">
       {/* <MonthSelector /> */}
       <div className="flex gap-2 w-full">
-        <div className="bg-[#ecf1f4] w-fit p-5">
+        <div className="bg-[#ecf1f4] w-[420px] p-5">
           <div>
             <h1 className="text-lg text-gray-600 font-bold mb-2">Month Totals</h1>
           </div>

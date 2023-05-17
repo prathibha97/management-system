@@ -33,7 +33,7 @@ function MonthTotals({ data }) {
   ];
 
   return (
-    <div className="w-fit h-[400px] bg-white rounded p-5">
+    <div className="w-full h-[400px] bg-white rounded p-5">
       <div className="flex items-center mb-2">
         <FontAwesomeIcon icon={faClock} className="mr-1 text-navy" />
         <Link to="/timesheet" className="text-navy hover:underline">

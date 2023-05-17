@@ -1,8 +1,10 @@
-import { MoreVert as MoreVertIcon } from '@mui/icons-material';
+import { EditOutlined, MoreVert as MoreVertIcon, TimerOutlined } from '@mui/icons-material';
 import { Box, IconButton, Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { useState } from 'react';
-import { TimeSheetFilter, TimeSheetMenu, ViewTimeEntry } from '../../components';
+import { useDispatch } from 'react-redux';
+import { startTimer } from '../../app/features/timer/timerSlice';
+import { AddTimeRecord, TimeSheetButton, TimeSheetFilter, TimeSheetMenu, ViewTimeEntry } from '../../components';
 
 function TimeSheet() {
 
@@ -20,6 +22,8 @@ function TimeSheet() {
   ]);
 
   const [filteredRows, setFilteredRows] = useState(rows);
+  const [openCreateDialog, setCreateOpenDialog] = useState(false);
+  const dispatch = useDispatch()
 
   const columns = [
     {
@@ -61,7 +65,6 @@ function TimeSheet() {
           setOpenDialog(false);
         };
 
-
         return (
           <div>
             <IconButton size="small" onClick={handleMenuOpen}>
@@ -78,32 +81,27 @@ function TimeSheet() {
       field: 'client',
       headerName: 'Client',
       width: 150,
-      editable: true,
     },
     {
       field: 'project',
       headerName: 'Project',
       width: 150,
-      editable: true,
     },
     {
       field: 'task',
       headerName: 'Task',
       width: 150,
-      editable: true,
     },
     {
       field: 'workPerformed',
       headerName: 'Work Performed',
       headerAlign: 'center',
       width: 480,
-      editable: true,
     },
     {
       field: 'timeSpent',
       headerName: 'Time Spent',
       width: 150,
-      editable: true,
     },
   ];
 
@@ -123,36 +121,57 @@ function TimeSheet() {
     );
   };
 
+  const handleAdd = () => {
+    console.log('Add clicked for ID:');
+    setCreateOpenDialog(true);
+  };
+
+  const handleCloseCreateDialog = () => {
+    setCreateOpenDialog(false);
+  };
+
+  const handleStartTimer = () => {
+    dispatch(startTimer())
+  }
+
   return (
-    <Box sx={{ height: 650, width: '100%', marginTop: 5 }}>
-      <TimeSheetFilter rows={rows} setFilteredRows={setFilteredRows} />
-      <DataGrid
-        rows={filteredRows}
-        columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 10,
+    <div className='flex'>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, padding: 2, alignItems: 'center', marginTop: 2 }}>
+        <TimeSheetButton Icon={TimerOutlined} text="Start timer" onClick={handleStartTimer} />
+        <TimeSheetButton Icon={EditOutlined} text="Manually" onClick={handleAdd} />
+        <AddTimeRecord handleCloseDialog={handleCloseCreateDialog} openDialog={openCreateDialog} />
+      </Box>
+      <Box sx={{ height: 650, width: '100%', marginTop: 5 }}>
+        <TimeSheetFilter rows={rows} setFilteredRows={setFilteredRows} />
+        <DataGrid
+          rows={filteredRows}
+          columns={columns}
+          // getRowId={(row) => row.id}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 10,
+              },
             },
-          },
-        }}
-        pageSizeOptions={[10]}
-        disableRowSelectionOnClick
-        sx={{
-          "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: "rgb(232 232 232)",
-            color: "black",
-            fontSize: 14,
-            fontWeight: 900,
-          }
-        }}
-      />
-      <Typography variant="body1" sx={{ marginTop: 2 }} color="GrayText">
-        <div className='bg-slate-100 w-fit p-3 rounded'>
-          Total Time Logged: {calculateTotalTime()}
-        </div>
-      </Typography>
-    </Box>
+          }}
+          pageSizeOptions={[10]}
+          disableRowSelectionOnClick
+          sx={{
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: "rgb(232 232 232)",
+              color: "black",
+              fontSize: 14,
+              fontWeight: 900,
+            }
+          }}
+        />
+        <Typography variant="body1" sx={{ marginTop: 2 }} color="GrayText">
+          <div className='bg-slate-100 w-fit p-3 rounded'>
+            Total Time Logged: {calculateTotalTime()}
+          </div>
+        </Typography>
+      </Box>
+    </div>
   );
 }
 
