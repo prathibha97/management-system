@@ -121,70 +121,65 @@ const registerEmployee = async (req, res) => {
 *@route  Post /api/emp/auth/login
 *@access Private
 */
-// TODO: Error handling
 
 const loginEmployee = async (req, res) => {
-  const { cookies } = req;
+  try {
+    const { cookies } = req;
+    const { email, password } = req.body;
 
-  const { email, password } = req.body;
-  if (!email || !password)
-    return res.status(400).json({ message: 'Email and password are required.' });
-
-  const foundUser = await Employee.findOne({ email }).exec();
-  if (!foundUser) return res.sendStatus(401);
-  // evaluate password
-  const match = await bcrypt.compare(password, foundUser.password);
-  if (match) {
-    // const roles = Object.values(foundUser.roles).filter(Boolean);
-    // create JWTs
-    const accessToken = generateToken(foundUser._id, '1d', process.env.JWT_SECRET);
-
-    const newRefreshToken = generateToken(foundUser._id, '1d', process.env.REFRESH_TOKEN_SECRET);
-
-    // Changed to let keyword
-    let newRefreshTokenArray = !cookies?.jwt
-      ? foundUser.refreshToken
-      : foundUser.refreshToken.filter((rt) => rt !== cookies.jwt);
-
-    if (cookies?.jwt) {
-      /* 
-            Scenario added here: 
-                1) User logs in but never uses RT and does not logout 
-                2) RT is stolen
-                3) If 1 & 2, reuse detection is needed to clear all RTs when user logs in
-            */
-      const refreshToken = cookies.jwt;
-      const foundToken = await Employee.findOne({ refreshToken }).exec();
-
-      // Detected refresh token reuse!
-      if (!foundToken) {
-        // clear out ALL previous refresh tokens
-        newRefreshTokenArray = [];
-      }
-
-      res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required.' });
     }
 
-    // Saving refreshToken with current user
-    foundUser.refreshToken = [...newRefreshTokenArray, newRefreshToken];
-    await foundUser.save();
+    const foundUser = await Employee.findOne({ email }).exec();
 
-    // Creates Secure Cookie with refresh token
-    res.cookie('jwt', newRefreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'None',
-      maxAge: 24 * 60 * 60 * 1000,
-    });
+    if (!foundUser) {
+      return res.status(401).json({ message: 'Invalid email or password.' });
+    }
 
-    foundUser.password = undefined;
+    const match = await bcrypt.compare(password, foundUser.password);
 
-    // Send authorization roles and access token to user
-    res.status(200).json({ employee:foundUser, token: accessToken });
-  } else {
-    res.sendStatus(401);
+    if (match) {
+      const accessToken = generateToken(foundUser._id, '30s', process.env.JWT_SECRET);
+      const newRefreshToken = generateToken(foundUser._id, '30s', process.env.REFRESH_TOKEN_SECRET);
+
+      let newRefreshTokenArray = !cookies?.jwt
+        ? foundUser.refreshToken
+        : foundUser.refreshToken.filter((rt) => rt !== cookies.jwt);
+
+      if (cookies?.jwt) {
+        const refreshToken = cookies.jwt;
+        const foundToken = await Employee.findOne({ refreshToken }).exec();
+
+        if (!foundToken) {
+          newRefreshTokenArray = [];
+        }
+
+        res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
+      }
+
+      foundUser.refreshToken = [...newRefreshTokenArray, newRefreshToken];
+      await foundUser.save();
+
+      res.cookie('jwt', newRefreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'None',
+        maxAge: 24 * 60 * 60 * 1000,
+      });
+
+      foundUser.password = undefined;
+
+      res.status(200).json({ employee: foundUser, token: accessToken });
+    } else {
+      res.status(401).json({ message: 'Invalid email or password.' });
+    }
+  } catch (error) {
+    console.error('Error logging in:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
+
 
 /* 
 ?@desc   Logout a user
