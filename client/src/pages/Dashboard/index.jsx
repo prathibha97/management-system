@@ -2,6 +2,7 @@
 import { MonthTotals, MuiCalendar, RecentlyActiveProjects, WeeklyProjectCount } from "../../components";
 
 function Dashboard() {
+
   const data = [
     { name: 'Project A', hours: 10 },
     { name: 'Project B', hours: 8 },
@@ -17,7 +18,7 @@ function Dashboard() {
           <div>
             <h1 className="text-lg text-gray-600 font-bold mb-2">Month Totals</h1>
           </div>
-          <MonthTotals data={data}/>
+          <MonthTotals data={data} />
         </div>
         <div className="bg-[#ecf1f4] max-w-[610px] min-w-[580px] p-5">
           <h1 className="text-lg text-gray-600 font-bold mb-2">Totals by Day and Week</h1>

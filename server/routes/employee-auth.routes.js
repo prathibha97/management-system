@@ -23,6 +23,6 @@ empAuthRouter
   .post('/login', loginEmployee)
   .post('/reset-password', resetPassword)
   .get('/refresh', refreshAuthToken)
-  .get('/logout', logoutEmployee);
+  .post('/logout', logoutEmployee);
 
 module.exports = empAuthRouter;

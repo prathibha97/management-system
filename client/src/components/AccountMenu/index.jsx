@@ -10,29 +10,30 @@ import Tooltip from '@mui/material/Tooltip';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { useLazyLogoutQuery } from '../../app/features/auth/authApiSlice';
+import { useLogoutMutation } from '../../app/features/auth/authApiSlice';
 import { setLogout } from '../../app/features/auth/authSlice';
 import CustomAvatar from '../CustomAvatar';
 import Loader from '../Loader';
 
 export default function AccountMenu({ userInfo }) {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
-  const [trigger, { isLoading }] = useLazyLogoutQuery()
+  const [logout, { isLoading }] = useLogoutMutation();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
 
   const handleLogout = async () => {
     try {
-      trigger().unwrap();
+      await logout().unwrap();
       dispatch(setLogout());
       navigate('/');
     } catch (error) {
@@ -40,8 +41,7 @@ export default function AccountMenu({ userInfo }) {
     }
   };
 
-
-  if (isLoading) return <Loader />
+  if (isLoading) return <Loader />;
 
   return (
     <>

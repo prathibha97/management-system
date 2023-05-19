@@ -140,8 +140,8 @@ const loginEmployee = async (req, res) => {
     const match = await bcrypt.compare(password, foundUser.password);
 
     if (match) {
-      const accessToken = generateToken(foundUser._id, '30s', process.env.JWT_SECRET);
-      const newRefreshToken = generateToken(foundUser._id, '30s', process.env.REFRESH_TOKEN_SECRET);
+      const accessToken = generateToken(foundUser._id, '1d', process.env.JWT_SECRET);
+      const newRefreshToken = generateToken(foundUser._id, '1d', process.env.REFRESH_TOKEN_SECRET);
 
       let newRefreshTokenArray = !cookies?.jwt
         ? foundUser.refreshToken
@@ -180,7 +180,6 @@ const loginEmployee = async (req, res) => {
   }
 };
 
-
 /* 
 ?@desc   Logout a user
 *@route  Post /api/emp/auth/login
@@ -188,24 +187,29 @@ const loginEmployee = async (req, res) => {
 */
 
 const logoutEmployee = async (req, res) => {
-  // On client, also delete the accessToken
-
-  const {cookies} = req;
-  if (!cookies?.jwt) return res.sendStatus(204);
-  const refreshToken = cookies.jwt;
-
-  // Is refreshToken in db?
-  const foundUser = await Employee.findOne({ refreshToken }).exec();
-  if (!foundUser) {
-    res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
+  const { cookies } = req;
+  if (!cookies?.jwt) {
     return res.sendStatus(204);
   }
 
-  // Delete refreshToken in db
-  foundUser.refreshToken = foundUser.refreshToken.filter((rt) => rt !== refreshToken);
-  await foundUser.save();
- 
-  res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
+  const refreshToken = cookies.jwt;
+
+  try {
+    // Is refreshToken in db?
+    const foundUser = await Employee.findOne({ refreshToken }).exec();
+
+    if (foundUser) {
+      // Delete refreshToken in db
+      foundUser.refreshToken = foundUser.refreshToken.filter((rt) => rt !== refreshToken);
+      await foundUser.save();
+    }
+
+    res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
+    res.status(204).json({ message: 'Logout successful' });
+  } catch (error) {
+    console.log('Logout failed', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
 };
 
 /* 

@@ -7,13 +7,14 @@
 import { faClock } from '@fortawesome/free-solid-svg-icons';
 import { Alert, FormControl, InputLabel, MenuItem, Select, Snackbar } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { useGetEmployeeAttendanceQuery, useLazyMarkAttendanceQuery } from '../../app/features/attendance/attendanceApiSlice';
 import { setEmployeeAttendance, setMarkAttendance } from '../../app/features/attendance/attendanceSlice';
 import { useGetEmployeeProjectsQuery } from '../../app/features/projects/projectApiSlice';
 import { setProjects, setSelectedProject } from '../../app/features/projects/projectSlice';
 import { AccountMenu, Button, Notifications, Timer } from '../../components';
+import { selectCurrentUser } from '../../app/features/auth/authSelectors';
 
 function Header() {
   const location = useLocation();
@@ -32,10 +33,9 @@ function Header() {
   const [attendanceChangeCount, setAttendanceChangeCount] = useState(0)
 
 
-  const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-  const { empNo } = userInfo;
+  const userInfo = useSelector(selectCurrentUser);
 
-  const { data: attendanceInfo, refetch: refetchAttendance } = useGetEmployeeAttendanceQuery(empNo)
+  const { data: attendanceInfo, refetch: refetchAttendance } = useGetEmployeeAttendanceQuery(userInfo?.empNo)
 
   const [trigger, { data: attendance, error: markAttendanceError }] = useLazyMarkAttendanceQuery()
 
@@ -159,7 +159,7 @@ function Header() {
       <div className="flex items-center gap-10">
         <Timer />
         <Button title="Log Time" onClick={handleMarkAttendance} icon={faClock} />
-        <Notifications empNo={empNo} />
+        <Notifications empNo={userInfo?.empNo} />
         <AccountMenu userInfo={userInfo} />
       </div>
       <Snackbar open={alert?.open} autoHideDuration={5000} onClose={handleAlertClose}>

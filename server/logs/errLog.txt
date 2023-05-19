@@ -1,0 +1,5 @@
+20230519	09:51:14	8d1ae457-f6cd-43e4-a7e0-75e84402e086	Error: Not Found - /api/emp/auth/logout
+20230519	09:51:32	4b935d59-d3fd-46fc-ad5f-c0a49af02dc3	Error: Not Found - /api/emp/auth/logout
+20230519	09:52:12	c8b0d2d2-e7b5-4b67-9189-457ac02cfc08	Error: Not Found - /api/emp/auth/logout
+20230519	09:53:42	14930c8e-0818-4590-bf58-635ad36a98b1	Error: Not Found - /api/emp/auth/logout
+20230519	09:55:47	813894b5-5ccb-4859-bd0c-ba8be845b1b5	Error: Not Found - /api/emp/auth/logout

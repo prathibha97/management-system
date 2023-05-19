@@ -10,7 +10,6 @@ function checkTokenValidity(user) {
   return 'Session expired. Please log in again.';
 }
 
-
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
