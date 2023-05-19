@@ -4,7 +4,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { startTimer } from '../../app/features/timer/timerSlice';
-import { AddTimeRecord, TimeSheetButton, TimeSheetFilter, TimeSheetMenu, ViewTimeEntry } from '../../components';
+import { AddTimeRecord, EditTimeRecord, TimeSheetButton, TimeSheetFilter, TimeSheetMenu, ViewTimeEntry } from '../../components';
 
 function TimeSheet() {
 
@@ -33,6 +33,8 @@ function TimeSheet() {
       renderCell: (params) => {
         const [anchorEl, setAnchorEl] = useState(null);
         const [openDialog, setOpenDialog] = useState(false);
+        const [openEditDialog, setOpenEditDialog] = useState(false)
+
         const handleMenuOpen = (event) => {
           setAnchorEl(event.currentTarget);
         };
@@ -49,6 +51,7 @@ function TimeSheet() {
 
         const handleEdit = () => {
           console.log('Edit clicked for ID:', params.id);
+          setOpenEditDialog(true);
           handleMenuClose();
         };
 
@@ -65,6 +68,15 @@ function TimeSheet() {
           setOpenDialog(false);
         };
 
+        const handleCloseEditDialog = () => {
+          setOpenEditDialog(false);
+        }
+
+        const handleEditRecord = (client, project, task, workPerformed, dateLogged, timeLogged) => {
+          console.log(client, project, task, workPerformed, dateLogged, timeLogged);
+          setOpenEditDialog(false);
+        }
+
         return (
           <div>
             <IconButton size="small" onClick={handleMenuOpen}>
@@ -72,6 +84,7 @@ function TimeSheet() {
             </IconButton>
             <TimeSheetMenu anchorEl={anchorEl} handleMenuClose={handleMenuClose} handleView={handleView} handleEdit={handleEdit} handleDelete={handleDelete} />
             <ViewTimeEntry handleCloseDialog={handleCloseDialog} openDialog={openDialog} params={params} />
+            <EditTimeRecord handleSubmit={handleEditRecord} handleCloseEditDialog={handleCloseEditDialog} openEditDialog={openEditDialog} params={params} />
           </div>
         );
       },
@@ -109,16 +122,14 @@ function TimeSheet() {
     let totalTime = 0;
 
     filteredRows.forEach((row) => {
-      const [hours, minutes] = row.timeSpent.split(':');
-      totalTime += Number(hours) * 60 + Number(minutes);
+      const [hours, minutes, seconds = 0] = row.timeSpent.split(':');
+      totalTime += Number(hours) * 60 + Number(minutes) + Number(seconds) / 60;
     });
 
     const formattedHours = Math.floor(totalTime / 60);
-    const formattedMinutes = totalTime % 60;
+    const formattedMinutes = Math.floor(totalTime % 60);
 
-    return (
-      `${formattedHours}:${formattedMinutes.toString().padStart(2, '0')}`
-    );
+    return `${formattedHours}:${formattedMinutes.toString().padStart(2, '0')}`;
   };
 
   const handleAdd = () => {
@@ -127,6 +138,11 @@ function TimeSheet() {
   };
 
   const handleCloseCreateDialog = () => {
+    setCreateOpenDialog(false);
+  };
+
+  const handleCreateRecord = (client, project, task, workPerformed, dateLogged, timeLogged) => {
+    console.log(client, project, task, workPerformed, dateLogged, timeLogged);
     setCreateOpenDialog(false);
   };
 
@@ -139,7 +155,7 @@ function TimeSheet() {
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, padding: 2, alignItems: 'center', marginTop: 2 }}>
         <TimeSheetButton Icon={TimerOutlined} text="Start timer" onClick={handleStartTimer} />
         <TimeSheetButton Icon={EditOutlined} text="Manually" onClick={handleAdd} />
-        <AddTimeRecord handleCloseDialog={handleCloseCreateDialog} openDialog={openCreateDialog} />
+        <AddTimeRecord handleSubmit={handleCreateRecord} handleCloseDialog={handleCloseCreateDialog} openDialog={openCreateDialog} />
       </Box>
       <Box sx={{ height: 650, width: '100%', marginTop: 5 }}>
         <TimeSheetFilter rows={rows} setFilteredRows={setFilteredRows} />
@@ -165,11 +181,18 @@ function TimeSheet() {
             }
           }}
         />
-        <Typography variant="body1" sx={{ marginTop: 2 }} color="GrayText">
-          <div className='bg-slate-100 w-fit p-3 rounded'>
-            Total Time Logged: {calculateTotalTime()}
-          </div>
-        </Typography>
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <Typography variant="body1" sx={{ marginTop: 2 }} color="GrayText">
+            <div className='bg-slate-100 w-fit p-3 rounded'>
+              Total Time Logged: {calculateTotalTime()}
+            </div>
+          </Typography>
+          <Typography variant="body1" sx={{ marginTop: 2 }} color="crimson">
+            <div className='bg-slate-100 w-fit p-3 rounded'>
+              Rejected: {calculateTotalTime()}
+            </div>
+          </Typography>
+        </Box>
       </Box>
     </div>
   );

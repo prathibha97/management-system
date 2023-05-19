@@ -1,10 +1,17 @@
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { IconButton, Tooltip } from '@mui/material';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { startTimer } from '../../app/features/timer/timerSlice';
 
 function RecentlyActiveProjects() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleStartWorking = () => {
+    dispatch(startTimer())
+  }
 
   return (
     <div className="flex justify-between items-center m-auto bg-white py-2 px-3 rounded">
@@ -24,7 +31,7 @@ function RecentlyActiveProjects() {
           </IconButton>
         </Tooltip>
         <Tooltip title="Proceed working">
-          <IconButton>
+          <IconButton onClick={handleStartWorking}>
             <PlayArrowIcon fontSize="small" />
           </IconButton>
         </Tooltip>

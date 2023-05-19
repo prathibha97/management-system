@@ -5,18 +5,19 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import dayjs from 'dayjs';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
-function AddTimeRecord({ openDialog, handleCloseDialog, handleSubmit }) {
-  const [client, setClient] = useState('')
-  const [project, setProject] = useState('')
-  const [task, setTask] = useState('')
-  const [workPerformed, setWorkPerformed] = useState('')
-  const [dateLogged, setDateLogged] = useState(dayjs().format())
-  const [timeLogged, setTimeLogged] = useState(dayjs())
+function EditTimeRecord({ openEditDialog, handleCloseEditDialog, handleSubmit, params }) {
+  const [client, setClient] = useState(params.row.client);
+  const [project, setProject] = useState(params.row.project);
+  const [task, setTask] = useState(params.row.task);
+  const [workPerformed, setWorkPerformed] = useState(params.row.workPerformed);
+  const [dateLogged, setDateLogged] = useState(dayjs(params.row.date).format());
+  const [timeLogged, setTimeLogged] = useState(dayjs(params.row.timeSpent));
+
   return (
-    <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
-      <DialogTitle sx={{ padding: 3 }}>Add Time Record</DialogTitle>
+    <Dialog open={openEditDialog} onClose={handleCloseEditDialog} maxWidth="sm" fullWidth>
+      <DialogTitle sx={{ padding: 3 }}>Edit Time Record</DialogTitle>
       <DialogContent sx={{ padding: '20px 30px' }}>
         <div className="flex flex-col gap-5 bg-slate-100 p-4 rounded-md">
           <div className="flex items-center">
@@ -69,7 +70,7 @@ function AddTimeRecord({ openDialog, handleCloseDialog, handleSubmit }) {
                 inputFormat="MM/DD/YYYY"
                 value={dayjs(dateLogged)} // Convert dateLogged to Dayjs object
                 onChange={(date) => setDateLogged(date.format())} // Convert date to string before updating state
-                renderInput={(params) => <TextField {...params} />}
+                renderInput={(items) => <TextField {...items} />}
               />
             </LocalizationProvider>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -83,7 +84,7 @@ function AddTimeRecord({ openDialog, handleCloseDialog, handleSubmit }) {
         </div>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleCloseDialog} autoFocus color='error'>
+        <Button onClick={handleCloseEditDialog} autoFocus color='error'>
           Close
         </Button>
         <Button onClick={() => handleSubmit(client, project, task, workPerformed, dateLogged, timeLogged)} autoFocus>
@@ -94,4 +95,4 @@ function AddTimeRecord({ openDialog, handleCloseDialog, handleSubmit }) {
   );
 }
 
-export default AddTimeRecord
+export default EditTimeRecord;

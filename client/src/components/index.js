@@ -16,6 +16,7 @@ export { default as DataTable } from './DataTable';
 export { default as DatePopover } from './DatePopover';
 export { default as DocumentUpload } from './DocumentUpload';
 export { default as EditMeeting } from './EditMeeting';
+export { default as EditTimeRecord } from './EditTimeRecord';
 export { default as EmployeeCard } from './EmployeeCard';
 export { default as EmployeeDetails } from './EmployeeDetails';
 export { default as Experience } from './Experience';
