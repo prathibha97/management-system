@@ -13,6 +13,7 @@ const projectRouter = require('./project.routes');
 const taskRouter = require('./task.routes');
 const notificationRouter = require('./notification.routes');
 const clientRouter = require('./client.routes');
+const timeRecordRouter = require('./timeRecord.routes');
 
 const api = express.Router();
 
@@ -30,5 +31,6 @@ api.use('/google', googleMeetingRouter);
 api.use('/designations', designationRouter);
 api.use('/experiences', experienceRouter);
 api.use('/notifications', notificationRouter);
+api.use('/timerecords', timeRecordRouter);
 
 module.exports = api;
