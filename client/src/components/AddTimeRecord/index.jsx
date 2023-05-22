@@ -13,7 +13,8 @@ import { useGetTasksByProjectIdQuery } from '../../app/features/tasks/taskApiSli
 function AddTimeRecord({ openDialog, handleCloseDialog, handleSubmit }) {
 
   const { data: projects } = useGetEmployeeProjectsQuery()
-  const [project, setProject] = useState(projects[0]?._id)
+  
+  const [project, setProject] = useState(projects[0]?._id || '')
   const [client, setClient] = useState('')
   const [task, setTask] = useState('')
   const [workPerformed, setWorkPerformed] = useState('')
@@ -103,7 +104,7 @@ function AddTimeRecord({ openDialog, handleCloseDialog, handleSubmit }) {
         </Button>
         <Button onClick={() =>
           handleSubmit(
-            project,timeLogged, client,dateLogged, workPerformed, task
+            project, timeLogged, client, dateLogged, workPerformed, task
           )
         } autoFocus>
           Save

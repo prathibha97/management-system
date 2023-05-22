@@ -1,19 +1,27 @@
+/* eslint-disable no-shadow */
 /* eslint-disable react/jsx-props-no-spreading */
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import { DesktopDatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import dayjs from 'dayjs';
 import { useState } from 'react';
+import { useGetClientsQuery } from '../../app/features/clients/clientApiSlice';
+import { useGetEmployeeProjectsQuery } from '../../app/features/projects/projectApiSlice';
+import { useGetTasksByProjectIdQuery } from '../../app/features/tasks/taskApiSlice';
 
 function EditTimeRecord({ openEditDialog, handleCloseEditDialog, handleSubmit, params }) {
-  const [client, setClient] = useState(params.row.client);
-  const [project, setProject] = useState(params.row.project);
-  const [task, setTask] = useState(params.row.task);
-  const [workPerformed, setWorkPerformed] = useState(params.row.workPerformed);
-  const [dateLogged, setDateLogged] = useState(dayjs(params.row.date).format());
-  const [timeLogged, setTimeLogged] = useState(dayjs(params.row.timeSpent));
+  const { data: projects } = useGetEmployeeProjectsQuery()
+
+  const [client, setClient] = useState(params?.row?.client?._id);
+  const [project, setProject] = useState(params?.row?.project?._id);
+  const [task, setTask] = useState(params?.row?.task?._id);
+  const [workPerformed, setWorkPerformed] = useState(params?.row?.workPerformed);
+  const [dateLogged, setDateLogged] = useState(dayjs(params?.row?.date).format());
+  const [timeLogged, setTimeLogged] = useState(params?.row?.timeSpent);
+
+  const { data: clients } = useGetClientsQuery()
+  const { data: tasks } = useGetTasksByProjectIdQuery({ id: project })
 
   return (
     <Dialog open={openEditDialog} onClose={handleCloseEditDialog} maxWidth="sm" fullWidth>
@@ -22,29 +30,33 @@ function EditTimeRecord({ openEditDialog, handleCloseEditDialog, handleSubmit, p
         <div className="flex flex-col gap-5 bg-slate-100 p-4 rounded-md">
           <div className="flex items-center">
             <FormControl fullWidth>
-              <InputLabel>Select Client</InputLabel>
-              <Select
-                value={client}
-                label="Select Client"
-                onChange={(e) => setClient(e.target.value)}
-              >
-                <MenuItem value='Casual'>Casual</MenuItem>
-                <MenuItem value='Annual'>Annual</MenuItem>
-                <MenuItem value='Medical'>Medical</MenuItem>
-              </Select>
-            </FormControl>
-          </div>
-          <div className="flex items-center gap-2">
-            <FormControl fullWidth>
               <InputLabel>Select Project</InputLabel>
               <Select
                 value={project}
                 label="Select Project"
                 onChange={(e) => setProject(e.target.value)}
               >
-                <MenuItem value='Casual'>Casual</MenuItem>
-                <MenuItem value='Annual'>Annual</MenuItem>
-                <MenuItem value='Medical'>Medical</MenuItem>
+                {
+                  projects?.map((project, index) => (
+                    <MenuItem value={project._id} key={`project-${index}`}>{project.title}</MenuItem>
+                  ))
+                }
+              </Select>
+            </FormControl>
+          </div>
+          <div className="flex items-center gap-2">
+            <FormControl fullWidth>
+              <InputLabel>Select Client</InputLabel>
+              <Select
+                value={client}
+                label="Select Client"
+                onChange={(e) => setClient(e.target.value)}
+              >
+                {
+                  clients?.map((client, index) => (
+                    <MenuItem value={client._id} key={`client-${index}`}>{client.name}</MenuItem>
+                  ))
+                }
               </Select>
             </FormControl>
             <FormControl fullWidth>
@@ -54,9 +66,11 @@ function EditTimeRecord({ openEditDialog, handleCloseEditDialog, handleSubmit, p
                 label="Select Task"
                 onChange={(e) => setTask(e.target.value)}
               >
-                <MenuItem value='Casual'>Casual</MenuItem>
-                <MenuItem value='Annual'>Annual</MenuItem>
-                <MenuItem value='Medical'>Medical</MenuItem>
+                {
+                  tasks?.map((task, index) => (
+                    <MenuItem value={task._id} key={`task-${index}`}>{task.title}</MenuItem>
+                  ))
+                }
               </Select>
             </FormControl>
           </div>
@@ -73,13 +87,12 @@ function EditTimeRecord({ openEditDialog, handleCloseEditDialog, handleSubmit, p
                 renderInput={(items) => <TextField {...items} />}
               />
             </LocalizationProvider>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <TimePicker
-                label="Time Logged"
-                value={timeLogged}
-                onChange={(time) => setTimeLogged(time)}
-              />
-            </LocalizationProvider>
+            <TextField
+              value={timeLogged}
+              onChange={(e) => setTimeLogged(e.target.value)}
+              label='Time Logged'
+              placeholder='00:00'
+            />
           </div>
         </div>
       </DialogContent>
@@ -87,7 +100,7 @@ function EditTimeRecord({ openEditDialog, handleCloseEditDialog, handleSubmit, p
         <Button onClick={handleCloseEditDialog} autoFocus color='error'>
           Close
         </Button>
-        <Button onClick={() => handleSubmit(client, project, task, workPerformed, dateLogged, timeLogged)} autoFocus>
+        <Button onClick={() => handleSubmit(project, timeLogged, client, dateLogged, workPerformed, task)} autoFocus>
           Save
         </Button>
       </DialogActions>

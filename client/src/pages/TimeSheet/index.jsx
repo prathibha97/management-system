@@ -6,11 +6,13 @@ import { useDispatch } from 'react-redux';
 import {
   useCreateTimeRecordMutation,
   useDeleteTimeRecordMutation,
-  useGetAllTimeRecordsQuery,
+  useEditTimeRecordMutation,
+  useGetAllTimeRecordsQuery
 } from '../../app/features/timeRecords/timeRecordsApiSlice';
 import {
   setCreateTimeRecord,
   setDeleteTimeRecord,
+  setEditTimeRecord,
   setGetTimeRecords,
 } from '../../app/features/timeRecords/timeRecordsSlice';
 import { startTimer } from '../../app/features/timer/timerSlice';
@@ -43,6 +45,7 @@ function TimeSheet() {
   const [openCreateDialog, setCreateOpenDialog] = useState(false);
 
   const [createTimeRecord, { isLoading: isCreateTimeRecordLoading }] = useCreateTimeRecordMutation();
+  const [editTimeRecord, { isLoading: isEditTimeRecordLoading }] = useEditTimeRecordMutation();
   const [deleteTimeRecord, { isLoading: isDeleteTimeRecordLoading }] = useDeleteTimeRecordMutation();
 
   useEffect(() => {
@@ -102,10 +105,25 @@ function TimeSheet() {
           setOpenEditDialog(false);
         };
 
-        const handleEditRecord = (client, project, task, workPerformed, dateLogged, timeLogged) => {
-          console.log(client, project, task, workPerformed, dateLogged, timeLogged);
-          setOpenEditDialog(false);
+        const handleEditRecord = async (project, timeLogged, client, dateLogged, workPerformed, task) => {
+          try {
+            const { data: timeRecordData } = await editTimeRecord({ id: params.id, timeRecord: { project, timeSpent: timeLogged, client, date: dateLogged, workPerformed, task } });
+
+            // Update the filtered rows when a new record is created
+            const updatedRows = [...filteredRows, timeRecordData.timeRecord];
+            console.log('updatedRows', updatedRows);
+            setFilteredRows(updatedRows);
+            console.log('filteredRows', filteredRows);
+            setTimeRecordChangeCount((prev) => prev + 1);
+
+            // Dispatch actions
+            dispatch(setEditTimeRecord({ timeRecord: timeRecordData.timeRecord }));
+            setOpenEditDialog(false);
+          } catch (err) {
+            console.log(err);
+          }
         };
+
 
         return (
           <div>
@@ -210,7 +228,7 @@ function TimeSheet() {
     dispatch(startTimer());
   };
 
-  if (isCreateTimeRecordLoading || isDeleteTimeRecordLoading) return <Loader />;
+  if (isCreateTimeRecordLoading || isDeleteTimeRecordLoading || isEditTimeRecordLoading) return <Loader />;
 
   return (
     <div className="flex">
