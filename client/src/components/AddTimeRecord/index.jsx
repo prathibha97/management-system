@@ -1,19 +1,28 @@
+/* eslint-disable no-shadow */
 /* eslint-disable react/jsx-props-no-spreading */
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import { DesktopDatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import dayjs from 'dayjs';
 import React, { useState } from 'react';
+import { useGetClientsQuery } from '../../app/features/clients/clientApiSlice';
+import { useGetEmployeeProjectsQuery } from '../../app/features/projects/projectApiSlice';
+import { useGetTasksByProjectIdQuery } from '../../app/features/tasks/taskApiSlice';
 
 function AddTimeRecord({ openDialog, handleCloseDialog, handleSubmit }) {
+
+  const { data: projects } = useGetEmployeeProjectsQuery()
+  const [project, setProject] = useState(projects[0]?._id)
   const [client, setClient] = useState('')
-  const [project, setProject] = useState('')
   const [task, setTask] = useState('')
   const [workPerformed, setWorkPerformed] = useState('')
   const [dateLogged, setDateLogged] = useState(dayjs().format())
-  const [timeLogged, setTimeLogged] = useState(dayjs())
+  const [timeLogged, setTimeLogged] = useState('')
+
+  const { data: clients } = useGetClientsQuery()
+  const { data: tasks } = useGetTasksByProjectIdQuery({ id: project })
+
   return (
     <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
       <DialogTitle sx={{ padding: 3 }}>Add Time Record</DialogTitle>
@@ -21,29 +30,33 @@ function AddTimeRecord({ openDialog, handleCloseDialog, handleSubmit }) {
         <div className="flex flex-col gap-5 bg-slate-100 p-4 rounded-md">
           <div className="flex items-center">
             <FormControl fullWidth>
-              <InputLabel>Select Client</InputLabel>
-              <Select
-                value={client}
-                label="Select Client"
-                onChange={(e) => setClient(e.target.value)}
-              >
-                <MenuItem value='Casual'>Casual</MenuItem>
-                <MenuItem value='Annual'>Annual</MenuItem>
-                <MenuItem value='Medical'>Medical</MenuItem>
-              </Select>
-            </FormControl>
-          </div>
-          <div className="flex items-center gap-2">
-            <FormControl fullWidth>
               <InputLabel>Select Project</InputLabel>
               <Select
                 value={project}
                 label="Select Project"
                 onChange={(e) => setProject(e.target.value)}
               >
-                <MenuItem value='Casual'>Casual</MenuItem>
-                <MenuItem value='Annual'>Annual</MenuItem>
-                <MenuItem value='Medical'>Medical</MenuItem>
+                {
+                  projects?.map((project) => (
+                    <MenuItem value={project._id} key={project._id}>{project.title}</MenuItem>
+                  ))
+                }
+              </Select>
+            </FormControl>
+          </div>
+          <div className="flex items-center gap-2">
+            <FormControl fullWidth>
+              <InputLabel>Select Client</InputLabel>
+              <Select
+                value={client}
+                label="Select Client"
+                onChange={(e) => setClient(e.target.value)}
+              >
+                {
+                  clients?.map((client) => (
+                    <MenuItem value={client._id} key={client._id}>{client.name}</MenuItem>
+                  ))
+                }
               </Select>
             </FormControl>
             <FormControl fullWidth>
@@ -53,9 +66,11 @@ function AddTimeRecord({ openDialog, handleCloseDialog, handleSubmit }) {
                 label="Select Task"
                 onChange={(e) => setTask(e.target.value)}
               >
-                <MenuItem value='Casual'>Casual</MenuItem>
-                <MenuItem value='Annual'>Annual</MenuItem>
-                <MenuItem value='Medical'>Medical</MenuItem>
+                {
+                  tasks?.map((task) => (
+                    <MenuItem value={task._id} key={task._id}>{task.title}</MenuItem>
+                  ))
+                }
               </Select>
             </FormControl>
           </div>
@@ -72,13 +87,13 @@ function AddTimeRecord({ openDialog, handleCloseDialog, handleSubmit }) {
                 renderInput={(params) => <TextField {...params} />}
               />
             </LocalizationProvider>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <TimePicker
-                label="Time Logged"
-                value={timeLogged}
-                onChange={(time) => setTimeLogged(time)}
-              />
-            </LocalizationProvider>
+
+            <TextField
+              value={timeLogged}
+              onChange={(e) => setTimeLogged(e.target.value)}
+              label='Time Logged'
+              placeholder='00:00'
+            />
           </div>
         </div>
       </DialogContent>
@@ -86,7 +101,11 @@ function AddTimeRecord({ openDialog, handleCloseDialog, handleSubmit }) {
         <Button onClick={handleCloseDialog} autoFocus color='error'>
           Close
         </Button>
-        <Button onClick={() => handleSubmit(client, project, task, workPerformed, dateLogged, timeLogged)} autoFocus>
+        <Button onClick={() =>
+          handleSubmit(
+            project,timeLogged, client,dateLogged, workPerformed, task
+          )
+        } autoFocus>
           Save
         </Button>
       </DialogActions>

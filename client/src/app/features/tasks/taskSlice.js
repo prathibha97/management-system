@@ -21,6 +21,10 @@ const tasklice = createSlice({
       const { taskId } = action.payload;
       state.tasks = state.tasks.filter((task) => task.id !== taskId);
     },
+    setGetTasksByProject: (state, action) => {
+      const { tasks } = action.payload;
+      state.tasks = [...tasks];
+    }
   },
 });
 

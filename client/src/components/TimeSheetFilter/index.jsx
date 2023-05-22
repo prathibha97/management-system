@@ -7,17 +7,18 @@ function TimeSheetFilter({ rows, setFilteredRows }) {
 
   const filterByToday = () => {
     const today = new Date().toISOString().split('T')[0];
-    const filtered = rows.filter((row) => row.date === today);
+    const filtered = rows?.filter((row) => row?.date.split('T')[0] === today);
     setFilteredRows(filtered);
     setActiveButton('today');
   };
+
 
   const filterByYesterday = () => {
     const today = new Date();
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
     const formattedYesterday = yesterday.toISOString().split('T')[0];
-    const filtered = rows.filter((row) => row.date === formattedYesterday);
+    const filtered = rows?.filter((row) => row?.date.split('T')[0] === formattedYesterday);
     setFilteredRows(filtered);
     setActiveButton('yesterday');
   };
@@ -28,7 +29,10 @@ function TimeSheetFilter({ rows, setFilteredRows }) {
     const lastDayOfWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() + (6 - today.getDay()));
     const formattedFirstDay = firstDayOfWeek.toISOString().split('T')[0];
     const formattedLastDay = lastDayOfWeek.toISOString().split('T')[0];
-    const filtered = rows.filter((row) => row.date >= formattedFirstDay && row.date <= formattedLastDay);
+    const filtered = rows.filter((row) => {
+      const rowDate = row.date.split('T')[0];
+      return rowDate >= formattedFirstDay && rowDate <= formattedLastDay;
+    });
     setFilteredRows(filtered);
     setActiveButton('thisWeek');
   };
@@ -42,7 +46,10 @@ function TimeSheetFilter({ rows, setFilteredRows }) {
     firstDayOfPrevWeek.setDate(firstDayOfPrevWeek.getDate() - 6);
     const formattedFirstDay = firstDayOfPrevWeek.toISOString().split('T')[0];
     const formattedLastDay = lastDayOfPrevWeek.toISOString().split('T')[0];
-    const filtered = rows.filter((row) => row.date >= formattedFirstDay && row.date <= formattedLastDay);
+    const filtered = rows.filter((row) => {
+      const rowDate = row.date.split('T')[0];
+      return rowDate >= formattedFirstDay && rowDate <= formattedLastDay;
+    });
     setFilteredRows(filtered);
     setActiveButton('prevWeek');
   };
@@ -53,7 +60,10 @@ function TimeSheetFilter({ rows, setFilteredRows }) {
     const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
     const formattedFirstDay = firstDayOfMonth.toISOString().split('T')[0];
     const formattedLastDay = lastDayOfMonth.toISOString().split('T')[0];
-    const filtered = rows.filter((row) => row.date >= formattedFirstDay && row.date <= formattedLastDay);
+    const filtered = rows.filter((row) => {
+      const rowDate = row.date.split('T')[0];
+      return rowDate >= formattedFirstDay && rowDate <= formattedLastDay;
+    });
     setFilteredRows(filtered);
     setActiveButton('thisMonth');
   };
@@ -66,13 +76,16 @@ function TimeSheetFilter({ rows, setFilteredRows }) {
     const firstDayOfPrevMonth = new Date(lastDayOfPrevMonth.getFullYear(), lastDayOfPrevMonth.getMonth(), 1);
     const formattedFirstDay = firstDayOfPrevMonth.toISOString().split('T')[0];
     const formattedLastDay = lastDayOfPrevMonth.toISOString().split('T')[0];
-    const filtered = rows.filter((row) => row.date >= formattedFirstDay && row.date <= formattedLastDay);
+    const filtered = rows.filter((row) => {
+      const rowDate = row.date.split('T')[0];
+      return rowDate >= formattedFirstDay && rowDate <= formattedLastDay;
+    });
     setFilteredRows(filtered);
     setActiveButton('prevMonth');
   };
 
   return (
-    <ButtonGroup fullWidth sx={{ marginBottom: 3, backgroundColor: 'rgb(241 244 247)'}}>
+    <ButtonGroup fullWidth sx={{ marginBottom: 3, backgroundColor: 'rgb(241 244 247)' }}>
       <Button
         variant={activeButton === 'today' ? 'contained' : 'outlined'}
         onClick={filterByToday}
