@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const TimeRecord = require('../models/TimeRecord');
+const formatTime = require('../utils/formatTime');
 
 /*
 ?@desc   get all time records
@@ -31,6 +32,11 @@ const createTimeRecord = async (req, res) => {
   const { project, task, date, timeSpent, client, workPerformed } = req.body;
   const { _id: employee } = req.user;
 
+  console.log(req.body);
+
+  // Convert timeSpent to "00:00:00" format if it's a number
+  const formattedTimeSpent = typeof timeSpent === 'number' ? formatTime(timeSpent) : timeSpent;
+
   try {
     const timeRecord = await TimeRecord.create({
       employee,
@@ -38,7 +44,7 @@ const createTimeRecord = async (req, res) => {
       client,
       task: mongoose.Types.ObjectId(task),
       workPerformed,
-      timeSpent,
+      timeSpent: formattedTimeSpent,
       date,
     });
 

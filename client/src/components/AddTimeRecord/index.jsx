@@ -12,8 +12,11 @@ import { useGetTasksByProjectIdQuery } from '../../app/features/tasks/taskApiSli
 
 function AddTimeRecord({ openDialog, handleCloseDialog, handleSubmit }) {
 
-  const { data: projects } = useGetEmployeeProjectsQuery()
-  
+  const { data: projects } = useGetEmployeeProjectsQuery({
+    refetchOnMountOrArgChange: true,
+    refetchOnReconnect: true,
+  })
+
   const [project, setProject] = useState(projects[0]?._id || '')
   const [client, setClient] = useState('')
   const [task, setTask] = useState('')

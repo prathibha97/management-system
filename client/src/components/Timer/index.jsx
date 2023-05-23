@@ -3,8 +3,11 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import StopIcon from '@mui/icons-material/Stop';
 import TimerIcon from '@mui/icons-material/Timer';
 import { Box, Grid, IconButton, Typography } from '@mui/material';
-import { useRef, useEffect } from 'react';
+import dayjs from 'dayjs';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useCreateTimeRecordMutation, useGetAllTimeRecordsQuery } from '../../app/features/timeRecords/timeRecordsApiSlice';
+import { setCreateTimeRecord } from '../../app/features/timeRecords/timeRecordsSlice';
 import { pauseTimer, startTimer, stopTimer, updateTime } from '../../app/features/timer/timerSlice';
 
 function Timer() {
@@ -12,6 +15,9 @@ function Timer() {
   const time = useSelector((state) => state.timer.time);
   const dispatch = useDispatch();
   const intervalRef = useRef(null);
+
+  const [createTimeRecord] = useCreateTimeRecordMutation()
+  const { refetch: refetchTimeSheetData } = useGetAllTimeRecordsQuery();
 
   const formatTime = (timeInSeconds) => {
     const hours = Math.floor(timeInSeconds / 3600)
@@ -32,9 +38,16 @@ function Timer() {
     dispatch(pauseTimer());
   };
 
-  const handleStopTimer = () => {
-    dispatch(stopTimer());
-    dispatch(updateTime(0));
+  const handleStopTimer = async () => {
+    try {
+      const timeRecordData = await createTimeRecord({ timeSpent: time, date: dayjs().format() }).unwrap()
+      dispatch(setCreateTimeRecord({ timeRecord: timeRecordData.timeRecord }));
+      refetchTimeSheetData();
+      dispatch(stopTimer());
+      dispatch(updateTime(0));
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {
@@ -51,14 +64,21 @@ function Timer() {
     };
   }, [isRunning, dispatch, time]);
 
+  // ...
+
   return (
-    <Box sx={{ backgroundColor: '#f9fbfc', borderRadius: 1, p: 1 }}>
+    <Box sx={{ backgroundColor: '#f9fbfc', borderRadius: 2, p: 1 }}>
       <Grid container alignItems="center" spacing={1}>
         {!isRunning && (
           <Grid item>
             <IconButton onClick={handleStartTimer}>
               <PlayArrowIcon />
             </IconButton>
+            {time !== 0 && ( // Add this condition to display the stop button
+              <IconButton onClick={handleStopTimer}>
+                <StopIcon />
+              </IconButton>
+            )}
           </Grid>
         )}
         <Grid item>
@@ -84,6 +104,7 @@ function Timer() {
       </Grid>
     </Box>
   );
+
 }
 
 export default Timer;
