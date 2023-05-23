@@ -133,6 +133,7 @@ function ProfessionalInfoForm({ handleChange, values, nextStep, prevStep }) {
               <MenuItem value='Manager'>Manager</MenuItem>
               <MenuItem value='HR'>HR</MenuItem>
               <MenuItem value='Employee'>Employee</MenuItem>
+              <MenuItem value='3rd Party'>3rd Party</MenuItem>
             </Select>
           </div>
         </div>

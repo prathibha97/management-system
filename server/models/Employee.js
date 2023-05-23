@@ -72,7 +72,7 @@ const empSchema = new mongoose.Schema(
     // },
     role: {
       type: String,
-      enum: ['Admin', 'Employee', 'Manager', 'HR'],
+      enum: ['Admin', 'Employee', 'Manager', 'HR', '3rd Party'],
       default: 'Employee',
     },
     workType: {
