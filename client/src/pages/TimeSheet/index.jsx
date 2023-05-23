@@ -2,7 +2,8 @@ import { EditOutlined, MoreVert as MoreVertIcon, TimerOutlined } from '@mui/icon
 import { Box, IconButton, Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { SelectTimeChange, selectTimeRecords } from '../../app/features/timeRecords/timeRecordSelectors';
 import {
   useCreateTimeRecordMutation,
   useDeleteTimeRecordMutation,
@@ -32,16 +33,19 @@ function TimeSheet() {
 
   const dispatch = useDispatch();
 
-  const { data: timeSheetData, refetch: refetchTimeSheetData } = useGetAllTimeRecordsQuery({
+  const { data: timeSheetDataFromApi, refetch: refetchTimeSheetData } = useGetAllTimeRecordsQuery({
     refetchOnMountOrArgChange: true,
   });
 
   useEffect(() => {
-    dispatch(setGetTimeRecords({ timeRecords: timeSheetData }));
+    dispatch(setGetTimeRecords({ timeRecords: timeSheetDataFromApi }));
   }, []);
 
+  const timeSheetData = useSelector(selectTimeRecords);
+  const timeChange = useSelector(SelectTimeChange)
+
   const [filteredRows, setFilteredRows] = useState(timeSheetData || []);
-  const [timeRecordChangeCount, setTimeRecordChangeCount] = useState(0);
+  const [timeRecordChangeCount, setTimeRecordChangeCount] = useState(timeChange || 0);
   const [openCreateDialog, setCreateOpenDialog] = useState(false);
 
   const [createTimeRecord, { isLoading: isCreateTimeRecordLoading }] = useCreateTimeRecordMutation();
@@ -49,6 +53,7 @@ function TimeSheet() {
   const [deleteTimeRecord, { isLoading: isDeleteTimeRecordLoading }] = useDeleteTimeRecordMutation();
 
   useEffect(() => {
+
     if (timeRecordChangeCount > 0) {
       refetchTimeSheetData();
     }
@@ -73,13 +78,11 @@ function TimeSheet() {
         };
 
         const handleView = () => {
-          console.log('View clicked for ID:', params.id);
           setOpenDialog(true);
           handleMenuClose();
         };
 
         const handleEdit = () => {
-          console.log('Edit clicked for ID:', params.id);
           setOpenEditDialog(true);
           handleMenuClose();
         };
@@ -124,6 +127,12 @@ function TimeSheet() {
           }
         };
 
+        const handleReject = (rejectReason) => {
+          console.log(`Reject clicked for ID: ${params.id}`);
+          console.log(rejectReason);
+          handleMenuClose();
+        }
+
 
         return (
           <div>
@@ -136,6 +145,7 @@ function TimeSheet() {
               handleView={handleView}
               handleEdit={handleEdit}
               handleDelete={handleDelete}
+              handleReject={handleReject}
             />
             <ViewTimeEntry handleCloseDialog={handleCloseDialog} openDialog={openDialog} params={params} />
             <EditTimeRecord
