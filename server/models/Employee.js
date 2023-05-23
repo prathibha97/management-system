@@ -66,9 +66,14 @@ const empSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    isAdmin: {
-      type: Boolean,
-      default: false,
+    // isAdmin: {
+    //   type: Boolean,
+    //   default: false,
+    // },
+    role: {
+      type: String,
+      enum: ['Admin', 'Employee', 'Manager', 'HR'],
+      default: 'Employee',
     },
     workType: {
       type: String,
@@ -90,7 +95,6 @@ const empSchema = new mongoose.Schema(
           type: Date,
           default: Date.now,
         },
-        default: [],
       },
     ],
     idCardPath: { type: String },
@@ -108,7 +112,7 @@ const empSchema = new mongoose.Schema(
           if (['Intern', 'Contract', 'Part-Time'].includes(this.workType)) {
             return 1;
           }
-          return 10;
+          return 7;
         },
       },
       Annual: {
@@ -124,7 +128,7 @@ const empSchema = new mongoose.Schema(
         type: Number,
         default() {
           if (this.gender === 'Female') {
-            return 10;
+            return 7;
           }
           return 0;
         },
@@ -141,10 +145,9 @@ const empSchema = new mongoose.Schema(
     },
     refreshToken: [String],
   },
-
   {
     timestamps: true,
   }
 );
 
-module.exports = mongoose.models.Employee || mongoose.model('Employee', empSchema);
+module.exports = mongoose.model('Employee', empSchema);

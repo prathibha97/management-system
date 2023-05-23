@@ -41,7 +41,7 @@ function App() {
             <Route path="/leave" element={<Leave />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/reset-password" element={<PasswordReset />} />
-            {userInfo?.isAdmin && (
+            {userInfo?.role === 'Admin' && (
               <>
                 <Route path="/people" element={<People />} />
                 <Route path="/people/:empNo" element={<EmpProfile />} />

@@ -5,3 +5,8 @@
 20230519	09:55:47	813894b5-5ccb-4859-bd0c-ba8be845b1b5	Error: Not Found - /api/emp/auth/logout
 20230519	12:44:01	f89d9875-7855-4cc8-8c9a-4260bcda164a	Error: Not Found - /api/timerecords
 20230519	13:33:22	12b39631-f23a-441b-ac01-5917c2f02ec7	Error: Not Found - /api
+20230523	11:34:26	fe4584f6-c280-4d09-adb3-a23a55e576d5	Error: Not authorized, as an admin
+20230523	11:38:42	278c8336-1b2d-4bf9-b924-107e72c5c66a	Error: Not authorized, as an admin
+20230523	11:38:42	ba405495-5aef-40ab-8afe-c0ac8fc96604	Error: Not authorized, as an admin
+20230523	11:39:12	852db281-f3a0-4cfc-b42c-fc6468be7ea2	Error: Not authorized, as an admin
+20230523	11:40:17	89a7d9dd-1c99-4267-9647-ce6152925e7c	Error: Not authorized, as an admin

@@ -68,7 +68,7 @@ function TimeSheetMenu({ anchorEl, handleMenuClose, handleView, handleEdit, hand
           </div>
         </MenuItem>
         {
-          user?.isAdmin && (
+          user?.role === 'Admin' && (
             <MenuItem onClick={handleRejectOpen} sx={{ '&:hover': { bgcolor: 'grey.200' } }}>
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <Close fontSize='small' color='error' />

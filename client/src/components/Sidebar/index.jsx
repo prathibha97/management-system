@@ -81,7 +81,7 @@ function Sidebar({ user }) {
     },
   ];
 
-  if (user?.isAdmin) {
+  if (user?.role === "Admin") {
     adminSidebarItems.push({
       name: "Settings",
       link: "/settings",
@@ -127,7 +127,7 @@ function Sidebar({ user }) {
               </Link>
             </li>
           ))}
-          {user.isAdmin && adminSidebarItems.map((item, index) => (
+          {user.role === 'Admin' && adminSidebarItems.map((item, index) => (
             <li key={index} className={`my-px ${activeIndex === index + sidebarItems.length ? "text-black" : "text-gray-600"
               }`}>
               <Link

@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import { Checkbox, InputLabel, MenuItem, Select, TextField } from '@mui/material'
+import { InputLabel, MenuItem, Select, TextField } from '@mui/material'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -33,7 +33,7 @@ function ProfessionalInfoForm({ handleChange, values, nextStep, prevStep }) {
       const storedUser = JSON.parse(localStorage.getItem('user'));
       if (!storedUser || storedUser.empNo !== userInfo.empNo) {
         dispatch(getDepartments({ departments }))
-        dispatch(getDepartments({designations}))
+        dispatch(getDepartments({ designations }))
       }
     }
   }, [userInfo])
@@ -126,12 +126,14 @@ function ProfessionalInfoForm({ handleChange, values, nextStep, prevStep }) {
           <div className='flex items-center gap-5'>
             <InputLabel
               labelid="user-type-lable">
-              Admin
+              User Type
             </InputLabel>
-            <Checkbox
-              className='border rounded'
-              onChange={handleChange('admin')}
-              defaultValue={values.admin} />
+            <Select labelid="work-type-lable" id="work-type-lable" onChange={handleChange('role')} defaultValue={values.role}>
+              <MenuItem value='Admin'>Admin</MenuItem>
+              <MenuItem value='Manager'>Manager</MenuItem>
+              <MenuItem value='HR'>HR</MenuItem>
+              <MenuItem value='Employee'>Employee</MenuItem>
+            </Select>
           </div>
         </div>
       </div>
