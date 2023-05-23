@@ -25,7 +25,7 @@ const createProject = async (req, res) => {
     specialNotes,
     category,
     nftCollectionSize,
-    nftTradeCount,
+    nftTraitCount,
     nftBaseDesignCount,
   } = req.body;
 
@@ -67,7 +67,7 @@ const createProject = async (req, res) => {
       specialNotes,
       category,
       nftCollectionSize,
-      nftTradeCount,
+      nftTraitCount,
       nftBaseDesignCount,
     });
 
