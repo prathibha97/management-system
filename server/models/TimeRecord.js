@@ -28,6 +28,12 @@ const timeRecordSchema = new mongoose.Schema(
     date: {
       type: Date,
     },
+    status: {
+      type: String,
+    },
+    rejectReason: {
+      type: String,
+    },
   },
   {
     timestamps: true,

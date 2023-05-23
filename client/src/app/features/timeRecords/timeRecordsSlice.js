@@ -30,6 +30,11 @@ const timeRecordSlice = createSlice({
         (timeRecord) => timeRecord._id !== timeRecordId
       );
     },
+    setRejectTimeRecord: (state, action) => {
+      const { timeRecord } = action.payload;
+      state.timeRecordChangeCount++;
+      state.timeRecord = timeRecord;
+    }
   },
 });
 
@@ -38,5 +43,6 @@ export const {
   setCreateTimeRecord,
   setEditTimeRecord,
   setDeleteTimeRecord,
+  setRejectTimeRecord
 } = timeRecordSlice.actions;
 export default timeRecordSlice.reducer;

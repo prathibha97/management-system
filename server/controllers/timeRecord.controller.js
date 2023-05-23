@@ -108,11 +108,37 @@ const deleteTimeRecord = async (req, res) => {
     console.log(err);
     return res.status(500).json({ message: 'Error occurred while deleting the time record' });
   }
-}
+};
+
+/*
+?@desc   reject a time record
+*@route  PUT /api/timerecords/reject/:id
+*@access Private/Admin
+*/
+
+const rejectTimeRecord = async (req, res) => {
+  const { id } = req.params;
+  const { rejectReason } = req.body;
+  console.log(req.body);
+  try {
+    const timeRecord = await TimeRecord.findById(id);
+
+    timeRecord.status = 'rejected';
+    timeRecord.rejectReason = rejectReason;
+
+    await timeRecord.save();
+
+    return res.status(200).json({ timeRecord, message: 'Time record rejected successfully' });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: 'Error occurred while rejecting the time record' });
+  }
+};
 
 module.exports = {
   getAllTimeRecords,
   createTimeRecord,
   updateTimeRecord,
   deleteTimeRecord,
+  rejectTimeRecord,
 };

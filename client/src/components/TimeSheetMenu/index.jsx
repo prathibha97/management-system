@@ -10,7 +10,7 @@ function TimeSheetMenu({ anchorEl, handleMenuClose, handleView, handleEdit, hand
 
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [rejectOpen, setRejectOpen] = useState(false);
-  const [rejectReason, setRejectReason] = useState('')
+  const [rejectedReason, setRejectedReason] = useState('')
 
   const handleDeleteConfirmationOpen = () => {
     setDeleteConfirmationOpen(true);
@@ -37,7 +37,7 @@ function TimeSheetMenu({ anchorEl, handleMenuClose, handleView, handleEdit, hand
 
   const handleRejectConfirmation = () => {
     setRejectOpen(false);
-    handleReject(rejectReason);
+    handleReject(rejectedReason);
   }
 
   return (
@@ -103,7 +103,7 @@ function TimeSheetMenu({ anchorEl, handleMenuClose, handleView, handleEdit, hand
       <Dialog open={rejectOpen} onClose={handleRejectClose}>
         <DialogTitle>Reject Time Record</DialogTitle>
         <DialogContent>
-          <TextField placeholder='Rejection Justification' sx={{ width: 550 }} value={rejectReason} onChange={e => setRejectReason(e.target.value)} />
+          <TextField placeholder='Rejection Justification' sx={{ width: 550 }} value={rejectedReason} onChange={e => setRejectedReason(e.target.value)} />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleRejectClose} color="primary">

@@ -8,13 +8,15 @@ import {
   useCreateTimeRecordMutation,
   useDeleteTimeRecordMutation,
   useEditTimeRecordMutation,
-  useGetAllTimeRecordsQuery
+  useGetAllTimeRecordsQuery,
+  useRejectTimeRecordMutation
 } from '../../app/features/timeRecords/timeRecordsApiSlice';
 import {
   setCreateTimeRecord,
   setDeleteTimeRecord,
   setEditTimeRecord,
   setGetTimeRecords,
+  setRejectTimeRecord,
 } from '../../app/features/timeRecords/timeRecordsSlice';
 import { startTimer } from '../../app/features/timer/timerSlice';
 import {
@@ -33,7 +35,7 @@ function TimeSheet() {
 
   const dispatch = useDispatch();
 
-  const { data: timeSheetDataFromApi, refetch: refetchTimeSheetData } = useGetAllTimeRecordsQuery({
+  const { data: timeSheetDataFromApi, refetch: refetchTimeSheetData, isLoading: isTimeSheetDataFromApiLoading } = useGetAllTimeRecordsQuery({
     refetchOnMountOrArgChange: true,
   });
 
@@ -51,6 +53,7 @@ function TimeSheet() {
   const [createTimeRecord, { isLoading: isCreateTimeRecordLoading }] = useCreateTimeRecordMutation();
   const [editTimeRecord, { isLoading: isEditTimeRecordLoading }] = useEditTimeRecordMutation();
   const [deleteTimeRecord, { isLoading: isDeleteTimeRecordLoading }] = useDeleteTimeRecordMutation();
+  const [rejectTimeRecord, { isLoading: isRejectTimeRecordLoading }] = useRejectTimeRecordMutation()
 
   useEffect(() => {
 
@@ -112,25 +115,29 @@ function TimeSheet() {
           try {
             const { data: timeRecordData } = await editTimeRecord({ id: params.id, timeRecord: { project, timeSpent: timeLogged, client, date: dateLogged, workPerformed, task } });
 
+            dispatch(setEditTimeRecord({ timeRecord: timeRecordData.timeRecord }));
             // Update the filtered rows when a new record is created
             const updatedRows = [...filteredRows, timeRecordData.timeRecord];
-            console.log('updatedRows', updatedRows);
             setFilteredRows(updatedRows);
-            console.log('filteredRows', filteredRows);
             setTimeRecordChangeCount((prev) => prev + 1);
-
-            // Dispatch actions
-            dispatch(setEditTimeRecord({ timeRecord: timeRecordData.timeRecord }));
             setOpenEditDialog(false);
           } catch (err) {
             console.log(err);
           }
         };
 
-        const handleReject = (rejectReason) => {
-          console.log(`Reject clicked for ID: ${params.id}`);
-          console.log(rejectReason);
-          handleMenuClose();
+        const handleReject = async(rejectedReason) => {
+          console.log('rejectedReason', rejectedReason)
+          try {
+            const timeRecordData = await rejectTimeRecord({ id: params.id, rejectReason: rejectedReason }).unwrap();
+            dispatch(setRejectTimeRecord({ timeRecord: timeRecordData?.timeRecord }));
+            const updatedRows = [...filteredRows, timeRecordData?.timeRecord];
+            setFilteredRows(updatedRows);
+            setTimeRecordChangeCount((prev) => prev + 1);
+            handleMenuClose();
+          } catch (err) {
+            console.log(err);
+          }
         }
 
 
@@ -200,7 +207,7 @@ function TimeSheet() {
     let totalTime = 0;
 
     filteredRows?.forEach((row) => {
-      const [hours, minutes, seconds = 0] = (row.timeSpent ?? '0:0').split(':');
+      const [hours, minutes, seconds = 0] = (row?.timeSpent ?? '0:0').split(':');
       totalTime += Number(hours) * 60 + Number(minutes) + Number(seconds) / 60;
     });
 
@@ -238,7 +245,7 @@ function TimeSheet() {
     dispatch(startTimer());
   };
 
-  if (isCreateTimeRecordLoading || isDeleteTimeRecordLoading || isEditTimeRecordLoading) return <Loader />;
+  if (isCreateTimeRecordLoading || isDeleteTimeRecordLoading || isEditTimeRecordLoading || isTimeSheetDataFromApiLoading || isRejectTimeRecordLoading) return <Loader />;
 
   return (
     <div className="flex">

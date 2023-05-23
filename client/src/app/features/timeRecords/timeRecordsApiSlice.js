@@ -27,6 +27,13 @@ export const timeRecordApiSlice = apiSlice.injectEndpoints({
         method: 'DELETE',
       }),
     }),
+    rejectTimeRecord: builder.mutation({
+      query: ({ id, rejectReason }) => ({
+        url: `/timerecords/reject/${id}`,
+        method: 'PUT',
+        body: { rejectReason },
+      }),
+    }),
   }),
 });
 
@@ -35,4 +42,5 @@ export const {
   useGetAllTimeRecordsQuery,
   useEditTimeRecordMutation,
   useDeleteTimeRecordMutation,
+  useRejectTimeRecordMutation,
 } = timeRecordApiSlice;
