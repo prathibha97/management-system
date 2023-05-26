@@ -26,7 +26,7 @@ function ServerDay(props) {
   const isSelected = !props.outsideCurrentMonth && props.highlightedDays.indexOf(props.day.date()) > -1;
 
   const user = useSelector(selectCurrentUser);
-  const { data: timeRecordsData } = useGetTimeRecordsByEmployeeQuery({ id: user?._id },{
+  const { data: timeRecordsData } = useGetTimeRecordsByEmployeeQuery({ id: user?._id }, {
     refetchOnMountOrArgChange: true,
   });
   const timeRecords = timeRecordsData?.timeRecords;
@@ -46,8 +46,15 @@ function ServerDay(props) {
   const isDataAvailable = matchedRecords.length > 0;
 
   const handleBadgeClick = (event) => {
-    if (!anchorEl) {
-      setAnchorEl(event.currentTarget);
+    const currentDate = dayjs();
+    const isPastDate = day.isBefore(currentDate, 'day');
+    const isCurrentDate = day.isSame(currentDate, 'day');
+    const hasRecordedTime = matchedRecords.length > 0;
+
+    if (isPastDate || (isCurrentDate && hasRecordedTime)) {
+      if (!anchorEl) {
+        setAnchorEl(event.currentTarget);
+      }
     }
   };
 
@@ -62,7 +69,9 @@ function ServerDay(props) {
         overlap="circular"
         variant="dot"
         color={
-          isSelected && hours >= 8 ? 'primary' : hours < 8 ? 'error' : 'default'
+          (day.isBefore(dayjs(), 'day') || (day.isSame(dayjs(), 'day') && hours > 0))
+            ? (isSelected && hours >= 8) ? 'primary' : (hours < 8) ? 'error' : 'default'
+            : 'default'
         }
         onClick={handleBadgeClick}
       >
@@ -81,6 +90,7 @@ function ServerDay(props) {
     </>
   );
 }
+
 
 function MuiCalendar() {
   const user = useSelector(selectCurrentUser);
