@@ -5,7 +5,8 @@ const {
   createTimeRecord,
   updateTimeRecord,
   deleteTimeRecord,
-  rejectTimeRecord
+  rejectTimeRecord,
+  getMonthTotals
 } = require('../controllers/timeRecord.controller');
 
 const timeRecordRouter = express.Router();
@@ -13,5 +14,6 @@ const timeRecordRouter = express.Router();
 timeRecordRouter.get('/', protect, admin, getAllTimeRecords).post('/', protect, createTimeRecord);
 timeRecordRouter.put('/:id', protect, updateTimeRecord).delete('/:id', protect, deleteTimeRecord);
 timeRecordRouter.put('/reject/:id', protect, admin, rejectTimeRecord);
+timeRecordRouter.get('/employee/:id', protect, getMonthTotals);
 
 module.exports = timeRecordRouter;

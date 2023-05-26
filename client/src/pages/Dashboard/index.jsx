@@ -1,24 +1,35 @@
 
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { selectCurrentUser } from "../../app/features/auth/authSelectors";
+import { useGetTimeRecordsByEmployeeCurrentMonthQuery } from "../../app/features/timeRecords/timeRecordsApiSlice";
+
 import { MonthTotals, MuiCalendar, RecentlyActiveProjects, WeeklyProjectCount } from "../../components";
+import { setGetTimeRecordsByEmployeeForCurrentMonth } from "../../app/features/timeRecords/timeRecordsSlice";
 
 function Dashboard() {
 
-  const data = [
-    { name: 'Project A', hours: 10 },
-    { name: 'Project B', hours: 8 },
-    { name: 'Project C', hours: 15 },
-    { name: 'Project D', hours: 5 },
-  ];
+  const dispatch = useDispatch();
+  const user = useSelector(selectCurrentUser)
+
+  const { data } = useGetTimeRecordsByEmployeeCurrentMonthQuery({ id: user?._id }, {
+    refetchOnMountOrArgChange: true,
+    refetchOnReconnect: true,
+  });
+  const timeRecords = data?.timeRecords;
+
+  useEffect(() => {
+    dispatch(setGetTimeRecordsByEmployeeForCurrentMonth({ timeRecords}))
+  }, [])
 
   return (
     <div className="mt-5">
-      {/* <MonthSelector /> */}
       <div className="flex gap-2 w-full">
-        <div className="bg-[#ecf1f4] w-[420px] p-5">
+        <div className="bg-[#ecf1f4] w-[620px] p-5">
           <div>
             <h1 className="text-lg text-gray-600 font-bold mb-2">Month Totals</h1>
           </div>
-          <MonthTotals data={data} />
+          <MonthTotals data={timeRecords} />
         </div>
         <div className="bg-[#ecf1f4] max-w-[610px] min-w-[580px] p-5">
           <h1 className="text-lg text-gray-600 font-bold mb-2">Totals by Day and Week</h1>

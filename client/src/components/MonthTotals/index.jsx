@@ -18,14 +18,39 @@ function CustomLabel({ cx, cy, midAngle, innerRadius, outerRadius, value, index,
       textAnchor={x > cx ? 'start' : 'end'}
       dominantBaseline="central"
     >
-      {`${data[index].name} (${value} hours)`}
+      {`${data[index]?.name} (${Math.floor(value / 3600)} hours)`}
     </text>
   );
 }
 
+function convertTimeToSeconds(time) {
+  const [hours, minutes, seconds] = time.split(':').map(Number);
+  return hours * 3600 + minutes * 60 + seconds;
+}
+
+function convertSecondsToHours(seconds) {
+  return seconds / 3600;
+}
+
 function MonthTotals({ data }) {
-  const totalHours = data?.reduce((acc, curr) => acc + curr.hours, 0) || 0;
-  const projectCount = data?.length || 0;
+  const projectTotals = data.reduce((totals, item) => {
+    const project = item.project.title;
+    const timeSpentSeconds = convertTimeToSeconds(item.timeSpent);
+    if (!totals[project]) {
+      totals[project] = 0;
+    }
+    totals[project] += timeSpentSeconds;
+    return totals;
+  }, {});
+
+  const chartData = Object.entries(projectTotals).map(([project, seconds]) => ({
+    name: project,
+    timeSpent: seconds,
+  }));
+
+  const totalSeconds = chartData.reduce((acc, curr) => acc + curr.timeSpent, 0) || 0;
+  const totalHours = convertSecondsToHours(totalSeconds);
+  const projectCount = chartData.length;
 
   const legendItems = [
     { value: `Projects: ${projectCount}`, type: 'star', id: 'projects' },
@@ -43,8 +68,8 @@ function MonthTotals({ data }) {
       <ResponsiveContainer width="100%" style={{ margin: 'auto' }} >
         <PieChart>
           <Pie
-            data={data}
-            dataKey="hours"
+            data={chartData}
+            dataKey="timeSpent"
             nameKey="name"
             cx="50%"
             cy="50%"
@@ -52,7 +77,7 @@ function MonthTotals({ data }) {
             outerRadius={80}
             fill="#8884d8"
             labelLine={false}
-            label={<CustomLabel data={data} />}
+            label={<CustomLabel data={chartData} />}
           />
           <Legend
             verticalAlign="bottom"
@@ -60,9 +85,6 @@ function MonthTotals({ data }) {
             wrapperStyle={{ paddingBottom: '10px' }}
             payload={legendItems}
           />
-          {/* <Tooltip
-            formatter={(value, name, props) => [`${value} hours`, name, props.payload.tag]}
-          /> */}
         </PieChart>
       </ResponsiveContainer>
     </div>
