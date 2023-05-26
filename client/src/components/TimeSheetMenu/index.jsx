@@ -1,10 +1,10 @@
-import { Close, Delete, Edit, Visibility } from '@mui/icons-material';
+import { Close, Delete, Edit, Visibility, Check } from '@mui/icons-material';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Menu, MenuItem, TextField, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '../../app/features/auth/authSelectors';
 
-function TimeSheetMenu({ anchorEl, handleMenuClose, handleView, handleEdit, handleDelete, handleReject }) {
+function TimeSheetMenu({ anchorEl, handleMenuClose, handleView, handleEdit, handleDelete, handleReject ,params, handleApprove}) {
 
   const user = useSelector(selectCurrentUser)
 
@@ -68,11 +68,21 @@ function TimeSheetMenu({ anchorEl, handleMenuClose, handleView, handleEdit, hand
           </div>
         </MenuItem>
         {
-          user?.role === 'Admin' && (
+          params?.row?.status !== 'rejected' && user?.role === 'Admin' && (
             <MenuItem onClick={handleRejectOpen} sx={{ '&:hover': { bgcolor: 'grey.200' } }}>
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <Close fontSize='small' color='error' />
                 <Typography variant='body1' color='red' sx={{ ml: 1 }}>Reject</Typography>
+              </div>
+            </MenuItem>
+          )
+        }
+        {
+          params?.row?.status === 'rejected' && user?.role === 'Admin' && (
+            <MenuItem onClick={handleApprove} sx={{ '&:hover': { bgcolor: 'grey.200' } }}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Check fontSize='small' />
+                <Typography variant='body1' sx={{ ml: 1 }}>Approve</Typography>
               </div>
             </MenuItem>
           )
@@ -93,7 +103,7 @@ function TimeSheetMenu({ anchorEl, handleMenuClose, handleView, handleEdit, hand
         <DialogActions>
           <Button onClick={handleDeleteConfirmationClose} color="primary">
             Cancel
-          </Button>
+          </Button> 
           <Button onClick={handleDeleteConfirmation} color="error" >
             Delete
           </Button>

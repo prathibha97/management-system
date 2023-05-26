@@ -1,5 +1,5 @@
-import { EditOutlined, MoreVert as MoreVertIcon, TimerOutlined } from '@mui/icons-material';
-import { Box, IconButton, Typography } from '@mui/material';
+import { EditOutlined, MoreVert as MoreVertIcon, TimerOutlined, ReportGmailerrorred } from '@mui/icons-material';
+import { Box, IconButton, Typography, Tooltip } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -140,6 +140,20 @@ function TimeSheet() {
           }
         }
 
+        const handleApprove = async() => {
+          // try {
+          //   const timeRecordData = await rejectTimeRecord({ id: params.id }).unwrap();
+          //   dispatch(setRejectTimeRecord({ timeRecord: timeRecordData?.timeRecord }));
+          //   const updatedRows = [...filteredRows, timeRecordData?.timeRecord];
+          //   setFilteredRows(updatedRows);
+          //   setTimeRecordChangeCount((prev) => prev + 1);
+          //   handleMenuClose();
+          // } catch (err) {
+          //   console.log(err);
+          // }
+          console.log('Approve clicked for ID:', params.id);
+        }
+
 
         return (
           <div>
@@ -153,6 +167,8 @@ function TimeSheet() {
               handleEdit={handleEdit}
               handleDelete={handleDelete}
               handleReject={handleReject}
+              handleApprove={handleApprove}
+              params={params}
             />
             <ViewTimeEntry handleCloseDialog={handleCloseDialog} openDialog={openDialog} params={params} />
             <EditTimeRecord
@@ -200,8 +216,26 @@ function TimeSheet() {
       field: 'timeSpent',
       headerName: 'Time Spent',
       width: 150,
+      renderCell: (params) => {
+        const isRejected = params.row.status === 'rejected';
+
+        return (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Typography variant="body2">{params.value}</Typography>
+            {isRejected && (
+              <Tooltip title='sdh' placement='right'>
+              <IconButton size="small" color='error'>
+                <ReportGmailerrorred /> 
+              </IconButton>
+              </Tooltip>
+            )}
+          </div>
+        );
+      },
     },
   ];
+
+  const getRowClassName = (params) => params.row.status === 'rejected' ? 'text-red-600 line-through' : '';
 
   const calculateTotalTime = () => {
     let totalTime = 0;
@@ -263,6 +297,7 @@ function TimeSheet() {
           pagination
           pageSize={10}
           disableSelectionOnClick
+          getRowClassName={getRowClassName} // Apply custom row class
           sx={{
             '& .MuiDataGrid-columnHeaders': {
               backgroundColor: 'rgb(232 232 232)',
