@@ -33,6 +33,11 @@ function convertSecondsToHours(seconds) {
 }
 
 function MonthTotals({ data }) {
+  if (data === undefined || data === null) {
+    // Return null or a placeholder component when data is undefined or null
+    return null;
+  }
+
   const projectTotals = data.reduce((totals, item) => {
     const project = item.project.title;
     const timeSpentSeconds = convertTimeToSeconds(item.timeSpent);
@@ -58,35 +63,39 @@ function MonthTotals({ data }) {
   ];
 
   return (
-    <div className="w-full h-[400px] bg-white rounded p-5">
+    <div className="w-full h-[400px] bg-white rounded p-5 flex flex-col">
+      <h2 className="text-lg font-semibold mb-4">Monthly Project Totals</h2>
       <div className="flex items-center mb-2">
-        <FontAwesomeIcon icon={faClock} className="mr-1 text-navy" />
+        <FontAwesomeIcon icon={faClock} className="mr-2 text-navy" />
         <Link to="/timesheet" className="text-navy hover:underline">
           View Full Timesheet
         </Link>
       </div>
-      <ResponsiveContainer width="100%" style={{ margin: 'auto' }} >
-        <PieChart>
-          <Pie
-            data={chartData}
-            dataKey="timeSpent"
-            nameKey="name"
-            cx="50%"
-            cy="50%"
-            innerRadius={50}
-            outerRadius={80}
-            fill="#8884d8"
-            labelLine={false}
-            label={<CustomLabel data={chartData} />}
-          />
-          <Legend
-            verticalAlign="bottom"
-            align="center"
-            wrapperStyle={{ paddingBottom: '10px' }}
-            payload={legendItems}
-          />
-        </PieChart>
-      </ResponsiveContainer>
+      <div className="w-full h-full">
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={chartData}
+              dataKey="timeSpent"
+              nameKey="name"
+              cx="50%"
+              cy="50%"
+              innerRadius={50}
+              outerRadius={80}
+              fill="#8884d8"
+              labelLine={false}
+              label={<CustomLabel data={chartData} />}
+            />
+            <Legend
+              verticalAlign="bottom"
+              align="center"
+              wrapperStyle={{ paddingBottom: '10px' }}
+              payload={legendItems}
+              iconType="circle"
+            />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }

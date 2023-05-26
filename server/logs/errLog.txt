@@ -10,3 +10,4 @@
 20230523	11:38:42	ba405495-5aef-40ab-8afe-c0ac8fc96604	Error: Not authorized, as an admin
 20230523	11:39:12	852db281-f3a0-4cfc-b42c-fc6468be7ea2	Error: Not authorized, as an admin
 20230523	11:40:17	89a7d9dd-1c99-4267-9647-ce6152925e7c	Error: Not authorized, as an admin
+20230526	11:33:55	310b879e-d29f-46eb-9991-70a75f4c8721	Error: Not Found - /api/timerecords/employee/642fb85da1966835e8daee87

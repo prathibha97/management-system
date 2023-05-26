@@ -136,9 +136,9 @@ const rejectTimeRecord = async (req, res) => {
 };
 
 /*
-  @desc   get month totals for an employee
-  @route  GET /api/timerecords/employee/:id
-  @access Private
+  ?@desc   get month totals for an employee
+  *@route  GET /api/timerecords/employee/:id/month-totals
+  *@access Private
 */
 
 const getMonthTotals = async (req, res) => {
@@ -175,6 +175,28 @@ const getMonthTotals = async (req, res) => {
   }
 };
 
+/*
+  ?@desc   get time records for an employee
+  *@route  GET /api/timerecords/employee/:id
+  *@access Private
+*/
+
+const getTimeRecordsForEmployee = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const timeRecords = await TimeRecord.find({ employee: id })
+      .populate('employee', 'name')
+      .populate('project', 'title')
+      .populate('task', 'title')
+      .populate('client', 'name');
+
+    return res.status(200).json({ timeRecords, message: 'Time records fetched successfully' });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: 'Error occurred while fetching time records' });
+  }
+}
+
 
 module.exports = {
   getAllTimeRecords,
@@ -183,4 +205,5 @@ module.exports = {
   deleteTimeRecord,
   rejectTimeRecord,
   getMonthTotals,
+  getTimeRecordsForEmployee,
 };

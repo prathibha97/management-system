@@ -4,7 +4,7 @@ import { Box, Paper, Popper, Typography } from "@mui/material";
 import { useEffect } from "react";
 
 function DatePopover(props) {
-  const { anchorEl, date, hours, onClose, isDataAvailable } = props;
+  const { anchorEl, date, hours, minutes, onClose, isDataAvailable, } = props;
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popper' : undefined;
@@ -30,7 +30,7 @@ function DatePopover(props) {
         </Box>
         {isDataAvailable ? (
           <Typography variant="body1">
-            Total Logged Hours: {hours}
+            Total Logged Hours: {hours}:{ minutes || '00'}
           </Typography>
         ) : (
           <Typography variant="body1" color="text.secondary">

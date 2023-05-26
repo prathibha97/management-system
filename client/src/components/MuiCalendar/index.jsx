@@ -1,3 +1,4 @@
+/* eslint-disable radix */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable no-nested-ternary */
@@ -10,17 +11,11 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { PickersDay } from '@mui/x-date-pickers/PickersDay';
 import dayjs from 'dayjs';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { selectCurrentUser } from '../../app/features/auth/authSelectors';
+import { useGetTimeRecordsByEmployeeQuery } from '../../app/features/timeRecords/timeRecordsApiSlice';
 import DatePopover from '../DatePopover';
-
-const dummyData = [
-  { date: '2023-05-01', hours: 8 },
-  { date: '2023-05-02', hours: 4 },
-  { date: '2023-05-03', hours: 0 },
-  { date: '2023-05-04', hours: 6 },
-  { date: '2023-05-05', hours: 5 },
-  { date: '2023-05-06', hours: 7 },
-  { date: '2023-05-07', hours: 9 },
-];
+import { convertTimeToSeconds } from '../../utils/convertTime';
 
 const initialValue = dayjs();
 
@@ -30,9 +25,25 @@ function ServerDay(props) {
   const [anchorEl, setAnchorEl] = useState(null);
   const isSelected = !props.outsideCurrentMonth && props.highlightedDays.indexOf(props.day.date()) > -1;
 
-  const workedDay = dummyData.find((d) => dayjs(d.date).isSame(day, 'day'));
+  const user = useSelector(selectCurrentUser);
+  const { data: timeRecordsData } = useGetTimeRecordsByEmployeeQuery({ id: user?._id },{
+    refetchOnMountOrArgChange: true,
+  });
+  const timeRecords = timeRecordsData?.timeRecords;
+  const matchedRecords = Array.isArray(timeRecords)
+    ? timeRecords.filter((d) => dayjs(d.date).isSame(day, 'day'))
+    : [];
 
-  const isDataAvailable = workedDay !== undefined;
+  const { hours, minutes } = matchedRecords.reduce((totalTime, record) => {
+    const timeSpent = record?.timeSpent;
+    const recordTime = timeSpent ? convertTimeToSeconds(timeSpent) : { hours: 0, minutes: 0 };
+    return {
+      hours: totalTime.hours + recordTime.hours,
+      minutes: totalTime.minutes + recordTime.minutes
+    };
+  }, { hours: 0, minutes: 0 });
+
+  const isDataAvailable = matchedRecords.length > 0;
 
   const handleBadgeClick = (event) => {
     if (!anchorEl) {
@@ -49,33 +60,51 @@ function ServerDay(props) {
       <Badge
         key={props.day.toString()}
         overlap="circular"
-        variant='dot'
-        color={isSelected && workedDay?.hours >= 8 ? 'primary' : workedDay?.hours < 8 ? 'error' : 'default'}
+        variant="dot"
+        color={
+          isSelected && hours >= 8 ? 'primary' : hours < 8 ? 'error' : 'default'
+        }
         onClick={handleBadgeClick}
       >
         <PickersDay {...other} outsideCurrentMonth={outsideCurrentMonth} day={day} />
       </Badge>
       {anchorEl && (
-        <DatePopover anchorEl={anchorEl} date={day.format('MMM D, YYYY')} hours={workedDay?.hours} onClose={handleClose} isDataAvailable={isDataAvailable} />
+        <DatePopover
+          anchorEl={anchorEl}
+          date={day.format('MMM D, YYYY')}
+          hours={hours}
+          minutes={minutes}
+          onClose={handleClose}
+          isDataAvailable={isDataAvailable}
+        />
       )}
     </>
   );
 }
 
 function MuiCalendar() {
+  const user = useSelector(selectCurrentUser);
+  const { data, isLoading } = useGetTimeRecordsByEmployeeQuery({ id: user?._id },{
+    refetchOnMountOrArgChange: true,
+  });
+
+  // Check if data is an array before mapping
+  const highlightedDays = Array.isArray(data?.timeRecords)
+    ? data?.timeRecords.map((d) => dayjs(d.date).date())
+    : [];
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DateCalendar
         defaultValue={initialValue}
-        // loading={isLoading}
+        loading={isLoading}
         renderLoading={() => <DayCalendarSkeleton />}
         slots={{
           day: ServerDay,
         }}
         slotProps={{
           day: {
-            highlightedDays: dummyData.map((d) => dayjs(d.date).date()),
+            highlightedDays,
           },
         }}
       />

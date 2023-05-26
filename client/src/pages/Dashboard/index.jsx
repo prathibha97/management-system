@@ -2,25 +2,26 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentUser } from "../../app/features/auth/authSelectors";
-import { useGetTimeRecordsByEmployeeCurrentMonthQuery } from "../../app/features/timeRecords/timeRecordsApiSlice";
-
-import { MonthTotals, MuiCalendar, RecentlyActiveProjects, WeeklyProjectCount } from "../../components";
+import { useGetTimeRecordsByEmployeeCurrentMonthQuery, useGetTimeRecordsByEmployeeQuery } from "../../app/features/timeRecords/timeRecordsApiSlice";
 import { setGetTimeRecordsByEmployeeForCurrentMonth } from "../../app/features/timeRecords/timeRecordsSlice";
+import { MonthTotals, MuiCalendar, RecentlyActiveProjects, WeeklyProjectCount } from "../../components";
 
 function Dashboard() {
 
   const dispatch = useDispatch();
   const user = useSelector(selectCurrentUser)
 
-  const { data } = useGetTimeRecordsByEmployeeCurrentMonthQuery({ id: user?._id }, {
+  const { data: monthlyData} = useGetTimeRecordsByEmployeeCurrentMonthQuery({ id: user?._id }, {
     refetchOnMountOrArgChange: true,
     refetchOnReconnect: true,
   });
-  const timeRecords = data?.timeRecords;
+
+  const { data , isLoading} = useGetTimeRecordsByEmployeeQuery({ id: user?._id })
+  const timeRecords = monthlyData?.timeRecords;
 
   useEffect(() => {
-    dispatch(setGetTimeRecordsByEmployeeForCurrentMonth({ timeRecords}))
-  }, [])
+    dispatch(setGetTimeRecordsByEmployeeForCurrentMonth({ timeRecords }))
+  }, [timeRecords])
 
   return (
     <div className="mt-5">
@@ -37,7 +38,7 @@ function Dashboard() {
             <div className="mr-5">
               <div className="my-2 text-sm text-gray-700">Daily Totals</div>
               <div>
-                <MuiCalendar />
+                <MuiCalendar data={data} isLoading={isLoading}/>
               </div>
             </div>
             <WeeklyProjectCount data={data} />
