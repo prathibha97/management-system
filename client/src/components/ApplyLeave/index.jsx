@@ -17,6 +17,8 @@ function ApplyLeave({ user, setLeaveChangeCount }) {
   const [endDate, setEndDate] = useState(dayjs().add(1, 'day').format())
   const [reason, setReason] = useState('')
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
+  const [isMedicalSelected, setIsMedicalSelected] = useState(false);
+  const [medical, setMedical] = useState(null)
   const dispatch = useDispatch()
 
 
@@ -25,7 +27,7 @@ function ApplyLeave({ user, setLeaveChangeCount }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const leaveData = await requestLeave({ leaveType, startDate, endDate, reason }).unwrap();
+      const leaveData = await requestLeave({ leaveType, startDate, endDate, reason, medical }).unwrap();
       dispatch(setLeaveRequest({ newLeave: leaveData }));
       setAlert({ open: true, message: 'Leave request created successfully', severity: 'success' });
       setLeaveChangeCount(1);
@@ -61,7 +63,11 @@ function ApplyLeave({ user, setLeaveChangeCount }) {
             <Select
               value={leaveType}
               label="Leave Type"
-              onChange={(e) => setLeaveType(e.target.value)}
+              onChange={(e) => {
+                setLeaveType(e.target.value)
+                setIsMedicalSelected(e.target.value === 'Medical');
+              }
+              }
             >
               <MenuItem value='Casual'>Casual</MenuItem>
               {
@@ -91,6 +97,15 @@ function ApplyLeave({ user, setLeaveChangeCount }) {
                 renderInput={(params) => <TextField {...params} />}
               />
             </LocalizationProvider>
+            {isMedicalSelected && (
+              <TextField
+                sx={{ marginBottom: '20px' }}
+                type='file'
+                id='pdf-file-input'
+                accept=".pdf,.doc,.docx,.jpeg,.jpg,.png"
+                onChange={(e) => setMedical(e.target.files[0])}
+              />
+            )}
           </div>
           <TextField sx={{ marginBottom: '20px' }} fullWidth multiline rows={5} label="Reason" value={reason} onChange={(e) => setReason(e.target.value)} />
           <Button title="Apply Leave" onClick={handleSubmit} icon={faGreaterThan} />

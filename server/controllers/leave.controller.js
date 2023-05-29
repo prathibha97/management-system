@@ -8,6 +8,7 @@ const getNumberOfDays = require('../utils/getNumberOfDays');
 const io = require('../services/socket');
 const Notification = require('../models/Notification');
 const formatDate = require('../utils/formatDate');
+const upload = require('../services/fileUpload');
 
 /* 
 ?@desc   Create a new leave request
@@ -16,9 +17,15 @@ const formatDate = require('../utils/formatDate');
 */
 
 const createLeaveRequest = async (req, res) => {
+
+  const { leaveType, startDate, endDate, reason } = req.body;
+  const { empNo } = req.user;
+  const medical = req.files?.medical?.[0]?.path ?? '';
+
+  // Upload files using the "upload" middleware
+  await upload.any()(req, res, () => {});
+
   try {
-    const { leaveType, startDate, endDate, reason } = req.body;
-    const { empNo } = req.user;
 
     // Check if employee with the given empNo exists
     const employee = await Employee.findOne({ empNo });
@@ -34,6 +41,7 @@ const createLeaveRequest = async (req, res) => {
       startDate,
       endDate,
       reason,
+      medical
     });
 
     res.status(201).json({ message: 'Leave request created successfully', leaveRequest });
