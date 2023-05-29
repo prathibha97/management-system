@@ -1,3 +1,5 @@
+/* eslint-disable no-plusplus */
+/* eslint-disable no-await-in-loop */
 const mongoose = require('mongoose');
 const TimeRecord = require('../models/TimeRecord');
 const formatTime = require('../utils/formatTime');
@@ -197,6 +199,141 @@ const getTimeRecordsForEmployee = async (req, res) => {
   }
 }
 
+/*
+  ?@desc   get weekly totals for an employee
+  *@route  GET /api/timerecords/employee/:id/week-totals
+  *@access Private
+*/
+
+const getMonthlyWeekTotals = async (req, res) => {
+  const { id } = req.params;
+  try {
+    // Get the current date
+    const currentDate = new Date();
+
+    // Extract the year and month from the current date
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth() + 1; // Months are zero-based (0 - January, 1 - February, etc.)
+
+    // Get the total number of days in the current month
+    const totalDays = new Date(currentYear, currentMonth, 0).getDate();
+
+    // Create an array to hold the weekly totals
+    const weeklyTotals = [];
+
+    // Loop through each week of the month
+    for (let week = 1; week <= 5; week++) {
+      // Calculate the start and end dates of the current week
+      const weekStartDate = new Date(currentYear, currentMonth - 1, (week - 1) * 7 + 1);
+
+      let weekEndDate;
+      if (week === 5 && weekStartDate.getDate() + 6 > totalDays) {
+        weekEndDate = new Date(currentYear, currentMonth - 1, totalDays);
+      } else {
+        weekEndDate = new Date(currentYear, currentMonth - 1, weekStartDate.getDate() + 6);
+      }
+
+      // Set the end time to the end of the day
+      weekEndDate.setHours(23, 59, 59, 999);
+
+      // Find the time records for the current week
+      const timeRecords = await TimeRecord.find({
+        employee: id,
+        date: { $gte: weekStartDate, $lte: weekEndDate },
+      })
+        .populate('employee', 'name')
+        .populate('project', 'title')
+        .populate('task', 'title')
+        .populate('client', 'name');
+
+      // Calculate the total hours for the current week
+      const totalHours = timeRecords.reduce((acc, record) => {
+        const [hours, minutes, seconds] = record.timeSpent.split(':');
+        const totalSeconds = +hours * 3600 + +minutes * 60 + +seconds;
+        return acc + totalSeconds / 3600;
+      }, 0);
+
+      // Get the unique project count for the current week
+      const projectCount = [...new Set(timeRecords.map((record) => record.project))].length;
+
+      // Add the weekly totals to the array
+      weeklyTotals.push({ weekStartDate, weekEndDate, totalHours, projectCount, timeRecords });
+    }
+
+    return res.status(200).json({ weeklyTotals, message: 'Weekly totals fetched successfully' });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: 'Error occurred while fetching weekly totals' });
+  }
+};
+
+// const getMonthlyWeekTotals = async (req, res) => {
+//   const { id, month } = req.params;
+//   try {
+//     // Parse the month parameter to an integer
+//     const targetMonth = parseInt(month, 10);
+
+//     // Get the current date
+//     const currentDate = new Date();
+
+//     // Extract the year from the current date
+//     const currentYear = currentDate.getFullYear();
+
+//     // Calculate the total number of days in the target month
+//     const totalDays = new Date(currentYear, targetMonth, 0).getDate();
+
+//     // Create an array to hold the weekly totals
+//     const weeklyTotals = [];
+
+//     // Loop through each week of the month
+//     for (let week = 1; week <= 5; week++) {
+//       // Calculate the start and end dates of the current week
+//       const weekStartDate = new Date(currentYear, targetMonth - 1, (week - 1) * 7 + 1);
+
+//       let weekEndDate;
+//       if (week === 5 && weekStartDate.getDate() + 6 > totalDays) {
+//         weekEndDate = new Date(currentYear, targetMonth - 1, totalDays);
+//       } else {
+//         weekEndDate = new Date(currentYear, targetMonth - 1, weekStartDate.getDate() + 6);
+//       }
+
+//       // Set the end time to the end of the day
+//       weekEndDate.setHours(23, 59, 59, 999);
+
+//       // Find the time records for the current week
+//       const timeRecords = await TimeRecord.find({
+//         employee: id,
+//         date: { $gte: weekStartDate, $lte: weekEndDate },
+//       })
+//         .populate('employee', 'name')
+//         .populate('project', 'title')
+//         .populate('task', 'title')
+//         .populate('client', 'name');
+
+//       // Calculate the total hours for the current week
+//       const totalHours = timeRecords.reduce((acc, record) => {
+//         const [hours, minutes, seconds] = record.timeSpent.split(':');
+//         const totalSeconds = +hours * 3600 + +minutes * 60 + +seconds;
+//         return acc + totalSeconds / 3600;
+//       }, 0);
+
+//       // Get the unique project count for the current week
+//       const projectCount = [...new Set(timeRecords.map((record) => record.project))].length;
+
+//       // Add the weekly totals to the array
+//       weeklyTotals.push({ weekStartDate, weekEndDate, totalHours, projectCount, timeRecords });
+//     }
+
+//     return res.status(200).json({ weeklyTotals, message: 'Weekly totals fetched successfully' });
+//   } catch (err) {
+//     console.log(err);
+//     return res.status(500).json({ message: 'Error occurred while fetching weekly totals' });
+//   }
+// };
+
+
+
+
 
 module.exports = {
   getAllTimeRecords,
@@ -206,4 +343,5 @@ module.exports = {
   rejectTimeRecord,
   getMonthTotals,
   getTimeRecordsForEmployee,
+  getMonthlyWeekTotals,
 };

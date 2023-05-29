@@ -11,25 +11,29 @@ function EmptyData() {
 }
 
 function WeeklyProjectCount({ data }) {
-  const emptyDataSections = [1, 2, 3, 4];
 
   return (
     <section>
       <div className="my-[10px] mr-[7px] text-sm text-[#878b8e]">Weekly Totals</div>
       <div>
-        <div className="flex justify-start items-center flex-nowrap mt-[15px] h-[53px]">
-          <div className="mr-[13px] w-[53px]">
-            <CustomPieChart data={data} innerRadius={8} outerRadius={24} />
-          </div>
-          <div className="flex flex-col text-base text-[#165e92]">
-            <span>1 project</span>
-            <span className="text-[#767a7d]">00:00 h</span>
-          </div>
-        </div>
-        {emptyDataSections.map((section) => (
-          <div key={section} className="flex justify-start items-center flex-nowrap mt-[15px] h-[53px] tw-empty">
-            <EmptyData />
-            <div className="text-base text-[#869199]">No data<br />available</div>
+        {data?.map((week) => (
+          <div key={week.weekStartDate} className="flex justify-start items-center flex-nowrap mt-[15px] h-[53px]">
+            {week.projectCount > 0 && week.totalHours > 0 ? (
+              <>
+                <div className="mr-[13px] w-[53px]">
+                  <CustomPieChart data={week.timeRecords} innerRadius={8} outerRadius={24} />
+                </div>
+                <div className="flex flex-col text-base text-[#165e92]">
+                  <span>{week.projectCount} project{week.projectCount > 1 ? 's' : ''}</span>
+                  <span className="text-[#767a7d]">{week.totalHours.toFixed(2)} h</span>
+                </div>
+              </>
+            ) : (
+              <>
+                <EmptyData />
+                <div className="text-base text-[#869199]">No data<br />available</div>
+              </>
+            )}
           </div>
         ))}
       </div>

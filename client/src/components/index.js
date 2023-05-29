@@ -14,7 +14,7 @@ export { default as CustomAvatar } from './CustomAvatar';
 export { default as CustomPieChart } from './CustomPieChart';
 export { default as DataTable } from './DataTable';
 export { default as DatePopover } from './DatePopover';
-export { default as DocumentUpload } from './DocumentUpload';
+export { default as DocumentUpload } from './DatePopover/DocumentUpload';
 export { default as EditMeeting } from './EditMeeting';
 export { default as EditTimeRecord } from './EditTimeRecord';
 export { default as EmployeeCard } from './EmployeeCard';

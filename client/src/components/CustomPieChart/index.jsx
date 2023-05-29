@@ -1,13 +1,18 @@
-import React from 'react'
-import { Pie, PieChart, ResponsiveContainer } from 'recharts'
+import React from 'react';
+import { Pie, PieChart, ResponsiveContainer } from 'recharts';
 
 function CustomPieChart({ data, innerRadius, outerRadius }) {
+  const chartData = data.map((record) => ({
+    name: record.project.title,
+    timeSpent: parseFloat(record.timeSpent.split(':')[0]),
+  }));
+
   return (
-    <ResponsiveContainer width={53} height={400} style={{ margin: 'auto' }}>
+    <ResponsiveContainer width={53} height={120} style={{ margin: 'auto' }}>
       <PieChart>
         <Pie
-          data={data}
-          dataKey="hours"
+          data={chartData}
+          dataKey="timeSpent"
           nameKey="name"
           cx="50%"
           cy="50%"
@@ -17,7 +22,7 @@ function CustomPieChart({ data, innerRadius, outerRadius }) {
         />
       </PieChart>
     </ResponsiveContainer>
-  )
+  );
 }
 
-export default CustomPieChart
+export default CustomPieChart;

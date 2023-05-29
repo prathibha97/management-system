@@ -37,13 +37,18 @@ export const timeRecordApiSlice = apiSlice.injectEndpoints({
     getTimeRecordsByEmployeeCurrentMonth: builder.query({
       query: ({ id }) => ({
         url: `/timerecords/employee/${id}/month-totals`,
-      })
+      }),
     }),
     getTimeRecordsByEmployee: builder.query({
       query: ({ id }) => ({
         url: `/timerecords/employee/${id}`,
-      })
-    })
+      }),
+    }),
+    getWeeklyTimeRecordsForCurrentMonth: builder.query({
+      query: ({ id }) => ({
+        url: `/timerecords/employee/${id}/weekly-totals`
+      }),
+    }),
   }),
 });
 
@@ -54,5 +59,6 @@ export const {
   useDeleteTimeRecordMutation,
   useRejectTimeRecordMutation,
   useGetTimeRecordsByEmployeeCurrentMonthQuery,
-  useGetTimeRecordsByEmployeeQuery
+  useGetTimeRecordsByEmployeeQuery,
+  useGetWeeklyTimeRecordsForCurrentMonthQuery,
 } = timeRecordApiSlice;
