@@ -13,6 +13,7 @@ const sendEmail = require('./services/sendEmail');
 // const { logger } = require('./middleware/logEvents');
 const credentials = require('./middleware/credentials.middleware');
 const corsOptions = require('./config/corsOptions');
+const pwRecoveryTemplate = require('./email/passwordRecoveryTemplate');
 
 const app = express();
 
@@ -53,7 +54,9 @@ app.get('/pdf', (req, res) => {
 
 app.post('/send_recovery_email', (req, res) => {
   const { OTP, email } = req.body;
-  sendEmail({ OTP, email })
+  const subject = 'SPHIRIA DIGITAL SYSTEM PASSWORD RECOVERY';
+  const body = pwRecoveryTemplate(OTP);
+  sendEmail({ email, subject, body })
     .then((response) => res.send(response.message))
     .catch((error) => res.status(500).send(error.message));
 });
