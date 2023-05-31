@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 // const bodyParser = require('body-parser');
 const fs = require('fs');
 const bodyParser = require('body-parser');
+const cron = require('node-cron');
 const api = require('./routes/api');
 const { errorHandler, notFound } = require('./middleware/error.middleware');
 const sendEmail = require('./services/sendEmail');
@@ -14,6 +15,7 @@ const sendEmail = require('./services/sendEmail');
 const credentials = require('./middleware/credentials.middleware');
 const corsOptions = require('./config/corsOptions');
 const pwRecoveryTemplate = require('./email/passwordRecoveryTemplate');
+const updateLeaveBalances = require('./utils/leaveBalanceUpdater');
 
 const app = express();
 
@@ -63,6 +65,24 @@ app.post('/send_recovery_email', (req, res) => {
 
 app.use(notFound);
 app.use(errorHandler);
+
+// Cron job to update leave balances at the end of each year
+cron.schedule('59 23 31 12 *', () => {
+  updateLeaveBalances();
+});
+
+// const testUpdateLeaveBalances = async () => {
+//   try {
+//     console.log('Updating leave balances...');
+//     await updateLeaveBalances();
+//     console.log('Leave balances updated successfully.');
+//   } catch (error) {
+//     console.error('Error updating leave balances:', error.message);
+//   }
+// };
+
+// testUpdateLeaveBalances();
+
 
 if (process.env.NODE_ENV !== 'development') {
   app.use(express.static(path.join(__dirname, '..', 'client', 'build')));

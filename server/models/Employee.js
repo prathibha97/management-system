@@ -66,10 +66,6 @@ const empSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    // isAdmin: {
-    //   type: Boolean,
-    //   default: false,
-    // },
     role: {
       type: String,
       enum: ['Admin', 'Employee', 'Manager', 'HR', '3rd Party'],
@@ -110,7 +106,7 @@ const empSchema = new mongoose.Schema(
         type: Number,
         default() {
           if (['Intern', 'Contract', 'Part-Time'].includes(this.workType)) {
-            return 1;
+            return 2;
           }
           return 7;
         },
@@ -141,6 +137,10 @@ const empSchema = new mongoose.Schema(
           }
           return 7;
         },
+      },
+      BroughtForward: {
+        type: Number,
+        default: 0,
       },
     },
     refreshToken: [String],

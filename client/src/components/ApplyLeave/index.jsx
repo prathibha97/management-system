@@ -76,6 +76,10 @@ function ApplyLeave({ user, setLeaveChangeCount }) {
               }
               <MenuItem value='Annual'>Annual</MenuItem>
               <MenuItem value='Medical'>Medical</MenuItem>
+              {
+                user?.leaveBalance?.BroughtForward === 0 ? null :
+                  <MenuItem value='BroughtForward'>Brought Forward</MenuItem>
+              }
             </Select>
           </FormControl>
           <div className='flex mt-5 mb-5 gap-5'>
