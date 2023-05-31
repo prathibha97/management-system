@@ -64,7 +64,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentUser } from "../../app/features/auth/authSelectors";
 import { useGetTimeRecordsByEmployeeCurrentMonthQuery, useGetTimeRecordsByEmployeeQuery, useGetWeeklyTimeRecordsForCurrentMonthQuery } from "../../app/features/timeRecords/timeRecordsApiSlice";
-import { setGetTimeRecordsByEmployeeForCurrentMonth } from "../../app/features/timeRecords/timeRecordsSlice";
+import { setGetTimeRecordsByEmployeeForCurrentMonth, setGetWeeklyRecordsByEmployeeForCurrentMonth } from "../../app/features/timeRecords/timeRecordsSlice";
 import { MonthTotals, MuiCalendar, RecentlyActiveProjects, WeeklyProjectCount } from "../../components";
 
 function Dashboard() {
@@ -79,12 +79,17 @@ function Dashboard() {
   const { data: dailyTimeRecords, isLoading } = useGetTimeRecordsByEmployeeQuery({ id: user?._id });
   const timeRecords = monthlyData?.timeRecords;
 
-  const { data: weeklyTimeRecordsForTheMonth } = useGetWeeklyTimeRecordsForCurrentMonthQuery({ id: user?._id });
+  const { data: weeklyTimeRecordsForTheMonth, refetch } = useGetWeeklyTimeRecordsForCurrentMonthQuery({ id: user?._id });
   const weeklyTimeRecords = weeklyTimeRecordsForTheMonth?.weeklyTotals;
 
   useEffect(() => {
     dispatch(setGetTimeRecordsByEmployeeForCurrentMonth({ timeRecords }));
   }, [monthlyData]);
+
+  useEffect(() => {
+    refetch()
+    dispatch(setGetWeeklyRecordsByEmployeeForCurrentMonth({ timeRecords }));
+  }, [weeklyTimeRecords]);
 
   return (
     <div className="mt-5">

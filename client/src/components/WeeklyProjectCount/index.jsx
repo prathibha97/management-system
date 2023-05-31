@@ -11,7 +11,6 @@ function EmptyData() {
 }
 
 function WeeklyProjectCount({ data }) {
-
   return (
     <section>
       <div className="my-[10px] mr-[7px] text-sm text-[#878b8e]">Weekly Totals</div>
