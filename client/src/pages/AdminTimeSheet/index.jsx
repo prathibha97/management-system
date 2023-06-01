@@ -1,21 +1,22 @@
+/* eslint-disable consistent-return */
 import { EditOutlined, MoreVert as MoreVertIcon, ReportGmailerrorred, TimerOutlined } from '@mui/icons-material';
 import { Box, IconButton, Tooltip, Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectCurrentUser } from '../../app/features/auth/authSelectors';
-import { selectTimeRecords } from '../../app/features/timeRecords/timeRecordSelectors';
+import { selectAdminTimeRecords } from '../../app/features/timeRecords/timeRecordSelectors';
 import {
   useCreateTimeRecordMutation,
   useDeleteTimeRecordMutation,
   useEditTimeRecordMutation,
-  useGetTimeRecordsByEmployeeQuery,
+  useGetAllTimeRecordsQuery,
   useRejectTimeRecordMutation
 } from '../../app/features/timeRecords/timeRecordsApiSlice';
 import {
   setCreateTimeRecord,
   setDeleteTimeRecord,
   setEditTimeRecord,
+  setGetAdminTimeRecords,
   setGetTimeRecords,
   setRejectTimeRecord,
 } from '../../app/features/timeRecords/timeRecordsSlice';
@@ -29,24 +30,22 @@ import {
   TimeSheetMenu,
   ViewTimeEntry,
 } from '../../components';
+import { formatDate } from '../../utils/formatDate';
 
 
-
-function TimeSheet() {
+function AdminTimeSheet() {
 
   const dispatch = useDispatch();
-  const user = useSelector(selectCurrentUser)
 
-  const { data: timeSheetDataFromApi, refetch: refetchTimeSheetData, isLoading: isTimeSheetDataFromApiLoading } = useGetTimeRecordsByEmployeeQuery({
-    id: user._id,
+  const { data: timeSheetDataFromApi, refetch: refetchTimeSheetData, isLoading: isTimeSheetDataFromApiLoading } = useGetAllTimeRecordsQuery({
     refetchOnMountOrArgChange: true,
   });
 
   useEffect(() => {
-    dispatch(setGetTimeRecords({ timeRecords: timeSheetDataFromApi?.timeRecords }));
+    dispatch(setGetAdminTimeRecords({ timeRecords: timeSheetDataFromApi }));
   }, [timeSheetDataFromApi]);
 
-  const timeSheetData = useSelector(selectTimeRecords);
+  const timeSheetData = useSelector(selectAdminTimeRecords);
   // const timeChange = useSelector(SelectTimeChange)
 
   const [filteredRows, setFilteredRows] = useState([]);
@@ -64,6 +63,15 @@ function TimeSheet() {
     }
   }, [timeSheetData]);
 
+
+  // useEffect(() => {
+  //   if (timeSheetData) {
+  //     const groupedRows = groupBy(timeSheetData, (row) => formatDate(row.date));
+  //     setFilteredRows(groupedRows);
+  //   }
+  // }, [timeSheetData]);
+
+  // console.log(filteredRows);
 
   useEffect(() => {
     if (timeRecordChangeCount > 0) {
@@ -145,6 +153,7 @@ function TimeSheet() {
             const timeRecordData = await rejectTimeRecord({ id: params.id, rejectReason: rejectedReason }).unwrap();
             dispatch(setRejectTimeRecord({ timeRecord: timeRecordData?.timeRecord }));
             const updatedRows = [...filteredRows, timeRecordData?.timeRecord];
+            console.log(timeRecordData?.timeRecord);
             setFilteredRows(updatedRows);
             setTimeRecordChangeCount((prev) => prev + 1);
             handleMenuClose();
@@ -226,6 +235,12 @@ function TimeSheet() {
       align: 'center',
     },
     {
+      field: 'date',
+      headerName: 'Date',
+      width: 150,
+      valueGetter: (params) => `${formatDate(params?.row?.date)}`,
+    },
+    {
       field: 'timeSpent',
       headerName: 'Time Spent',
       width: 150,
@@ -236,7 +251,7 @@ function TimeSheet() {
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <Typography variant="body2">{params.value}</Typography>
             {isRejected && (
-              <Tooltip title='sdh' placement='right'>
+              <Tooltip title={params.row.rejectReason} placement='right'>
                 <IconButton size="small" color='error'>
                   <ReportGmailerrorred />
                 </IconButton>
@@ -350,4 +365,4 @@ function TimeSheet() {
   );
 }
 
-export default TimeSheet;
+export default AdminTimeSheet;

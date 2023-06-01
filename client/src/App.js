@@ -3,6 +3,7 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { selectCurrentUser } from './app/features/auth/authSelectors';
 import { CreateProject, RequireAuth } from './components';
 import {
+  AdminTimeSheet,
   Attendance,
   Auth,
   Board,
@@ -51,6 +52,7 @@ function App() {
                 <Route path="/payroll" element={<Payroll />} />
                 <Route path="/leaves" element={<Leaves />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/admin/timesheet" element={<AdminTimeSheet />} />
               </>
             )}
           </Route>

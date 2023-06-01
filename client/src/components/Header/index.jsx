@@ -81,6 +81,9 @@ function Header() {
     case '/timesheet':
       heading = 'Time Sheet';
       break;
+    case '/admin/timesheet':
+      heading = 'Time Sheet';
+      break;
     case '/profile':
       heading = 'Profile';
       break;

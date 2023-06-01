@@ -26,6 +26,11 @@ function Sidebar({ user }) {
 
   const adminSidebarItems = [
     {
+      name: "Time Sheet",
+      link: "/admin/timesheet",
+      icon: faClockFour,
+    },
+    {
       name: "Manage People",
       link: "/people",
       icon: faUsers,

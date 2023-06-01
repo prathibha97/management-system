@@ -5,6 +5,7 @@ const timeRecordSlice = createSlice({
   name: 'timeRecord',
   initialState: {
     timeRecords: [],
+    adminTimeRecords: [],
     timeRecord: {},
     timeRecordChangeCount: 0,
   },
@@ -12,6 +13,10 @@ const timeRecordSlice = createSlice({
     setGetTimeRecords: (state, action) => {
       const { timeRecords } = action.payload;
       state.timeRecords = timeRecords;
+    },
+    setGetAdminTimeRecords: (state, action) => {
+      const { timeRecords } = action.payload;
+      state.adminTimeRecords = timeRecords;
     },
     setCreateTimeRecord: (state, action) => {
       const { timeRecord } = action.payload;
@@ -48,6 +53,7 @@ const timeRecordSlice = createSlice({
 
 export const {
   setGetTimeRecords,
+  setGetAdminTimeRecords,
   setCreateTimeRecord,
   setEditTimeRecord,
   setDeleteTimeRecord,

@@ -23,3 +23,4 @@
 20230601	09:58:28	4b62454d-df76-41f9-8ec6-2500d7278278	Error: Not authorized, as an admin
 20230601	09:59:05	931a1c79-35e6-4f00-ac7a-1463de6c7f7f	Error: Not authorized, as an admin
 20230601	10:28:33	3152eed4-ddfd-41ce-83e0-9af8699ce48b	Error: Not authorized, as an admin
+20230601	11:36:38	b33c7047-b534-4f4d-b2c9-c18f7dbc12d2	Error: Not Found - /main.54fbdc22f4acc86a577a.hot-update.json
