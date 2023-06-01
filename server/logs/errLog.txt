@@ -20,3 +20,6 @@
 20230601	09:35:58	4f0b3995-8da1-4b56-9550-c3e67d2316d0	Error: Not authorized, as an admin
 20230601	09:36:09	a0233f36-429e-4c86-a3da-3f7925890fec	Error: Not authorized, as an admin
 20230601	09:36:09	ea43e09a-6daa-4598-af5b-ea80af584157	Error: Not authorized, as an admin
+20230601	09:58:28	4b62454d-df76-41f9-8ec6-2500d7278278	Error: Not authorized, as an admin
+20230601	09:59:05	931a1c79-35e6-4f00-ac7a-1463de6c7f7f	Error: Not authorized, as an admin
+20230601	10:28:33	3152eed4-ddfd-41ce-83e0-9af8699ce48b	Error: Not authorized, as an admin

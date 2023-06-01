@@ -16,7 +16,7 @@ const timeRecordSlice = createSlice({
     setCreateTimeRecord: (state, action) => {
       const { timeRecord } = action.payload;
       state.timeRecordChangeCount++;
-      state.timeRecords = [...state.timeRecords, timeRecord];
+      state.timeRecords.push(timeRecord);
     },
     setEditTimeRecord: (state, action) => {
       const { timeRecord } = action.payload;

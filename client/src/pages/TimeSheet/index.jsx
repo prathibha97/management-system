@@ -1,14 +1,15 @@
-import { EditOutlined, MoreVert as MoreVertIcon, TimerOutlined, ReportGmailerrorred } from '@mui/icons-material';
-import { Box, IconButton, Typography, Tooltip } from '@mui/material';
+import { EditOutlined, MoreVert as MoreVertIcon, ReportGmailerrorred, TimerOutlined } from '@mui/icons-material';
+import { Box, IconButton, Tooltip, Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { SelectTimeChange, selectTimeRecords } from '../../app/features/timeRecords/timeRecordSelectors';
+import { selectCurrentUser } from '../../app/features/auth/authSelectors';
+import { selectTimeRecords } from '../../app/features/timeRecords/timeRecordSelectors';
 import {
   useCreateTimeRecordMutation,
   useDeleteTimeRecordMutation,
   useEditTimeRecordMutation,
-  useGetAllTimeRecordsQuery,
+  useGetTimeRecordsByEmployeeQuery,
   useRejectTimeRecordMutation
 } from '../../app/features/timeRecords/timeRecordsApiSlice';
 import {
@@ -34,20 +35,22 @@ import {
 function TimeSheet() {
 
   const dispatch = useDispatch();
+  const user = useSelector(selectCurrentUser)
 
-  const { data: timeSheetDataFromApi, refetch: refetchTimeSheetData, isLoading: isTimeSheetDataFromApiLoading } = useGetAllTimeRecordsQuery({
+  const { data: timeSheetDataFromApi, refetch: refetchTimeSheetData, isLoading: isTimeSheetDataFromApiLoading } = useGetTimeRecordsByEmployeeQuery({
+    id: user._id,
     refetchOnMountOrArgChange: true,
   });
 
   useEffect(() => {
-    dispatch(setGetTimeRecords({ timeRecords: timeSheetDataFromApi }));
+    dispatch(setGetTimeRecords({ timeRecords: timeSheetDataFromApi?.timeRecords }));
   }, []);
 
   const timeSheetData = useSelector(selectTimeRecords);
-  const timeChange = useSelector(SelectTimeChange)
+  // const timeChange = useSelector(SelectTimeChange)
 
-  const [filteredRows, setFilteredRows] = useState(timeSheetData || []);
-  const [timeRecordChangeCount, setTimeRecordChangeCount] = useState(timeChange || 0);
+  const [filteredRows, setFilteredRows] = useState([]);
+  const [timeRecordChangeCount, setTimeRecordChangeCount] = useState(0);
   const [openCreateDialog, setCreateOpenDialog] = useState(false);
 
   const [createTimeRecord, { isLoading: isCreateTimeRecordLoading }] = useCreateTimeRecordMutation();
@@ -56,9 +59,19 @@ function TimeSheet() {
   const [rejectTimeRecord, { isLoading: isRejectTimeRecordLoading }] = useRejectTimeRecordMutation()
 
   useEffect(() => {
+    if (timeSheetData) {
+      setFilteredRows(timeSheetData);
+    }
+  }, [timeSheetData]);
 
+
+  useEffect(() => {
     if (timeRecordChangeCount > 0) {
-      refetchTimeSheetData();
+      refetchTimeSheetData().then((data) => {
+        const updatedTimeRecords = timeSheetData ? [...timeSheetData, ...data.timeRecords] : data?.timeRecords;
+        dispatch(setGetTimeRecords({ timeRecords: updatedTimeRecords }));
+        setFilteredRows(updatedTimeRecords || []);
+      });
     }
   }, [timeRecordChangeCount]);
 
@@ -126,7 +139,7 @@ function TimeSheet() {
           }
         };
 
-        const handleReject = async(rejectedReason) => {
+        const handleReject = async (rejectedReason) => {
           console.log('rejectedReason', rejectedReason)
           try {
             const timeRecordData = await rejectTimeRecord({ id: params.id, rejectReason: rejectedReason }).unwrap();
@@ -140,7 +153,7 @@ function TimeSheet() {
           }
         }
 
-        const handleApprove = async() => {
+        const handleApprove = async () => {
           // try {
           //   const timeRecordData = await rejectTimeRecord({ id: params.id }).unwrap();
           //   dispatch(setRejectTimeRecord({ timeRecord: timeRecordData?.timeRecord }));
@@ -185,25 +198,25 @@ function TimeSheet() {
       field: 'employee',
       headerName: 'Employee',
       width: 160,
-      valueGetter: (params) => `${params?.row?.employee?.name?.first || ''} ${params?.row?.employee?.name?.last || ''}`,
+      valueGetter: (params) => `${params?.row?.employee?.name?.first } ${params?.row?.employee?.name?.last }`,
     },
     {
       field: 'client',
       headerName: 'Client',
       width: 150,
-      valueGetter: (params) => `${params?.row?.client?.name || ''}`,
+      valueGetter: (params) => `${params?.row?.client?.name }`,
     },
     {
       field: 'project',
       headerName: 'Project',
       width: 150,
-      valueGetter: (params) => `${params?.row?.project?.title || ''}`,
+      valueGetter: (params) => `${params?.row?.project?.title }`,
     },
     {
       field: 'task',
       headerName: 'Task',
       width: 150,
-      valueGetter: (params) => `${params?.row?.task?.title || ''}`,
+      valueGetter: (params) => `${params?.row?.task?.title }`,
     },
     {
       field: 'workPerformed',
@@ -224,9 +237,9 @@ function TimeSheet() {
             <Typography variant="body2">{params.value}</Typography>
             {isRejected && (
               <Tooltip title='sdh' placement='right'>
-              <IconButton size="small" color='error'>
-                <ReportGmailerrorred /> 
-              </IconButton>
+                <IconButton size="small" color='error'>
+                  <ReportGmailerrorred />
+                </IconButton>
               </Tooltip>
             )}
           </div>
@@ -263,13 +276,13 @@ function TimeSheet() {
   const handleCreateRecord = async (project, timeLogged, client, dateLogged, workPerformed, task) => {
     try {
       const timeRecordData = await createTimeRecord({ project, timeSpent: timeLogged, client, date: dateLogged, workPerformed, task }).unwrap();
-      dispatch(setCreateTimeRecord({ timeRecord: timeRecordData.timeRecord }));
+      dispatch(setCreateTimeRecord({ timeRecord: timeRecordData?.timeRecord }));
       setCreateOpenDialog(false);
       setTimeRecordChangeCount((prev) => prev + 1);
       // Update the filtered rows when a new record is created
-      const updatedRows = [...filteredRows, timeRecordData.timeRecord];
-      console.log('updatedRows', updatedRows);
-      setFilteredRows(updatedRows);
+      // const updatedRows = [...filteredRows, timeRecordData?.timeRecord];
+      // console.log('updatedRows', updatedRows);
+      // setFilteredRows(updatedRows);
     } catch (err) {
       console.log(err);
     }
