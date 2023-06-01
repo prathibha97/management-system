@@ -14,7 +14,8 @@ import {
   faPersonWalkingArrowRight,
   faUsers,
   faClockFour,
-  faBuilding
+  faBuilding,
+  faUserTie
 } from "@fortawesome/free-solid-svg-icons";
 
 function Sidebar({ user }) {
@@ -128,7 +129,7 @@ function Sidebar({ user }) {
                 }`}
             >
               <FontAwesomeIcon
-                icon={faHome}
+                icon={faUserTie}
                 className={`text-lg ${activeIndex === 0 ? "text-black" : "text-gray-400"
                   } group-hover:text-gray-600 mr-3`}
               />
