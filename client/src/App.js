@@ -7,6 +7,7 @@ import {
   Attendance,
   Auth,
   Board,
+  Clients,
   Dashboard,
   EmpProfile,
   Layout,
@@ -53,6 +54,7 @@ function App() {
                 <Route path="/leaves" element={<Leaves />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/admin/timesheet" element={<AdminTimeSheet />} />
+                <Route path="/clients" element={<Clients />} />
               </>
             )}
           </Route>

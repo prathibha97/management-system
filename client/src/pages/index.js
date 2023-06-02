@@ -1,7 +1,9 @@
 export { default as Login } from '../components/Login';
+export { default as AdminTimeSheet } from './AdminTimeSheet';
 export { default as Attendance } from './Attendance';
 export { default as Auth } from './Auth';
 export { default as Board } from './Board';
+export { default as Clients } from './Clients';
 export { default as Dashboard } from './Dashboard';
 export { default as EmpProfile } from './EmpProfile';
 export { default as Leaves } from './Leaves';
@@ -15,5 +17,4 @@ export { default as Projects } from './Projects';
 export { default as Register } from './Register';
 export { default as Settings } from './Settings';
 export { default as TimeSheet } from './TimeSheet';
-export { default as AdminTimeSheet } from './AdminTimeSheet';
 export { default as Layout } from './layout';
