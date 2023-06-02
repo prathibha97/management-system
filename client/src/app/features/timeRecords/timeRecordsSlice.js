@@ -8,6 +8,7 @@ const timeRecordSlice = createSlice({
     adminTimeRecords: [],
     timeRecord: {},
     timeRecordChangeCount: 0,
+    latestProjects: [],
   },
   reducers: {
     setGetTimeRecords: (state, action) => {
@@ -48,6 +49,10 @@ const timeRecordSlice = createSlice({
       const { timeRecords } = action.payload;
       state.timeRecords = timeRecords;
     },
+    setGetLatestWorkedProjects: (state, action) => {
+      const { projects } = action.payload;
+      state.latestProjects = projects;
+    },
   },
 });
 
@@ -60,5 +65,6 @@ export const {
   setRejectTimeRecord,
   setGetTimeRecordsByEmployeeForCurrentMonth,
   setGetWeeklyRecordsByEmployeeForCurrentMonth,
+  setGetLatestWorkedProjects,
 } = timeRecordSlice.actions;
 export default timeRecordSlice.reducer;

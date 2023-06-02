@@ -63,8 +63,8 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentUser } from "../../app/features/auth/authSelectors";
-import { useGetTimeRecordsByEmployeeCurrentMonthQuery, useGetTimeRecordsByEmployeeQuery, useGetWeeklyTimeRecordsForCurrentMonthQuery } from "../../app/features/timeRecords/timeRecordsApiSlice";
-import { setGetTimeRecordsByEmployeeForCurrentMonth, setGetWeeklyRecordsByEmployeeForCurrentMonth } from "../../app/features/timeRecords/timeRecordsSlice";
+import { useGetLatestWorkedProjectsQuery, useGetTimeRecordsByEmployeeCurrentMonthQuery, useGetTimeRecordsByEmployeeQuery, useGetWeeklyTimeRecordsForCurrentMonthQuery } from "../../app/features/timeRecords/timeRecordsApiSlice";
+import { setGetLatestWorkedProjects, setGetTimeRecordsByEmployeeForCurrentMonth, setGetWeeklyRecordsByEmployeeForCurrentMonth } from "../../app/features/timeRecords/timeRecordsSlice";
 import { MonthTotals, MuiCalendar, RecentlyActiveProjects, WeeklyProjectCount } from "../../components";
 
 function Dashboard() {
@@ -82,6 +82,9 @@ function Dashboard() {
   const { data: weeklyTimeRecordsForTheMonth, refetch } = useGetWeeklyTimeRecordsForCurrentMonthQuery({ id: user?._id });
   const weeklyTimeRecords = weeklyTimeRecordsForTheMonth?.weeklyTotals;
 
+  const { data: latestWorkedProjects } = useGetLatestWorkedProjectsQuery({ id: user?._id })
+  const latestProjects = latestWorkedProjects?.projects
+
   useEffect(() => {
     dispatch(setGetTimeRecordsByEmployeeForCurrentMonth({ timeRecords }));
   }, [monthlyData]);
@@ -90,6 +93,10 @@ function Dashboard() {
     refetch()
     dispatch(setGetWeeklyRecordsByEmployeeForCurrentMonth({ timeRecords }));
   }, [weeklyTimeRecords]);
+
+  useEffect(() => {
+    dispatch(setGetLatestWorkedProjects({ projects: latestProjects }));
+  }, [latestProjects]);
 
   return (
     <div className="mt-5">
@@ -115,7 +122,7 @@ function Dashboard() {
         <div className="bg-[#ecf1f4] w-[500px] p-5">
           <h1 className="text-lg text-gray-600 font-bold mb-2">Recently Active Projects You Are Assigned To</h1>
           <div className="flex flex-wrap mt-4">
-            <RecentlyActiveProjects />
+            <RecentlyActiveProjects/>
           </div>
         </div>
       </div>

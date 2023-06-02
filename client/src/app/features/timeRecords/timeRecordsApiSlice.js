@@ -49,6 +49,11 @@ export const timeRecordApiSlice = apiSlice.injectEndpoints({
         url: `/timerecords/employee/${id}/weekly-totals`
       }),
     }),
+    getLatestWorkedProjects: builder.query({
+      query: ({ id }) => ({
+        url: `/timerecords/employee/${id}/latest-projects`
+      })
+    })
   }),
 });
 
@@ -61,4 +66,5 @@ export const {
   useGetTimeRecordsByEmployeeCurrentMonthQuery,
   useGetTimeRecordsByEmployeeQuery,
   useGetWeeklyTimeRecordsForCurrentMonthQuery,
+  useGetLatestWorkedProjectsQuery
 } = timeRecordApiSlice;

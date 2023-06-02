@@ -34,8 +34,6 @@ const createTimeRecord = async (req, res) => {
   const { project, task, date, timeSpent, client, workPerformed } = req.body;
   const { _id: employee } = req.user;
 
-  console.log(req.body);
-
   // Convert timeSpent to "00:00:00" format if it's a number
   const formattedTimeSpent = typeof timeSpent === 'number' ? formatTime(timeSpent) : timeSpent;
 
@@ -197,7 +195,7 @@ const getTimeRecordsForEmployee = async (req, res) => {
     console.log(err);
     return res.status(500).json({ message: 'Error occurred while fetching time records' });
   }
-}
+};
 
 /*
   ?@desc   get weekly totals for an employee
@@ -267,73 +265,73 @@ const getMonthlyWeekTotals = async (req, res) => {
   }
 };
 
-// const getMonthlyWeekTotals = async (req, res) => {
-//   const { id, month } = req.params;
-//   try {
-//     // Parse the month parameter to an integer
-//     const targetMonth = parseInt(month, 10);
+/*
+  ?@desc   get the latest worked projects for a particular employee
+  *@route  GET /api/timerecords/employee/:id/latest-projects
+  *@access Private
+*/
 
-//     // Get the current date
-//     const currentDate = new Date();
+const getLatestProjectsForEmployee = async (req, res) => {
+  const { id } = req.params;
 
-//     // Extract the year from the current date
-//     const currentYear = currentDate.getFullYear();
+  try {
+    // Retrieve the latest time records for the employee
+    const timeRecords = await TimeRecord.aggregate([
+      { $match: { employee: mongoose.Types.ObjectId(id) } }, // Match the employee ID
+      { $sort: { date: -1 } }, // Sort by descending date
+      { $group: { _id: '$project', latestRecord: { $first: '$$ROOT' } } }, // Group by project and keep the first/latest record
+      { $limit: 3 }, // Limit the results to 3 records
+      { $lookup: { from: 'projects', localField: '_id', foreignField: '_id', as: 'project' } }, // Lookup project details
+      { $unwind: '$project' }, // Unwind the project field
+      {
+        $project: {
+          'project.title': 1,
+          lastActiveDate: {
+            $switch: {
+              branches: [
+                {
+                  case: {
+                    $and: [
+                      { $gte: [{ $subtract: [new Date(), '$latestRecord.date'] }, 0] },
+                      { $lt: [{ $subtract: [new Date(), '$latestRecord.date'] }, 86400000] },
+                    ],
+                  },
+                  then: 'Yesterday',
+                },
+                {
+                  case: { $lt: [{ $subtract: [new Date(), '$latestRecord.date'] }, 604800000] },
+                  then: {
+                    $concat: [
+                      {
+                        $toString: {
+                          $floor: {
+                            $divide: [{ $subtract: [new Date(), '$latestRecord.date'] }, 86400000],
+                          },
+                        },
+                      },
+                      ' days ago',
+                    ],
+                  },
+                },
+              ],
+              default: { $dateToString: { format: '%Y-%m-%d', date: '$latestRecord.date' } },
+            },
+          },
+        },
+      }, // Convert the date to a human-readable format
+    ]);
 
-//     // Calculate the total number of days in the target month
-//     const totalDays = new Date(currentYear, targetMonth, 0).getDate();
+    const projects = timeRecords.map((record) => ({
+      title: record.project.title,
+      lastActiveDate: record.lastActiveDate,
+    }));
 
-//     // Create an array to hold the weekly totals
-//     const weeklyTotals = [];
-
-//     // Loop through each week of the month
-//     for (let week = 1; week <= 5; week++) {
-//       // Calculate the start and end dates of the current week
-//       const weekStartDate = new Date(currentYear, targetMonth - 1, (week - 1) * 7 + 1);
-
-//       let weekEndDate;
-//       if (week === 5 && weekStartDate.getDate() + 6 > totalDays) {
-//         weekEndDate = new Date(currentYear, targetMonth - 1, totalDays);
-//       } else {
-//         weekEndDate = new Date(currentYear, targetMonth - 1, weekStartDate.getDate() + 6);
-//       }
-
-//       // Set the end time to the end of the day
-//       weekEndDate.setHours(23, 59, 59, 999);
-
-//       // Find the time records for the current week
-//       const timeRecords = await TimeRecord.find({
-//         employee: id,
-//         date: { $gte: weekStartDate, $lte: weekEndDate },
-//       })
-//         .populate('employee', 'name')
-//         .populate('project', 'title')
-//         .populate('task', 'title')
-//         .populate('client', 'name');
-
-//       // Calculate the total hours for the current week
-//       const totalHours = timeRecords.reduce((acc, record) => {
-//         const [hours, minutes, seconds] = record.timeSpent.split(':');
-//         const totalSeconds = +hours * 3600 + +minutes * 60 + +seconds;
-//         return acc + totalSeconds / 3600;
-//       }, 0);
-
-//       // Get the unique project count for the current week
-//       const projectCount = [...new Set(timeRecords.map((record) => record.project))].length;
-
-//       // Add the weekly totals to the array
-//       weeklyTotals.push({ weekStartDate, weekEndDate, totalHours, projectCount, timeRecords });
-//     }
-
-//     return res.status(200).json({ weeklyTotals, message: 'Weekly totals fetched successfully' });
-//   } catch (err) {
-//     console.log(err);
-//     return res.status(500).json({ message: 'Error occurred while fetching weekly totals' });
-//   }
-// };
-
-
-
-
+    return res.status(200).json({ projects, message: 'Latest projects fetched successfully' });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: 'Error occurred while fetching latest projects' });
+  }
+};
 
 module.exports = {
   getAllTimeRecords,
@@ -344,4 +342,5 @@ module.exports = {
   getMonthTotals,
   getTimeRecordsForEmployee,
   getMonthlyWeekTotals,
+  getLatestProjectsForEmployee,
 };
