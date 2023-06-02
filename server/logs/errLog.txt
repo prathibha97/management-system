@@ -25,3 +25,7 @@
 20230601	10:28:33	3152eed4-ddfd-41ce-83e0-9af8699ce48b	Error: Not authorized, as an admin
 20230601	11:36:38	b33c7047-b534-4f4d-b2c9-c18f7dbc12d2	Error: Not Found - /main.54fbdc22f4acc86a577a.hot-update.json
 20230601	13:36:53	22213f97-9a4b-4edf-989c-d88416dab4e8	Error: Not Found - /main.f9a9f646563f2df15e86.hot-update.json
+20230602	11:14:09	cd0563cc-3f46-4923-b0bf-a07e46699791	Error: Not Found - /
+20230602	11:14:53	76671b88-cb7e-4da1-9a0a-2e944453057d	Error: Not allowed by CORS
+20230602	11:15:22	c80df75c-aa7e-4133-a613-abb9e4049f00	Error: Not allowed by CORS
+20230602	11:15:35	0d8f65ec-7aa9-4bb5-a608-234b82d41360	Error: Not allowed by CORS
