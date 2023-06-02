@@ -22,8 +22,11 @@ import experienceReducer from './features/experiences/experienceSlice';
 import leaveReducer from './features/leaves/leaveSlice';
 import meetingReducer from './features/meetings/meetingSlice';
 import notificationReducer from './features/notifications/notificationSlice';
+import passwordReducer from './features/passwordRecovery/passwordRecoverySlice';
 import projectReducer from './features/projects/projectSlice';
 import taskReducer from './features/tasks/taskSlice';
+import timeRecordReducer from './features/timeRecords/timeRecordsSlice';
+import timerReducer from './features/timer/timerSlice';
 
 const persistConfig = {
   key: 'root',
@@ -48,6 +51,9 @@ const persistedReducer = persistReducer(
     clients: clientReducer,
     boards: boardReducer,
     tasks: taskReducer,
+    password: passwordReducer,
+    timer: timerReducer,
+    timeRecord: timeRecordReducer,
   })
 );
 

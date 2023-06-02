@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { selectCurrentUser } from '../../app/features/auth/authSelectors';
 import { useApproveLeaveMutation, useDeleteLeaveMutation, useGetAllLeavesQuery, useRejectLeaveMutation } from '../../app/features/leaves/leaveApiSlice';
 import { approveLeaveRequest, deleteLeaveRequest, getAllLeaves, rejectLeaveRequest } from '../../app/features/leaves/leaveSlice';
-import { LeaveRejectDialog, Loader } from '../../components';
+import { FilePreview, LeaveRejectDialog, Loader } from '../../components';
 import { formatDate } from '../../utils/formatDate';
 
 
@@ -183,6 +183,21 @@ export default function DataGridDemo() {
         }
 
         return <Chip label="Delete Request" color='warning' variant='outlined' onClick={() => handleDelete(params)} />;
+      },
+    },
+    {
+      field: 'medical',
+      headerName: 'Medical Document',
+      width: 160,
+      headerAlign: 'center',
+      renderCell: (params) => {
+        const { leaveType, medical } = params.row;
+        if (leaveType === 'Medical') {
+          return (
+            <FilePreview fileToView={medical}/>
+          );
+        }
+        return null;
       },
     },
     {

@@ -9,7 +9,7 @@ function OTPInput({ setPage }) {
   const [OTPinput, setOTPinput] = useState([0, 0, 0, 0]);
   const [disable, setDisable] = useState(true);
 
-  const { otp, email } = useSelector((state) => state.passwordRecovery);
+  const { otp, email } = useSelector((state) => state.password);
 
   function resendOTP() {
     if (disable) return;

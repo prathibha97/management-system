@@ -4,7 +4,7 @@ import { setCredentials, setLogout } from '../features/auth/authSlice';
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `api`,
-  credentials: 'same-origin',
+  credentials: 'include',
   prepareHeaders: (headers, { getState }) => {
     const { token } = getState().auth;
     if (token) {
@@ -32,6 +32,7 @@ const baseQueryWithReAuth = async (args, api, extraOptions) => {
         result = await baseQuery(args, api, extraOptions);
       } else {
         api.dispatch(setLogout());
+        navigator.push('/');
       }
     }
   }

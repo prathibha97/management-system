@@ -8,7 +8,7 @@ function ResetPassword({ setPage }) {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("")
 
-  const { email } = useSelector((state) => state.passwordRecovery);
+  const { email } = useSelector((state) => state.password);
 
   async function handlePasswordChange() {
     try {

@@ -64,9 +64,7 @@ function Notifications({ empNo }) {
   const { data: userNotifications, refetch: refetchNotifications } = useUserNotificationsQuery(empNo)
   const [clearNotifications] = useClearNotificationsMutation()
 
-  // const { notifications: userNotifications } = useSelector((state) => state.userNotifications);
-
-  const unreadCount = Array.from(userNotifications)?.filter(notification => !notification?.isRead).length;
+  const unreadCount = userNotifications?.filter(notification => !notification.isRead).length;
 
   const handleNotificationClick = useCallback((event) => {
     setAnchorEl(event.currentTarget);
@@ -206,8 +204,8 @@ function Notifications({ empNo }) {
           </List>
         ) : userNotifications?.length > 0 ? (
           <List sx={{ textAlign: 'center' }}>
-            {Array.from(userNotifications).map((notification) => (
-              <NotificationItem notification={notification} />
+            {userNotifications?.map((notification) => (
+              <NotificationItem notification={notification} empNo={empNo} />
             ))}
             <Button onClick={handleClearNotifications}>Clear All</Button>
           </List>

@@ -1,3 +1,4 @@
+import FormData from 'form-data';
 import { apiSlice } from '../../api/apiSlice';
 
 export const leaveApiSlice = apiSlice.injectEndpoints({
@@ -8,11 +9,19 @@ export const leaveApiSlice = apiSlice.injectEndpoints({
       }),
     }),
     requestLeave: builder.mutation({
-      query: (leave) => ({
-        url: `/leaves`,
-        method: 'POST',
-        body: { ...leave },
-      }),
+      query: (leave) => {
+        const formData = new FormData();
+        formData.append('medical', leave.medical);
+        formData.append('endDate', leave.endDate);
+        formData.append('leaveType', leave.leaveType);
+        formData.append('startDate', leave.startDate);
+        formData.append('reason', leave.reason);
+        return {
+          url: `/leaves`,
+          method: 'POST',
+          body: formData,
+        };
+      },
     }),
     approveLeave: builder.mutation({
       query: ({ id, lId, status }) => ({

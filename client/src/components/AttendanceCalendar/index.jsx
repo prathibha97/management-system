@@ -40,8 +40,8 @@ function AttendanceCalendar({ user }) {
 
   const userInfo = useSelector(selectCurrentUser);
 
-  const { data: attendanceInfo, isLoading: isAttendanceInfoLoading } = useGetEmployeeAttendanceAdminQuery(user.empNo)
-  const { data: leaves, isLoading: isLeavesLoading } = useGetEmployeeLeavesAdminQuery(user.empNo, {
+  const { data: attendanceInfo, isLoading: isAttendanceInfoLoading } = useGetEmployeeAttendanceAdminQuery(user?.empNo)
+  const { data: leaves, isLoading: isLeavesLoading } = useGetEmployeeLeavesAdminQuery(user?.empNo, {
     refetchOnMountOrArgChange: true,
   })
 

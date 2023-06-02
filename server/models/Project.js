@@ -58,7 +58,7 @@ const projectSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  nftTradeCount: {
+  nftTraitCount: {
     type: Number,
     default: 0,
   },

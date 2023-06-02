@@ -24,6 +24,12 @@ function LeaveBalance({user}) {
             <h2 className='font-semibold'>{user?.leaveBalance?.Medical}/7</h2>
             <p className='text-[#707070]'>Medical</p>
           </div>
+          {user?.leaveBalance?.BroughtForward === 0 ? null : (
+            <div className='flex flex-col items-center'>
+              <h2 className='font-semibold'>{user?.leaveBalance?.BroughtForward}/4</h2>
+              <p className='text-[#707070]'>Brought Forward</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

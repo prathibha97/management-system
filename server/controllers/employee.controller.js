@@ -69,7 +69,7 @@ const updateEmployee = async (req, res) => {
     designation,
     email,
     phone,
-    isAdmin,
+    role,
     employmentHistory,
     projectHistory,
     idPath,
@@ -93,7 +93,7 @@ const updateEmployee = async (req, res) => {
       employee.email = email || employee.email;
       employee.designation = designation || employee.designation;
       employee.phone = phone || employee.phone;
-      employee.isAdmin = isAdmin;
+      employee.role = role;
       employee.employmentHistory = employmentHistory || employee.employmentHistory;
       employee.projectHistory = projectHistory || employee.projectHistory;
       employee.idPath = idPath || employee.idPath;
