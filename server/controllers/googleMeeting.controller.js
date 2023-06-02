@@ -37,12 +37,11 @@ const googleRedirect = async (req, res) => {
   const access_token = new Token({ name: 'access_token', value: tokens.access_token });
   await access_token.save();
 
-  res.redirect('http://ec2-52-88-221-122.us-west-2.compute.amazonaws.com:5000/dashboard'); // Redirect to the React app
+  res.redirect('http://ec2-34-210-201-75.us-west-2.compute.amazonaws.com:5000/dashboard'); // Redirect to the React app
 };
 
 const scheduleMeeting = async (req, res) => {
   const { summary, attendee, startDatetime, endDatetime } = req.body;
-  console.log(summary, attendee, startDatetime, endDatetime);
   const refresh_token = await Token.findOne({ name: 'refresh_token' });
   const access_token = await Token.findOne({ name: 'access_token' });
 
