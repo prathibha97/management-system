@@ -21,7 +21,7 @@ function Register() {
   const [workType, setWorkType] = useState('')
   const [department, setDepartment] = useState('')
   const [leaveAllocation, setLeaveAllocation] = useState([])
-  const [isAdmin, setIsAdmin] = useState(false)
+  const [role, setRole] = useState('Employee')
   const [idCardPath, setIdCardPath] = useState(null)
   const [bankPassPath, setBankPassPath] = useState(null)
   const [resumePath, setResumePath] = useState(null)
@@ -159,8 +159,8 @@ function Register() {
       case 'noOfAdvances':
         setNoOfAdvances(e.target.value);
         break;
-      case 'admin':
-        setIsAdmin(e.target.checked);
+      case 'role':
+        setRole(e.target.value);
         break;
       case 'idCardPath':
         setIdCardPath(e.target.files[0]);
@@ -184,7 +184,7 @@ function Register() {
     }
   };
 
-  const values = { firstName, lastName, email, password, birthDate, phone, gender, nic, street, city, state, zip, empNo, dateOfAppointment, designation, workType, department, leaveAllocation, isAdmin, idCardPath, bankPassPath, resumePath, effectiveDate, paymentModel, basicSalary, pf, bank, accNo, advance, maxAdvance, noOfAdvances };
+  const values = { firstName, lastName, email, password, birthDate, phone, gender, nic, street, city, state, zip, empNo, dateOfAppointment, designation, workType, department, leaveAllocation, role, idCardPath, bankPassPath, resumePath, effectiveDate, paymentModel, basicSalary, pf, bank, accNo, advance, maxAdvance, noOfAdvances };
   switch (step) {
     case 1:
       return (

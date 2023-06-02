@@ -4,6 +4,6 @@ const { getAllClients, createClient } = require('../controllers/client.controlle
 
 const clientRouter = express.Router();
 
-clientRouter.get('/', protect, admin, getAllClients).post('/', protect, admin, createClient);
+clientRouter.get('/', protect, getAllClients).post('/', protect, admin, createClient);
 
 module.exports = clientRouter;

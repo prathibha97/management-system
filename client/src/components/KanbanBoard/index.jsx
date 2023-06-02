@@ -12,13 +12,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { selectCurrentUser } from '../../app/features/auth/authSelectors'
 import { useGetProjectBoardsByIdQuery } from '../../app/features/boards/boardApiSlice'
+import { getBoardsByProjectId } from '../../app/features/boards/boardSlice'
+import { useGetEmployeeProjectsQuery } from '../../app/features/projects/projectApiSlice'
 import { useUpdateTaskBoardMutation } from '../../app/features/tasks/taskApiSlice'
 import { setUpdateTaskBoard } from '../../app/features/tasks/taskSlice'
 import AddTaskModal from '../AddTaskModal'
 import Card from '../Card'
 import Loader from '../Loader'
-import { useGetEmployeeProjectsQuery } from '../../app/features/projects/projectApiSlice'
-import { getBoardsByProjectId } from '../../app/features/boards/boardSlice'
 
 function Kanban({ numTasks, setNumTasks }) {
 
@@ -30,7 +30,6 @@ function Kanban({ numTasks, setNumTasks }) {
   const { project } = useSelector((state) => state.projects) || {}
 
   const { data: boards, isLoading: isBoardsLoading, refetch: refetchProjectBoards, isFetching: isBoardsFetching } = useGetProjectBoardsByIdQuery(project?._id)
-  dispatch(getBoardsByProjectId({ boards }))
 
   const { data: projects } = useGetEmployeeProjectsQuery({
     refetchOnMountOrArgChange: true,
@@ -50,6 +49,7 @@ function Kanban({ numTasks, setNumTasks }) {
   // Initialize the showCreateForms array with false values for each board
   useEffect(() => {
     setShowCreateForms(new Array(boards?.length).fill(false));
+    dispatch(getBoardsByProjectId({ boards }))
   }, [boards]);
 
   // Track changes in the number of tasks
@@ -57,7 +57,7 @@ function Kanban({ numTasks, setNumTasks }) {
     setNumTasks(0);
   }, [numTasks, projects]);
 
- 
+
   const onDragEnd = async (result) => {
     if (!result.destination) return;
     const { source, destination } = result;
@@ -149,7 +149,6 @@ function Kanban({ numTasks, setNumTasks }) {
                             boardId={section?._id}
                             refetchProjectBoards={refetchProjectBoards}
                             setNumTasks={setNumTasks}
-
                           />
                         </div>
                       )}
@@ -179,6 +178,7 @@ function Kanban({ numTasks, setNumTasks }) {
                           return newState;
                         })}
                         setNumTasks={setNumTasks}
+                        refetchProjectBoards={refetchProjectBoards}
                       />
                     )}
                   </div>

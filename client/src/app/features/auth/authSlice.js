@@ -1,9 +1,19 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+function checkTokenValidity(user) {
+  if (user && user.token) {
+    const decodedToken = JSON.parse(atob(user.token.split('.')[1]));
+    if (decodedToken && decodedToken.exp * 1000 > Date.now()) {
+      return user;
+    }
+  }
+  return 'Session expired. Please log in again.';
+}
+
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
-    user: JSON.parse(localStorage.getItem('userInfo')),
+    user: checkTokenValidity(JSON.parse(localStorage.getItem('userInfo'))),
     token: JSON.parse(localStorage.getItem('token')),
   },
   reducers: {

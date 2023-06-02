@@ -10,36 +10,38 @@ import Tooltip from '@mui/material/Tooltip';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { useLogoutMutation } from '../../app/features/auth/authApiSlice';
+import { setLogout } from '../../app/features/auth/authSlice';
 import CustomAvatar from '../CustomAvatar';
 import Loader from '../Loader';
-import api from '../../utils/api';
-import { setLogout } from '../../app/features/auth/authSlice';
-import { useLogoutQuery } from '../../app/features/auth/authApiSlice';
 
 export default function AccountMenu({ userInfo }) {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
-  const { isLoading, isSuccess } = useLogoutQuery()
+  const [logout, { isLoading }] = useLogoutMutation();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
 
   const handleLogout = async () => {
-    await api.get('/emp/auth/logout')
-    if (isSuccess) {
-      dispatch(setLogout())
-      navigate('/')
+    try {
+      await logout().unwrap();
+      dispatch(setLogout());
+      navigate('/');
+    } catch (error) {
+      console.log('Logout failed', error);
     }
-  }
+  };
 
-  if (isLoading) return <Loader />
+  if (isLoading) return <Loader />;
 
   return (
     <>

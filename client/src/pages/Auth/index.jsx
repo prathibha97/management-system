@@ -1,4 +1,5 @@
 /* eslint-disable react/no-unstable-nested-components */
+import jwtDecode from 'jwt-decode';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Login, OTPInput, ResetPassword } from '../../components';
@@ -10,7 +11,14 @@ function Auth() {
   function checkUserInfo() {
     const token = JSON.parse(localStorage.getItem('token'));
     if (token) {
-      navigate('/dashboard');
+      try {
+        const decodedToken = jwtDecode(token);
+        if (decodedToken.exp * 1000 > Date.now()) {
+          navigate('/dashboard');
+        }
+      } catch (error) {
+        console.log('Error decoding token:', error);
+      }
     }
   }
 
