@@ -140,7 +140,7 @@ const approveOrRejectLeave = async (req, res) => {
       )} to ${formatDate(endDate)}.`;
       const payload = { message };
       const channel = `private-${empNo}`;
-      io.to(channel).emit('leave-approved', payload);
+      io.to(channel).emit('newNotification', payload);
 
       // Persist the notification
       const notification = {
@@ -160,7 +160,7 @@ const approveOrRejectLeave = async (req, res) => {
       const message = `Your leave request has been rejected due to ${reason}.`;
       const payload = { message };
       const channel = `private-${empNo}`;
-      io.to(channel).emit('leave-rejected', payload);
+      io.to(channel).emit('newNotification', payload);
 
       // Persist the notification
       const notification = {
@@ -178,16 +178,6 @@ const approveOrRejectLeave = async (req, res) => {
     res.status(500).json({ message: 'Failed to approve or reject leave request' });
   }
 };
-
-// io.on('connection', (socket) => {
-//   const { empNo } = socket.handshake.query;
-//   const channel = `private-${empNo}`;
-//   socket.join(channel);
-
-//   socket.on('disconnect', () => {
-//     socket.leave(channel);
-//   });
-// });
 
 const server = http.createServer(app);
 io.attach(server);
