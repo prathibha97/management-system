@@ -12,7 +12,7 @@ import { setClearNotifications, setReadNotification } from '../../app/features/n
 function NotificationItem({ notification, empNo }) {
   const dispatch = useDispatch();
   const [notificationCount, setNotificationCount] = useState(0)
-  const { data: userNotifications, refetch: refetchNotifications } = useUserNotificationsQuery(empNo)
+  const { refetch: refetchNotifications } = useUserNotificationsQuery(empNo)
   const [readNotification] = useReadNotificationMutation()
 
   const formattedDate = new Date(notification.createdAt).toLocaleString();
