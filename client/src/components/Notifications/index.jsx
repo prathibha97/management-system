@@ -85,7 +85,7 @@ function Notifications({ empNo }) {
       query: { empNo },
     });
 
-    socket.on('connect', () => {
+    socket.on('connection', () => {
       console.log('Connected to server');
     });
 
