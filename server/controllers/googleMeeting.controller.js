@@ -42,7 +42,6 @@ const googleRedirect = async (req, res) => {
 
 const scheduleMeeting = async (req, res) => {
   const { summary, attendee, startDatetime, endDatetime } = req.body;
-  console.log(summary, attendee, startDatetime, endDatetime);
   const refresh_token = await Token.findOne({ name: 'refresh_token' });
   const access_token = await Token.findOne({ name: 'access_token' });
 

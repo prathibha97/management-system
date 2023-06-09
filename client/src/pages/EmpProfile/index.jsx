@@ -21,7 +21,7 @@ function EmpProfile() {
     if (!userInfo) {
       navigate('/');
     } else {
-      const storedUser = JSON.parse(localStorage.getItem('user'));
+      const storedUser = JSON.parse(localStorage.getItem('userInfo'));
       if (!storedUser || storedUser.empNo !== userInfo.empNo) {
         dispatch(setEmployeeDetailsAdmin({ employee: user }))
       }
@@ -32,7 +32,7 @@ function EmpProfile() {
   return (
     <div className='h-[90%]'>
       <div className='bg-[#EEF2F5]  w-[95%] rounded-xl mt-6 m-auto overflow-y-auto'>
-        <EmployeeDetails user={ user } />
+        <EmployeeDetails user={user} />
         <AttendanceCalendar user={user} />
         <LeaveBalance user={user} />
         <SalaryDetails />
