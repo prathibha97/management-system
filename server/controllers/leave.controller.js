@@ -137,7 +137,7 @@ const approveOrRejectLeave = async (req, res) => {
       const message = `Your leave request has been approved for ${numberOfDays} days from ${formatDate(startDate)} to ${formatDate(endDate)}.`;
       const payload = { message };
       const channel = `private-${empNo}`;
-      io.to(channel).emit('leave-approved', payload);
+      io.to(channel).emit('newNotification', payload);
 
       // Persist the notification
       const notification = {
@@ -158,7 +158,7 @@ const approveOrRejectLeave = async (req, res) => {
       const message = `Your leave request has been rejected due to ${reason}.`;
       const payload = { message };
       const channel = `private-${empNo}`;
-      io.to(channel).emit('leave-rejected', payload);
+      io.to(channel).emit('newNotification', payload); 
 
       // Persist the notification
       const notification = {

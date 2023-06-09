@@ -6,45 +6,37 @@ import { Badge, Button, Divider, IconButton, List, ListItem, ListItemText, Popov
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import io from 'socket.io-client';
-import { useClearNotificationsMutation, useReadNotificationMutation, useUserNotificationsQuery } from '../../app/features/notifications/notificationApiSlice';
+import {
+  useClearNotificationsMutation,
+  useReadNotificationMutation,
+  useUserNotificationsQuery,
+} from '../../app/features/notifications/notificationApiSlice';
 import { setClearNotifications, setReadNotification } from '../../app/features/notifications/notificationSlice';
 
 function NotificationItem({ notification, empNo }) {
   const dispatch = useDispatch();
-  const [notificationCount, setNotificationCount] = useState(0)
-  const { data: userNotifications, refetch: refetchNotifications } = useUserNotificationsQuery(empNo)
-  const [readNotification] = useReadNotificationMutation()
-
   const formattedDate = new Date(notification.createdAt).toLocaleString();
+  const { refetch: refetchNotifications } = useUserNotificationsQuery(empNo);
+  const [readNotification] = useReadNotificationMutation();
 
   const handleMarkAsRead = async () => {
     try {
-      const notificationData = await readNotification({ id: notification._id }).unwrap()
+      const notificationData = await readNotification({ id: notification._id }).unwrap();
       dispatch(setReadNotification({ notificationData }));
+      refetchNotifications()
     } catch (err) {
       console.log('Error marking notification as read');
     }
-  }
+  };
 
   useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        refetchNotifications()
-        setNotificationCount(notificationCount + 1);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchNotifications()
-  }, [])
+    refetchNotifications();
+  }, []);
 
   return (
     <>
       <ListItem key={notification.id} sx={{ background: '#EEF2F5' }}>
-        <ListItemText
-          primary={notification.message}
-          secondary={formattedDate}
-        />
+        <ListItemText primary={notification.message} secondary={formattedDate} />
         {!notification.isRead && (
           <IconButton onClick={handleMarkAsRead}>
             <CheckCircle color="primary" />
@@ -60,11 +52,11 @@ function Notifications({ empNo }) {
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [notificationCount, setNotificationCount] = useState(0)
-  const { data: userNotifications, refetch: refetchNotifications } = useUserNotificationsQuery(empNo)
-  const [clearNotifications] = useClearNotificationsMutation()
+  const [notificationCount, setNotificationCount] = useState(0);
+  const { data: userNotifications, refetch: refetchNotifications } = useUserNotificationsQuery(empNo);
+  const [clearNotifications] = useClearNotificationsMutation();
 
-  const unreadCount = userNotifications?.filter(notification => !notification.isRead).length;
+  const unreadCount = userNotifications?.filter((notification) => !notification.isRead).length;
 
   const handleNotificationClick = useCallback((event) => {
     setAnchorEl(event.currentTarget);
@@ -76,9 +68,9 @@ function Notifications({ empNo }) {
 
   const handleClearNotifications = useCallback(async () => {
     try {
-      const res = await clearNotifications({ empNo }).unwrap()
+      const res = await clearNotifications({ empNo }).unwrap();
       dispatch(setClearNotifications(res));
-      refetchNotifications()
+      refetchNotifications();
       setNotificationCount(0);
       setAnchorEl(null);
     } catch (err) {
@@ -86,22 +78,8 @@ function Notifications({ empNo }) {
     }
   }, [empNo, dispatch]);
 
-
   useEffect(() => {
     let isMounted = true;
-
-    const fetchNotifications = async () => {
-      try {
-        setLoading(true);
-        // await dispatch(getUserNotifications(empNo));
-        refetchNotifications()
-        setNotificationCount(notificationCount + 1);
-        setLoading(false);
-      } catch (err) {
-        console.error(err);
-        setLoading(false);
-      }
-    };
 
     const socket = io('http://localhost:5001', {
       query: { empNo },
@@ -115,55 +93,25 @@ function Notifications({ empNo }) {
       console.log('Disconnected from server');
     });
 
-    socket.on('leaveApproved', async (_data) => {
+    socket.on('newNotification', async (_data) => {
       try {
-        // await dispatch(getUserNotifications(empNo));
-        refetchNotifications()
-        setNotificationCount(notificationCount + 1);
+        await refetchNotifications();
       } catch (err) {
         console.error(err);
       }
     });
 
-    socket.on('leaveRejected', async (_data) => {
+    // Fetch initial notifications
+    const fetchNotifications = async () => {
       try {
-        // await dispatch(getUserNotifications(empNo));
-        refetchNotifications()
-        setNotificationCount(notificationCount + 1);
+        setLoading(true);
+        await refetchNotifications();
+        setLoading(false);
       } catch (err) {
         console.error(err);
+        setLoading(false);
       }
-    });
-
-    socket.on('meetingCreated', async (_data) => {
-      try {
-        // await dispatch(getUserNotifications(empNo));
-        refetchNotifications()
-        setNotificationCount(notificationCount + 1);
-      } catch (err) {
-        console.error(err);
-      }
-    });
-
-    socket.on('meetingUpdated', async (_data) => {
-      try {
-        // await dispatch(getUserNotifications(empNo));
-        refetchNotifications()
-        setNotificationCount(notificationCount + 1);
-      } catch (err) {
-        console.error(err);
-      }
-    });
-
-    socket.on('meetingCancelled', async (_data) => {
-      try {
-        // await dispatch(getUserNotifications(empNo));
-        refetchNotifications()
-        setNotificationCount(notificationCount + 1);
-      } catch (err) {
-        console.error(err);
-      }
-    });
+    };
 
     fetchNotifications();
 
@@ -171,7 +119,7 @@ function Notifications({ empNo }) {
       isMounted = false;
       socket.disconnect();
     };
-  }, [empNo, dispatch, userNotifications?.length, userNotifications?.isRead]);
+  }, [empNo, dispatch]);
 
   return (
     <>
@@ -204,8 +152,8 @@ function Notifications({ empNo }) {
           </List>
         ) : userNotifications?.length > 0 ? (
           <List sx={{ textAlign: 'center' }}>
-            {userNotifications?.map((notification) => (
-              <NotificationItem notification={notification} empNo={empNo} />
+            {userNotifications.map((notification) => (
+              <NotificationItem key={notification.id} notification={notification} empNo={empNo} />
             ))}
             <Button onClick={handleClearNotifications}>Clear All</Button>
           </List>
