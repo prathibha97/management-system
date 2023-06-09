@@ -2,15 +2,17 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable consistent-return */
 
+const io = require('socket.io')();
+const http = require('http');
 const Leave = require('../models/Leave');
 const Employee = require('../models/Employee');
 const getNumberOfDays = require('../utils/getNumberOfDays');
-const io = require('../services/socket');
 const Notification = require('../models/Notification');
 const formatDate = require('../utils/formatDate');
 const upload = require('../services/fileUpload');
 const sendEmail = require('../services/sendEmail');
 const leaveRequestTemplate = require('../email/leaveRequestTemplate');
+const app = require('../app');
 
 /* 
 ?@desc   Create a new leave request
@@ -62,7 +64,6 @@ const createLeaveRequest = async (req, res) => {
     res.status(500).json({ message: 'Failed to create leave request' });
   }
 };
-
 
 /* 
 ?@desc   Get all leave requests
@@ -134,7 +135,9 @@ const approveOrRejectLeave = async (req, res) => {
       leave.approvedBy = req.user.id;
 
       // Notify employee about leave approval
-      const message = `Your leave request has been approved for ${numberOfDays} days from ${formatDate(startDate)} to ${formatDate(endDate)}.`;
+      const message = `Your leave request has been approved for ${numberOfDays} days from ${formatDate(
+        startDate
+      )} to ${formatDate(endDate)}.`;
       const payload = { message };
       const channel = `private-${empNo}`;
       io.to(channel).emit('leave-approved', payload);
@@ -146,7 +149,6 @@ const approveOrRejectLeave = async (req, res) => {
         empNo,
       };
       await Notification.create(notification);
-
     } else {
       const { reason } = req.body;
       leave.status = status;
@@ -176,6 +178,19 @@ const approveOrRejectLeave = async (req, res) => {
     res.status(500).json({ message: 'Failed to approve or reject leave request' });
   }
 };
+
+// io.on('connection', (socket) => {
+//   const { empNo } = socket.handshake.query;
+//   const channel = `private-${empNo}`;
+//   socket.join(channel);
+
+//   socket.on('disconnect', () => {
+//     socket.leave(channel);
+//   });
+// });
+
+const server = http.createServer(app);
+io.attach(server);
 
 io.on('connection', (socket) => {
   const { empNo } = socket.handshake.query;
@@ -220,8 +235,7 @@ const deleteLeaveRequest = async (req, res) => {
     console.error(err.message);
     res.status(500).json({ message: 'Failed to delete leave request' });
   }
-}
-
+};
 
 module.exports = {
   createLeaveRequest,
