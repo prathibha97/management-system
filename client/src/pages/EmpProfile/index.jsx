@@ -20,7 +20,7 @@ function EmpProfile() {
     if (!userInfo) {
       navigate('/');
     } else {
-      const storedUser = JSON.parse(localStorage.getItem('userInfo'));
+      const storedUser = JSON.parse(localStorage.getItem('user'));
       if (!storedUser || storedUser.empNo !== userInfo.empNo) {
         dispatch(setEmployeeDetailsAdmin({ employee: user }))
       }

@@ -26,7 +26,7 @@ function CreateProject() {
   const [specialNotes, setSpecialNotes] = useState('')
   const [projectScope, setProjectScope] = useState(null)
   const [nftBaseDesignCount, setNftBaseDesignCount] = useState(0)
-  const [nftTradeCount, setNftTradeCount] = useState(0)
+  const [nftTraitCount, setNftTraitCount] = useState(0)
   const [nftCollectionSize, setnftCollectionSize] = useState(0)
 
   const userInfo = useSelector(selectCurrentUser);
@@ -64,7 +64,7 @@ function CreateProject() {
         specialNotes,
         projectScope,
         nftBaseDesignCount,
-        nftTradeCount,
+        nftTraitCount,
         nftCollectionSize
       }).unwrap()
       dispatch(setCreateProject({ project: projectData }))
@@ -136,11 +136,11 @@ function CreateProject() {
               <div className='flex flex-col w-[45%]'>
                 <InputLabel
                   labelid="emp-no-lable">
-                  NFT Trade Count
+                  NFT Trait Count
                 </InputLabel>
                 <TextField
-                  value={nftTradeCount}
-                  onChange={(e) => setNftTradeCount(e.target.value)}
+                  value={nftTraitCount}
+                  onChange={(e) => setNftTraitCount(e.target.value)}
                 />
               </div>
               <div className='flex flex-col w-[45%]'>

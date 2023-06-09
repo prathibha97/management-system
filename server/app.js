@@ -4,27 +4,31 @@ const cors = require('cors');
 const morgan = require('morgan');
 const path = require('path');
 const cookieParser = require('cookie-parser');
-const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
 const fs = require('fs');
+const bodyParser = require('body-parser');
+const cron = require('node-cron');
 const api = require('./routes/api');
 const { errorHandler, notFound } = require('./middleware/error.middleware');
 const sendEmail = require('./services/sendEmail');
+// const { logger } = require('./middleware/logEvents');
+const credentials = require('./middleware/credentials.middleware');
+const corsOptions = require('./config/corsOptions');
+const pwRecoveryTemplate = require('./email/passwordRecoveryTemplate');
+const updateLeaveBalances = require('./utils/leaveBalanceUpdater');
 
 const app = express();
 
-const corsOptions = {
-  origin: 'http://localhost:3000', // replace with your React app's URL
-  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-};
-
+// Handle options credentials check - before CORS! and fetch cookies credentials requirement
+app.use(credentials);
 app.use(cors(corsOptions));
+
 app.use(express.json({ limit: '25mb' }));
-app.use(cookieParser());
 app.use(bodyParser());
 // app.use(express.urlencoded({ extended: false, limit: '25mb' }));
+app.use(express.json());
+app.use(cookieParser());
 app.use(morgan('dev'));
-
-// app.use(setCache);
 
 // Serve the PDF files from the uploads folder
 app.use('/uploads', express.static(path.join(__dirname, '..', 'server', 'uploads')));
@@ -48,10 +52,32 @@ app.get('/pdf', (req, res) => {
 
 app.post('/send_recovery_email', (req, res) => {
   const { OTP, email } = req.body;
-  sendEmail({ OTP, email })
+  const subject = 'SPHIRIA DIGITAL SYSTEM PASSWORD RECOVERY';
+  const body = pwRecoveryTemplate(OTP);
+  sendEmail({ email, subject, body })
     .then((response) => res.send(response.message))
     .catch((error) => res.status(500).send(error.message));
 });
+
+app.use(notFound);
+app.use(errorHandler);
+
+// Cron job to update leave balances at the end of each year
+cron.schedule('59 23 31 12 *', () => {
+  updateLeaveBalances();
+});
+
+// const testUpdateLeaveBalances = async () => {
+//   try {
+//     console.log('Updating leave balances...');
+//     await updateLeaveBalances();
+//     console.log('Leave balances updated successfully.');
+//   } catch (error) {
+//     console.error('Error updating leave balances:', error.message);
+//   }
+// };
+
+// testUpdateLeaveBalances();
 
 if (process.env.NODE_ENV !== 'development') {
   app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
@@ -60,6 +86,4 @@ if (process.env.NODE_ENV !== 'development') {
   });
 }
 
-app.use(notFound);
-app.use(errorHandler);
 module.exports = app;

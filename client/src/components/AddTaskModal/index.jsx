@@ -1,12 +1,11 @@
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, Snackbar, TextField } from '@mui/material';
 import React, { useRef, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { useGetProjectBoardsByIdQuery } from '../../app/features/boards/boardApiSlice';
 import { useCreateTaskMutation } from '../../app/features/tasks/taskApiSlice';
 import { setCreateTask } from '../../app/features/tasks/taskSlice';
 import Loader from '../Loader';
 
-function AddTaskModal({ open, handleClose, boardId, setNumTasks }) {
+function AddTaskModal({ open, handleClose, boardId, setNumTasks, refetchProjectBoards }) {
   const user = JSON.parse(localStorage.getItem('userInfo'));
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -20,9 +19,9 @@ function AddTaskModal({ open, handleClose, boardId, setNumTasks }) {
   // const { tasks } = useSelector((state) => state.getTasksByProject);
 
   const [createTask, { isLoading: isCreateTaskLoading, error: taskCreateError }] = useCreateTaskMutation()
-  const { refetch: refetchProjectBoards } = useGetProjectBoardsByIdQuery(projectId, {
-    refetchOnMountOrArgChange: true,
-  })
+  // const { refetch: refetchProjectBoards } = useGetProjectBoardsByIdQuery(projectId, {
+  //   refetchOnMountOrArgChange: true,
+  // })
 
 
 
@@ -44,19 +43,19 @@ function AddTaskModal({ open, handleClose, boardId, setNumTasks }) {
     setAssignee(event.target.value);
   };
 
-  const handleAddButtonClick = async () => {
-    try {
-      // Add the task and close the dialog
-      const { task } = await createTask({ boardId, projectId, title, description, status, assignee: { _id: assignee } }).unwrap();
-      dispatch(setCreateTask({ task }));
-      refetchProjectBoards();
-      setNumTasks(1);
-      setAlert({ open: true, message: 'Attendance marked successfully', severity: 'success' });
-      handleClose();
-    } catch (err) {
-      setAlert({ open: true, message: taskCreateError?.data?.message, severity: 'error' });
-    }
-  };
+  // const handleAddButtonClick = async () => {
+  //   try {
+  //     // Add the task and close the dialog
+  //     const { task } = await createTask({ boardId, projectId, title, description, status, assignee: { _id: assignee } }).unwrap();
+  //     dispatch(setCreateTask({ task }));
+  //     setNumTasks(1);
+  //     refetchProjectBoards();
+  //     setAlert({ open: true, message: 'Attendance marked successfully', severity: 'success' });
+  //     handleClose();
+  //   } catch (err) {
+  //     setAlert({ open: true, message: taskCreateError?.data?.message, severity: 'error' });
+  //   }
+  // };
 
   const handleEnterKey = (event) => {
     // If the user presses Enter while typing in the task name input field,
@@ -126,7 +125,19 @@ function AddTaskModal({ open, handleClose, boardId, setNumTasks }) {
           </Button>
           <Button
             variant="contained"
-            onClick={handleAddButtonClick}
+            onClick={() => {
+              const { task } = createTask({ boardId, projectId, title, description, status, assignee: { _id: assignee } }).unwrap()
+                .then(() => {
+                  dispatch(setCreateTask({ task }));
+                  setNumTasks(1);
+                  refetchProjectBoards();
+                  setAlert({ open: true, message: 'Attendance marked successfully', severity: 'success' });
+                  handleClose();
+                })
+                .catch((err) => {
+                  setAlert({ open: true, message: taskCreateError?.data?.message || err, severity: 'error' });
+                })
+            }}
             disabled={!title}
             style={{ backgroundColor: '#1EB3AB', color: 'white' }}
           >

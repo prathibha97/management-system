@@ -8,6 +8,9 @@ const getNumberOfDays = require('../utils/getNumberOfDays');
 const io = require('../services/socket');
 const Notification = require('../models/Notification');
 const formatDate = require('../utils/formatDate');
+const upload = require('../services/fileUpload');
+const sendEmail = require('../services/sendEmail');
+const leaveRequestTemplate = require('../email/leaveRequestTemplate');
 
 /* 
 ?@desc   Create a new leave request
@@ -16,13 +19,17 @@ const formatDate = require('../utils/formatDate');
 */
 
 const createLeaveRequest = async (req, res) => {
-  try {
-    const { leaveType, startDate, endDate, reason } = req.body;
-    const { empNo } = req.user;
+  const { leaveType, startDate, endDate, reason } = req.body;
+  const { empNo } = req.user;
+  const medical = req.files?.medical?.[0]?.path ?? '';
 
+  // Upload files using the "upload" middleware
+  await upload.any()(req, res, () => {});
+
+  try {
     // Check if employee with the given empNo exists
     const employee = await Employee.findOne({ empNo });
-    if (empNo !== employee.empNo) {
+    if (!employee) {
       return res.status(404).json({ message: 'You are not authorized to create a leave request' });
     }
 
@@ -34,14 +41,28 @@ const createLeaveRequest = async (req, res) => {
       startDate,
       endDate,
       reason,
+      medical,
     });
 
-    res.status(201).json({ message: 'Leave request created successfully', leaveRequest });
+    // Notify HR about leave request
+    const email = 'prsthibha@gmail.com';
+    const subject = 'SPHIRIA DIGITAL SYSTEM LEAVE REQUEST';
+    const employeeName = `${req.user.name.first} ${req.user.name.last}`;
+    const body = leaveRequestTemplate(employeeName, leaveType, startDate, endDate, reason);
+    sendEmail({ email, subject, body })
+      .then(() => {
+        res.status(201).json({ message: 'Leave request created successfully', leaveRequest });
+      })
+      .catch((error) => {
+        console.error(error.message);
+        res.status(500).json({ message: 'Failed to send email notification' });
+      });
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ message: 'Failed to create leave request' });
   }
 };
+
 
 /* 
 ?@desc   Get all leave requests

@@ -35,7 +35,7 @@ function ReviewNewEmployee({ prevStep, values }) {
     employementHistoty,
     projectHistory,
     leaveAllocation,
-    isAdmin,
+    role,
     idCardPath,
     bankPassPath,
     resumePath,
@@ -68,7 +68,7 @@ function ReviewNewEmployee({ prevStep, values }) {
         employementHistoty,
         projectHistory,
         leaveAllocation,
-        isAdmin,
+        role,
         idCardPath,
         bankPassPath,
         resumePath,
@@ -201,8 +201,8 @@ function ReviewNewEmployee({ prevStep, values }) {
     {
       id: 7,
       icon: faScrewdriverWrench,
-      title: isAdmin === true ? 'Admin' : 'Employee',
-      subtitle: 'Employee Status',
+      title: role,
+      subtitle: 'Employee Type',
     },
   ]
 

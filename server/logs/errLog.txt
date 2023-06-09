@@ -1,0 +1,28 @@
+20230519	09:51:14	8d1ae457-f6cd-43e4-a7e0-75e84402e086	Error: Not Found - /api/emp/auth/logout
+20230519	09:51:32	4b935d59-d3fd-46fc-ad5f-c0a49af02dc3	Error: Not Found - /api/emp/auth/logout
+20230519	09:52:12	c8b0d2d2-e7b5-4b67-9189-457ac02cfc08	Error: Not Found - /api/emp/auth/logout
+20230519	09:53:42	14930c8e-0818-4590-bf58-635ad36a98b1	Error: Not Found - /api/emp/auth/logout
+20230519	09:55:47	813894b5-5ccb-4859-bd0c-ba8be845b1b5	Error: Not Found - /api/emp/auth/logout
+20230519	12:44:01	f89d9875-7855-4cc8-8c9a-4260bcda164a	Error: Not Found - /api/timerecords
+20230519	13:33:22	12b39631-f23a-441b-ac01-5917c2f02ec7	Error: Not Found - /api
+20230523	11:34:26	fe4584f6-c280-4d09-adb3-a23a55e576d5	Error: Not authorized, as an admin
+20230523	11:38:42	278c8336-1b2d-4bf9-b924-107e72c5c66a	Error: Not authorized, as an admin
+20230523	11:38:42	ba405495-5aef-40ab-8afe-c0ac8fc96604	Error: Not authorized, as an admin
+20230523	11:39:12	852db281-f3a0-4cfc-b42c-fc6468be7ea2	Error: Not authorized, as an admin
+20230523	11:40:17	89a7d9dd-1c99-4267-9647-ce6152925e7c	Error: Not authorized, as an admin
+20230526	11:33:55	310b879e-d29f-46eb-9991-70a75f4c8721	Error: Not Found - /api/timerecords/employee/642fb85da1966835e8daee87
+20230527	11:00:36	e0577538-a6aa-441e-9b52-26e739043775	Error: Not Found - /api/timerecords/employee/642fb85da1966835e8daee87/weekly-totals
+20230529	12:55:51	abd7d1e4-416a-45c8-b670-2190d0f266f4	Error: ENOENT: no such file or directory, stat 'undefined'
+20230601	09:34:30	9f5a28c0-1c17-4d50-945a-5438655c25f8	Error: Not authorized, as an admin
+20230601	09:34:58	6d874aae-58e4-4188-a247-1633255aa3cc	Error: Not authorized, as an admin
+20230601	09:35:44	970b28dd-fb53-4ba9-87b9-6e1f756dff70	Error: Not authorized, as an admin
+20230601	09:35:58	ee1f0606-5692-4c97-84dc-3aa7e201b145	Error: Not authorized, as an admin
+20230601	09:35:58	4f0b3995-8da1-4b56-9550-c3e67d2316d0	Error: Not authorized, as an admin
+20230601	09:36:09	a0233f36-429e-4c86-a3da-3f7925890fec	Error: Not authorized, as an admin
+20230601	09:36:09	ea43e09a-6daa-4598-af5b-ea80af584157	Error: Not authorized, as an admin
+20230601	09:58:28	4b62454d-df76-41f9-8ec6-2500d7278278	Error: Not authorized, as an admin
+20230601	09:59:05	931a1c79-35e6-4f00-ac7a-1463de6c7f7f	Error: Not authorized, as an admin
+20230601	10:28:33	3152eed4-ddfd-41ce-83e0-9af8699ce48b	Error: Not authorized, as an admin
+20230601	11:36:38	b33c7047-b534-4f4d-b2c9-c18f7dbc12d2	Error: Not Found - /main.54fbdc22f4acc86a577a.hot-update.json
+20230601	13:36:53	22213f97-9a4b-4edf-989c-d88416dab4e8	Error: Not Found - /main.f9a9f646563f2df15e86.hot-update.json
+20230609	10:48:37	3fd034b1-b63f-4d34-abc0-54861458230f	Error: Not Found - /socket.io/?empNo=1500&EIO=4&transport=polling&t=OYUbw2y

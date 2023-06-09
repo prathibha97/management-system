@@ -4,7 +4,7 @@ import { Alert, FormControl, InputLabel, MenuItem, Select, Snackbar, TextField }
 import { DesktopDatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useRequestLeaveMutation } from '../../app/features/leaves/leaveApiSlice';
@@ -13,30 +13,32 @@ import Button from '../Button';
 
 function ApplyLeave({ user, setLeaveChangeCount }) {
   const [leaveType, setLeaveType] = useState('')
-  const [startDate, setStartDate] = useState(moment().format())
-  const [endDate, setEndDate] = useState(moment().add(1, 'd').format())
+  const [startDate, setStartDate] = useState(dayjs().format())
+  const [endDate, setEndDate] = useState(dayjs().add(1, 'day').format())
   const [reason, setReason] = useState('')
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
+  const [isMedicalSelected, setIsMedicalSelected] = useState(false);
+  const [medical, setMedical] = useState(null)
   const dispatch = useDispatch()
 
 
   const [requestLeave, { error }] = useRequestLeaveMutation()
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
-      const leaveData = await requestLeave({ leaveType, startDate, endDate, reason }).unwrap()
-      dispatch(setLeaveRequest({ newLeave: leaveData }))
-      setAlert({ open: true, message: 'Leave reaquest created successfully', severity: 'success' });
-      setLeaveChangeCount(1)
-      setLeaveType('')
-      setStartDate(moment().format())
-      setEndDate(moment().add(1, 'd').format())
-      setReason('')
+      const leaveData = await requestLeave({ leaveType, startDate, endDate, reason, medical }).unwrap();
+      dispatch(setLeaveRequest({ newLeave: leaveData }));
+      setAlert({ open: true, message: 'Leave request created successfully', severity: 'success' });
+      setLeaveChangeCount(1);
+      setLeaveType('');
+      setStartDate(dayjs().format());
+      setEndDate(dayjs().add(1, 'day').format());
+      setReason('');
     } catch (err) {
       setAlert({ open: true, message: error.data.message, severity: 'error' });
     }
-  }
+  };
 
   const handleAlertClose = () => {
     setAlert({ ...alert, open: false });
@@ -61,7 +63,11 @@ function ApplyLeave({ user, setLeaveChangeCount }) {
             <Select
               value={leaveType}
               label="Leave Type"
-              onChange={(e) => setLeaveType(e.target.value)}
+              onChange={(e) => {
+                setLeaveType(e.target.value)
+                setIsMedicalSelected(e.target.value === 'Medical');
+              }
+              }
             >
               <MenuItem value='Casual'>Casual</MenuItem>
               {
@@ -70,6 +76,10 @@ function ApplyLeave({ user, setLeaveChangeCount }) {
               }
               <MenuItem value='Annual'>Annual</MenuItem>
               <MenuItem value='Medical'>Medical</MenuItem>
+              {
+                user?.leaveBalance?.BroughtForward === 0 ? null :
+                  <MenuItem value='BroughtForward'>Brought Forward</MenuItem>
+              }
             </Select>
           </FormControl>
           <div className='flex mt-5 mb-5 gap-5'>
@@ -77,8 +87,8 @@ function ApplyLeave({ user, setLeaveChangeCount }) {
               <DesktopDatePicker
                 label="Start Date"
                 inputFormat="MM/DD/YYYY"
-                value={startDate}
-                onChange={(date) => setStartDate(date)}
+                value={dayjs(startDate)} // Convert startDate to Dayjs object
+                onChange={(date) => setStartDate(date.format())} // Convert date to string before updating state
                 renderInput={(params) => <TextField {...params} />}
               />
             </LocalizationProvider>
@@ -86,11 +96,20 @@ function ApplyLeave({ user, setLeaveChangeCount }) {
               <DesktopDatePicker
                 label="End Date"
                 inputFormat="MM/DD/YYYY"
-                value={endDate}
-                onChange={(date) => setEndDate(date)}
+                value={dayjs(endDate)} // Convert endDate to Dayjs object
+                onChange={(date) => setEndDate(date.format())} // Convert date to string before updating state
                 renderInput={(params) => <TextField {...params} />}
               />
             </LocalizationProvider>
+            {isMedicalSelected && (
+              <TextField
+                sx={{ marginBottom: '20px' }}
+                type='file'
+                id='pdf-file-input'
+                accept=".pdf,.doc,.docx,.jpeg,.jpg,.png"
+                onChange={(e) => setMedical(e.target.files[0])}
+              />
+            )}
           </div>
           <TextField sx={{ marginBottom: '20px' }} fullWidth multiline rows={5} label="Reason" value={reason} onChange={(e) => setReason(e.target.value)} />
           <Button title="Apply Leave" onClick={handleSubmit} icon={faGreaterThan} />

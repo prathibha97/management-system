@@ -32,7 +32,7 @@ const registerEmployee = async (req, res) => {
     password,
     phone,
     designation,
-    isAdmin,
+    role,
     employmentHistory,
     projectHistory,
     nic,
@@ -77,7 +77,7 @@ const registerEmployee = async (req, res) => {
       phone,
       nic,
       designation,
-      isAdmin,
+      role,
       employmentHistory,
       projectHistory: Array.isArray(projectHistory) ? projectHistory : [],
       idCardPath,
@@ -121,60 +121,62 @@ const registerEmployee = async (req, res) => {
 *@route  Post /api/emp/auth/login
 *@access Private
 */
-// TODO: Error handling
 
 const loginEmployee = async (req, res) => {
-  const { email, password } = req.body;
-  const { cookies } = req;
   try {
-    const employee = await Employee.findOne({ email });
-    if (!employee) return res.status(404).json({ message: 'Employee does not exists' });
-    const isMatch = await bcrypt.compare(password, employee.password);
-    if (!isMatch) return res.status(403).json({ message: 'Invalid password' });
+    const { cookies } = req;
+    const { email, password } = req.body;
 
-    const accessToken = generateToken(employee._id, '1d');
-    const newRefreshToken = generateToken(employee._id, '1d');
-
-    // Changed to let keyword
-    let newRefreshTokenArray = !cookies?.jwt
-      ? employee.refreshToken
-      : employee.refreshToken.filter((rt) => rt !== cookies.jwt);
-
-    if (cookies?.jwt) {
-      const refreshToken = cookies.jwt;
-      const foundToken = await Employee.findOne({ refreshToken }).exec();
-
-      // Detected refresh token reuse!
-      if (!foundToken) {
-        // clear out ALL previous refresh tokens
-        newRefreshTokenArray = [];
-      }
-
-      res.clearCookie('jwt', {
-        httpOnly: true,
-        sameSite: 'None',
-        secure: true,
-      });
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required.' });
     }
 
-    // Saving refreshToken with current user
-    employee.refreshToken = [...newRefreshTokenArray, newRefreshToken];
-    await employee.save();
+    const foundUser = await Employee.findOne({ email }).exec();
 
-    // Creates Secure Cookie with refresh token
-    res.cookie('jwt', newRefreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'None',
-      maxAge: 24 * 60 * 60 * 1000,
-    });
+    if (!foundUser) {
+      return res.status(401).json({ message: 'Invalid email or password.' });
+    }
 
-    employee.password = undefined;
-    // Send authorization roles and access token to user
-    res.status(200).json({ employee, token: accessToken });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ message: 'Failed to login employee' });
+    const match = await bcrypt.compare(password, foundUser.password);
+
+    if (match) {
+      const accessToken = generateToken(foundUser._id, '1d', process.env.JWT_SECRET);
+      const newRefreshToken = generateToken(foundUser._id, '1d', process.env.REFRESH_TOKEN_SECRET);
+
+      let newRefreshTokenArray = !cookies?.jwt
+        ? foundUser.refreshToken
+        : foundUser.refreshToken.filter((rt) => rt !== cookies.jwt);
+
+      if (cookies?.jwt) {
+        const refreshToken = cookies.jwt;
+        const foundToken = await Employee.findOne({ refreshToken }).exec();
+
+        if (!foundToken) {
+          newRefreshTokenArray = [];
+        }
+
+        res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
+      }
+
+      foundUser.refreshToken = [...newRefreshTokenArray, newRefreshToken];
+      await foundUser.save();
+
+      res.cookie('jwt', newRefreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'None',
+        maxAge: 24 * 60 * 60 * 1000,
+      });
+
+      foundUser.password = undefined;
+
+      res.status(200).json({ employee: foundUser, token: accessToken });
+    } else {
+      res.status(401).json({ message: 'Invalid email or password.' });
+    }
+  } catch (error) {
+    console.error('Error logging in:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
@@ -184,48 +186,30 @@ const loginEmployee = async (req, res) => {
 *@access Private
 */
 
-// const logoutEmployee = async (req, res) => {
-//   // On client, also delete the accessToken
-
-//   const { cookies } = req;
-//   if (!cookies?.jwt) return res.sendStatus(204);
-//   const refreshToken = cookies.jwt;
-
-//   // Is refreshToken in db?
-//   const foundUser = await Employee.findOne({ refreshToken }).exec();
-//   if (!foundUser) {
-//     res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
-//     return res.sendStatus(204);
-//   }
-
-//   // Delete refreshToken in db
-// await Employee.findOneAndUpdate(
-//     { _id: foundUser._id },
-//     { $pull: { refreshToken } },
-//     { new: true }
-//   ).exec();
-
-//   res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
-//   res.sendStatus(204);
-// };
-
 const logoutEmployee = async (req, res) => {
   const { cookies } = req;
-  if (!cookies?.jwt) return res.sendStatus(204);
-
-  const refreshToken = cookies.jwt;
-  const foundUser = await Employee.findOne({ refreshToken });
-
-  if (!foundUser) {
-    res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
+  if (!cookies?.jwt) {
     return res.sendStatus(204);
   }
 
-  foundUser.refreshToken = foundUser.refreshToken.filter((rt) => rt !== refreshToken);
-  await foundUser.save();
+  const refreshToken = cookies.jwt;
 
-  res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
-  res.sendStatus(204);
+  try {
+    // Is refreshToken in db?
+    const foundUser = await Employee.findOne({ refreshToken }).exec();
+
+    if (foundUser) {
+      // Delete refreshToken in db
+      foundUser.refreshToken = foundUser.refreshToken.filter((rt) => rt !== refreshToken);
+      await foundUser.save();
+    }
+
+    res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
+    res.status(204).json({ message: 'Logout successful' });
+  } catch (error) {
+    console.log('Logout failed', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
 };
 
 /* 
@@ -265,7 +249,7 @@ const refreshAuthToken = async (req, res) => {
   const { cookies } = req;
   if (!cookies?.jwt) return res.sendStatus(401);
   const refreshToken = cookies.jwt;
-  res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
+  res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: false });
 
   const foundUser = await Employee.findOne({ refreshToken }).exec();
 
@@ -303,10 +287,13 @@ const refreshAuthToken = async (req, res) => {
     // Creates Secure Cookie with refresh token
     res.cookie('jwt', newRefreshToken, {
       httpOnly: true,
-      secure: true,
+      secure: false,
       sameSite: 'None',
+      domain: 'localhost',
       maxAge: 24 * 60 * 60 * 1000,
     });
+
+    console.log('Refresh Cookie set:', newRefreshToken);
 
     res.json({ accessToken });
   });
