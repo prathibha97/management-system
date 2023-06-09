@@ -25,3 +25,4 @@
 20230601	10:28:33	3152eed4-ddfd-41ce-83e0-9af8699ce48b	Error: Not authorized, as an admin
 20230601	11:36:38	b33c7047-b534-4f4d-b2c9-c18f7dbc12d2	Error: Not Found - /main.54fbdc22f4acc86a577a.hot-update.json
 20230601	13:36:53	22213f97-9a4b-4edf-989c-d88416dab4e8	Error: Not Found - /main.f9a9f646563f2df15e86.hot-update.json
+20230609	10:48:37	3fd034b1-b63f-4d34-abc0-54861458230f	Error: Not Found - /socket.io/?empNo=1500&EIO=4&transport=polling&t=OYUbw2y
