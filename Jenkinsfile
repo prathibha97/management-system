@@ -19,7 +19,7 @@ pipeline {
         
     stage('Build Images') {
 	      steps {
-		                sh 'docker build -t prathibha097/management'
+		                sh 'docker build -t prathibha097/management .'
 	      }
     }
 
