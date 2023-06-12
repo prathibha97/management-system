@@ -6,12 +6,11 @@ pipeline {
     }
 
     stages {
-        stages {
-		stage('Checkout') {
-			steps {
-				checkout scm
-			}
-		}
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
         
         stage('Build Images') {
             steps {
