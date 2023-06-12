@@ -40,8 +40,8 @@ function AttendanceCalendar({ user }) {
 
   const userInfo = useSelector(selectCurrentUser);
 
-  const { data: attendanceInfo, isLoading: isAttendanceInfoLoading } = useGetEmployeeAttendanceAdminQuery(user.empNo)
-  const { data: leaves, isLoading: isLeavesLoading } = useGetEmployeeLeavesAdminQuery(user.empNo, {
+  const { data: attendanceInfo, isLoading: isAttendanceInfoLoading } = useGetEmployeeAttendanceAdminQuery(user?.empNo)
+  const { data: leaves, isLoading: isLeavesLoading } = useGetEmployeeLeavesAdminQuery(user?.empNo, {
     refetchOnMountOrArgChange: true,
   })
 
@@ -76,11 +76,11 @@ function AttendanceCalendar({ user }) {
   }
 
   const selectedDayAttendance = Array.from(attendanceInfo)?.filter((attendance) =>
-    isSameDay(parseISO(attendance.inTime), selectedDay)
+    isSameDay(parseISO(attendance?.inTime), selectedDay)
   )
 
   const selectedDayLeaves = Array.from(leaves)?.filter((leave) =>
-    isSameDay(parseISO(leave.startDate), selectedDay)
+    isSameDay(parseISO(leave?.startDate), selectedDay)
   )
 
   const colStartClasses = [
@@ -196,11 +196,11 @@ function AttendanceCalendar({ user }) {
             </div>
             <div>
               <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
-                {selectedDayAttendance.length > 0 ? (
-                  selectedDayAttendance.map((attendance) => (
-                    <div key={attendance._id}>
-                      <p>Log in time: {formatTime(attendance.inTime)}</p>
-                      <p>Log out time: {formatTime(attendance.outTime)}</p>
+                {selectedDayAttendance?.length > 0 ? (
+                  selectedDayAttendance?.map((attendance) => (
+                    <div key={attendance?._id}>
+                      <p>Log in time: {formatTime(attendance?.inTime)}</p>
+                      <p>Log out time: {formatTime(attendance?.outTime)}</p>
                     </div>
                   ))
                 ) : (
@@ -212,10 +212,10 @@ function AttendanceCalendar({ user }) {
                 )}
               </ol>
               <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
-                {selectedDayLeaves.length > 0 && (
-                  selectedDayLeaves.map((leave) => (
-                    <div key={leave._id}>
-                      <p>Leave from {formatDateShort(leave.startDate)} to {formatDateShort(leave.endDate)} approved by {leave.approvedBy.name.first}</p>
+                {selectedDayLeaves?.length > 0 && (
+                  selectedDayLeaves?.map((leave) => (
+                    <div key={leave?._id}>
+                      <p>Leave from {formatDateShort(leave?.startDate)} to {formatDateShort(leave?.endDate)} approved by {leave?.approvedBy?.name?.first}</p>
                     </div>
                   ))
                 )}

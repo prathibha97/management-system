@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -20,7 +21,7 @@ function EmpProfile() {
     if (!userInfo) {
       navigate('/');
     } else {
-      const storedUser = JSON.parse(localStorage.getItem('user'));
+      const storedUser = JSON.parse(localStorage.getItem('userInfo'));
       if (!storedUser || storedUser.empNo !== userInfo.empNo) {
         dispatch(setEmployeeDetailsAdmin({ employee: user }))
       }

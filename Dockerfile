@@ -17,7 +17,9 @@ COPY server/ server/
 
 USER root
 
-RUN apk update && apk add sudo
+RUN apk update
+
+RUN apk add sudo
 
 RUN echo "node ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 

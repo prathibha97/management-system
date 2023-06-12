@@ -59,9 +59,6 @@ app.post('/send_recovery_email', (req, res) => {
     .catch((error) => res.status(500).send(error.message));
 });
 
-app.use(notFound);
-app.use(errorHandler);
-
 // Cron job to update leave balances at the end of each year
 cron.schedule('59 23 31 12 *', () => {
   updateLeaveBalances();
@@ -82,8 +79,11 @@ cron.schedule('59 23 31 12 *', () => {
 if (process.env.NODE_ENV !== 'development') {
   app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
   app.get('/*', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'client', 'build'));
+    res.sendFile(path.join(__dirname, '..', 'client', 'build', 'index.html'));
   });
 }
+
+app.use(notFound);
+app.use(errorHandler);
 
 module.exports = app;

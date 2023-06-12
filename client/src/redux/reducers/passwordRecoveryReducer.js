@@ -5,7 +5,7 @@ const initialState = {
 };
 
 // Define reducers
-function passwordRecoveryReducer(state = initialState, action) {
+export const passwordRecoveryReducer = (state = initialState, action) => {
   const { type, payload } = action;
   switch (type) {
     case 'SET_PAGE':
@@ -26,6 +26,4 @@ function passwordRecoveryReducer(state = initialState, action) {
     default:
       return state;
   }
-}
-
-module.exports = passwordRecoveryReducer;
+};

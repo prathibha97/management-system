@@ -1,8 +1,7 @@
 ### DEV
 
-build-dev:
-	cd client && $(MAKE) build-dev
-	cd server && $(MAKE) build
+build:
+	docker build -t prathibha097/management .
 
-run-dev:
-	docker-compose up
+run:
+	docker run -it -p 5000:5000 prathibha097/management
