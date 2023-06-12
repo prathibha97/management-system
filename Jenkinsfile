@@ -1,9 +1,9 @@
 pipeline {
     agent any
 
-    environment {
-        MONGODB_URI = credentials('mongodb-uri')
-    }
+    // environment {
+    //     MONGODB_URI = credentials('mongodb-uri')
+    // }
 
     stages {
         stage('Checkout') {
