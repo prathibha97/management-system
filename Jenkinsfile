@@ -6,6 +6,7 @@ pipeline {
     // Setting environment variables for the build.
     environment {
         MONGODB_URI = credentials('mongodb-uri')
+        MY_PRIVATE_KEY = credentials('SSH Key Pair')
     }
 
     // This is the pipeline. It is a series of stages that Jenkins will run.
@@ -36,12 +37,12 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
                     sshagent(['your-ssh-credentials']) {
-                        sh 'ssh -o StrictHostKeyChecking=no -i $HOME/prathibha/management-key-pair.pem ec2-user@ec2-34-220-229-58.us-west-2.compute.amazonaws.com "docker pull prathibha097/management"'
-                        sh 'ssh -o StrictHostKeyChecking=no -i $HOME/prathibha/management-key-pair.pem ec2-user@ec2-34-220-229-58.us-west-2.compute.amazonaws.com "docker stop management-container"'
-                        sh 'ssh -o StrictHostKeyChecking=no -i $HOME/prathibha/management-key-pair.pem ec2-user@ec2-34-220-229-58.us-west-2.compute.amazonaws.com "docker run -d -p 5001:5000 --name=management-container-new prathibha097/management"'
-                        sh 'ssh -o StrictHostKeyChecking=no -i $HOME/prathibha/management-key-pair.pem ec2-user@ec2-34-220-229-58.us-west-2.compute.amazonaws.com "docker update --link --volumes-from=management-container management-container-new"'
-                        sh 'ssh -o StrictHostKeyChecking=no -i $HOME/prathibha/management-key-pair.pem ec2-user@ec2-34-220-229-58.us-west-2.compute.amazonaws.com "docker rm -f management-container"'
-                        sh 'ssh -o StrictHostKeyChecking=no -i $HOME/prathibha/management-key-pair.pem ec2-user@ec2-34-220-229-58.us-west-2.compute.amazonaws.com "docker rename management-container-new management-container"'
+                        sh 'ssh -o StrictHostKeyChecking=no -i $MY_PRIVATE_KEY ec2-user@ec2-34-220-229-58.us-west-2.compute.amazonaws.com "docker pull prathibha097/management"'
+                        sh 'ssh -o StrictHostKeyChecking=no -i $MY_PRIVATE_KEY ec2-user@ec2-34-220-229-58.us-west-2.compute.amazonaws.com "docker stop management-container"'
+                        sh 'ssh -o StrictHostKeyChecking=no -i $MY_PRIVATE_KEY ec2-user@ec2-34-220-229-58.us-west-2.compute.amazonaws.com "docker run -d -p 5001:5000 --name=management-container-new prathibha097/management"'
+                        sh 'ssh -o StrictHostKeyChecking=no -i $MY_PRIVATE_KEY ec2-user@ec2-34-220-229-58.us-west-2.compute.amazonaws.com "docker update --link --volumes-from=management-container management-container-new"'
+                        sh 'ssh -o StrictHostKeyChecking=no -i $MY_PRIVATE_KEY ec2-user@ec2-34-220-229-58.us-west-2.compute.amazonaws.com "docker rm -f management-container"'
+                        sh 'ssh -o StrictHostKeyChecking=no -i $MY_PRIVATE_KEY ec2-user@ec2-34-220-229-58.us-west-2.compute.amazonaws.com "docker rename management-container-new management-container"'
                     }
                 }
             }
