@@ -19,8 +19,6 @@ const updateLeaveBalances = require('./utils/leaveBalanceUpdater');
 
 const app = express();
 
-// app.use(logger)
-
 // Handle options credentials check - before CORS! and fetch cookies credentials requirement
 app.use(credentials);
 app.use(cors(corsOptions));
@@ -31,8 +29,6 @@ app.use(bodyParser());
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan('dev'));
-
-// app.use(setCache);
 
 // Serve the PDF files from the uploads folder
 app.use('/uploads', express.static(path.join(__dirname, '..', 'server', 'uploads')));
