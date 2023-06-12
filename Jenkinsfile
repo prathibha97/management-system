@@ -5,21 +5,13 @@ pipeline {
         MONGODB_URI = credentials('mongodb-uri')
     }
 
-    options {
-        skipDefaultCheckout()
-    }
-
     stages {
-        stage('Checkout') {
-            steps {
-                checkout([
-                    $class: 'GitSCM',
-                    branches: [[name: '*/main']],
-                    userRemoteConfigs: [[url: 'https://github.com/prathibha97/management-system.git']],
-                    extensions: [[$class: 'CloneOption', noTags: true, shallow: true]]
-                ])
-            }
-        }
+        stages {
+		stage('Checkout') {
+			steps {
+				checkout scm
+			}
+		}
         
         stage('Build Images') {
             steps {
