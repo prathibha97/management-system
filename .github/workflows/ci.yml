@@ -14,15 +14,14 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Build Images
-        run: docker build -t prathibha097/management .
+        run: docker build -t prathibha097/management-build .
 
-      - name: Push Images to DockerHub
+      - name: Push Build Images to DockerHub
         env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
-          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-          docker push prathibha097/management
+          echo $DOCKER_PASSWORD | docker login -u prathibha097 --password-stdin
+          docker push prathibha097/management-build
 
       - name: Update Docker Container on EC2
         env:
@@ -30,12 +29,15 @@ jobs:
         run: |
           echo "$PRIVATE_KEY" > key.pem
           chmod 400 key.pem
-          ssh -o StrictHostKeyChecking=no -i key.pem ec2-user@ec2-34-220-229-58.us-west-2.compute.amazonaws.com << EOF
-          docker pull prathibha097/management
+          ssh -o StrictHostKeyChecking=no -i key.pem ec2-user@ec2-34-220-229-58.us-west-2.compute.amazonaws.com << 'EOF'
+          docker pull prathibha097/management-build
           docker stop management-container
-          docker run -d -p 5001:5000 --name=management-container-new prathibha097/management
+          docker run --restart=always -p 5001:5000 --name=management-container-new prathibha097/management-build
           docker update --link --volumes-from=management-container management-container-new
           docker rm -f management-container
           docker rename management-container-new management-container
           exit
           EOF
+
+      - name: Remove Unused Docker Images
+        run: docker image prune -f

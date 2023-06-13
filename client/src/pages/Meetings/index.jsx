@@ -3,7 +3,7 @@ import Calendar from '../../components/Calendar';
 function Meetings() {
 
   const handleGoogleLogin = () => {
-    window.location.href = 'http://34.210.201.75:5000/api/google';
+    window.location.href = 'http://34.220.229.58:5000/api/google';
   };
 
   return (
