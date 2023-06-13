@@ -5,6 +5,10 @@ const allowedOrigins = [
   'http://localhost:3500',
   'http://localhost:3000',
   'http://34.210.201.75:5000',
+  'http://34.220.229.58:5000',
+  'http://34.220.229.58:5001',
+  'http://ec2-34-220-229-58.us-west-2.compute.amazonaws.com:5000',
+  'http://ec2-34-220-229-58.us-west-2.compute.amazonaws.com:5001',
   'http://ec2-34-210-201-75.us-west-2.compute.amazonaws.com:5000',
   'http://ec2-34-210-201-75.us-west-2.compute.amazonaws.com:5001',
 ];

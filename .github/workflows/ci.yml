@@ -39,4 +39,3 @@ jobs:
           docker rename management-container-new management-container
           exit
           EOF
-
