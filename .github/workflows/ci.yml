@@ -36,7 +36,6 @@ jobs:
           docker run -p 5000:5000 --name=management-container-new --restart always -d prathibha097/management-build
           docker update --link --volumes-from=management-container management-container-new
           docker rename management-container-new management-container
-          docker rmi prathibha097/management-build
           exit
           EOF
 
