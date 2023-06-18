@@ -39,5 +39,7 @@ jobs:
           exit
           EOF
 
-      - name: Remove Unused Docker Images
-        run: docker system prune -f
+      # - name: Remove Unused Docker Images
+      #   run: |
+      #     docker image rm -f prathibha097/management-build
+      #     docker system prune -f

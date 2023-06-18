@@ -17,6 +17,7 @@ import {
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { useGetEmployeeAttendanceAdminQuery } from '../../app/features/attendance/attendanceApiSlice'
 import { setEmployeeAttendanceAdmin } from '../../app/features/attendance/attendanceSlice'
 import { selectCurrentUser } from '../../app/features/auth/authSelectors'
 import { useGetEmployeeLeavesAdminQuery } from '../../app/features/leaves/leaveApiSlice'
@@ -29,7 +30,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-function AttendanceCalendar({ user, attendanceInfo, isAttendanceInfoLoading }) {
+function AttendanceCalendar({ user }) {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const today = startOfToday()
@@ -43,11 +44,16 @@ function AttendanceCalendar({ user, attendanceInfo, isAttendanceInfoLoading }) {
     refetchOnMountOrArgChange: true,
   })
 
+  const { data: attendanceInfo, isLoading: isAttendanceInfoLoading } = useGetEmployeeAttendanceAdminQuery(user?.empNo)
+
+  console.log(`attendance - ${attendanceInfo}`);
+  console.log(`leaves - ${leaves}`);
+
   useEffect(() => {
     if (!userInfo) {
       navigate('/');
     } else {
-      const storedUser = JSON.parse(localStorage.getItem('user'));
+      const storedUser = JSON.parse(localStorage.getItem('userInfo'));
       if (!storedUser || storedUser.empNo !== userInfo.empNo) {
         dispatch(setEmployeeAttendanceAdmin({ attendanceInfo }))
         dispatch(getLeaveDetailsAdmin({ leaveData: leaves }))
