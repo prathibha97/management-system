@@ -13,7 +13,7 @@ function EmpProfile() {
   const userInfo = useSelector(selectCurrentUser);
   const { empNo } = useParams();
 
-  const { data: user, isLoading: isUserdetailsLoading } = useEmployeeDetailsAdminQuery(empNo, {
+  const { data: user, isLoading: isUserdetailsLoading, isFetching: isUserDetailsFetching } = useEmployeeDetailsAdminQuery(empNo, {
     refetchOnMountOrArgChange: true,
     refetchOnFocus: true,
     refetchOnReconnect: true
@@ -28,12 +28,14 @@ function EmpProfile() {
     } else {
       const storedUser = JSON.parse(localStorage.getItem('userInfo'));
       if (!storedUser || storedUser.empNo !== userInfo.empNo) {
-        dispatch(setEmployeeDetailsAdmin({ employee: user }))
+        if (user) {
+          dispatch(setEmployeeDetailsAdmin({ employee: user }));
+        }
       }
     }
-  }, [userInfo])
+  }, [userInfo, user, dispatch, navigate]);
 
-  if (isUserdetailsLoading) return <Loader />
+  if (!user || isUserdetailsLoading || isUserDetailsFetching) return <Loader />
   return (
     <div className='h-[90%]'>
       <div className='bg-[#EEF2F5]  w-[95%] rounded-xl mt-6 m-auto overflow-y-auto'>
