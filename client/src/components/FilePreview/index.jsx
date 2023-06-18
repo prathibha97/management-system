@@ -7,7 +7,7 @@ function FilePreview({ fileToView }) {
 
   const handleOpenPdf = async () => {
     try {
-      const response = await fetch(`http://52.88.221.122:5000/pdf?filepath=${fileToView}`);
+      const response = await fetch(`http://34.220.229.58:5001/pdf?filepath=${fileToView}`);
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
       window.open(url, '_blank');

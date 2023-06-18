@@ -32,7 +32,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=60 -i key.pem ec2-user@ec2-34-220-229-58.us-west-2.compute.amazonaws.com << 'EOF'
           docker pull prathibha097/management-build
           docker stop management-container
-          docker run --restart=always -p 5001:5000 --name=management-container-new prathibha097/management-build
+          docker -d run --restart=always -p 5001:5000 --name=management-container-new prathibha097/management-build
           docker update --link --volumes-from=management-container management-container-new
           docker rm -f management-container
           docker rename management-container-new management-container
