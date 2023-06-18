@@ -65,7 +65,7 @@ function People() {
   };
 
   const handleView = (row) => {
-    navigate(`/empProfile/${row.empNo}`);
+    navigate(`/people/${row.empNo}`);
   }
 
   const handleClose = () => {
