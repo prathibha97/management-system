@@ -33,7 +33,7 @@ function People() {
     if (!userInfo) {
       navigate('/');
     } else {
-      const storedUser = JSON.parse(localStorage.getItem('user'));
+      const storedUser = JSON.parse(localStorage.getItem('userInfo'));
       if (!storedUser || storedUser.empNo !== userInfo.empNo) {
         dispatch(setEmployeeList({ employees }))
       }
@@ -65,7 +65,7 @@ function People() {
   };
 
   const handleView = (row) => {
-    navigate(`/empProfile/${row.empNo}`);
+    navigate(`/people/${row.empNo}`);
   }
 
   const handleClose = () => {
