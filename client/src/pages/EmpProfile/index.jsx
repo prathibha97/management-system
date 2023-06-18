@@ -13,14 +13,11 @@ function EmpProfile() {
   const userInfo = useSelector(selectCurrentUser);
   const { empNo } = useParams();
 
-  const { data: user, isLoading: isUserdetailsLoading, isFetching: isUserDetailsFetching } = useEmployeeDetailsAdminQuery(empNo, {
+  const { data: user, isLoading: isUserDetailsLoading } = useEmployeeDetailsAdminQuery(empNo, {
     refetchOnMountOrArgChange: true,
     refetchOnFocus: true,
-    refetchOnReconnect: true
-  })
-
-  console.log(`user: ${user}`);
-
+    refetchOnReconnect: true,
+  });
 
   useEffect(() => {
     if (!userInfo) {
@@ -35,7 +32,8 @@ function EmpProfile() {
     }
   }, [userInfo, user, dispatch, navigate]);
 
-  if (!user || isUserdetailsLoading || isUserDetailsFetching) return <Loader />
+  if (isUserDetailsLoading) return <Loader />;
+  if (!user) return <p>No user details ...</p>; // or render an error message if necessary
   return (
     <div className='h-[90%]'>
       <div className='bg-[#EEF2F5]  w-[95%] rounded-xl mt-6 m-auto overflow-y-auto'>
