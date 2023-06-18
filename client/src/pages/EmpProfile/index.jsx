@@ -6,6 +6,7 @@ import { selectCurrentUser } from '../../app/features/auth/authSelectors';
 import { useEmployeeDetailsAdminQuery } from '../../app/features/employees/employeeApiSlice';
 import { setEmployeeDetailsAdmin } from '../../app/features/employees/employeeSlice';
 import { AttendanceCalendar, EmployeeDetails, LeaveBalance, Loader, ProjectHistory, SalaryDetails } from '../../components';
+import { useGetEmployeeAttendanceAdminQuery } from '../../app/features/attendance/attendanceApiSlice';
 
 function EmpProfile() {
   const navigate = useNavigate()
@@ -16,6 +17,8 @@ function EmpProfile() {
   const { data: user, isLoading: isUserdetailsLoading } = useEmployeeDetailsAdminQuery(empNo, {
     refetchOnMountOrArgChange: true,
   })
+
+  const { data: attendanceInfo, isLoading: isAttendanceInfoLoading } = useGetEmployeeAttendanceAdminQuery(user?.empNo)
 
   useEffect(() => {
     if (!userInfo) {
@@ -33,7 +36,7 @@ function EmpProfile() {
     <div className='h-[90%]'>
       <div className='bg-[#EEF2F5]  w-[95%] rounded-xl mt-6 m-auto overflow-y-auto'>
         <EmployeeDetails user={user} />
-        <AttendanceCalendar user={user} />
+        <AttendanceCalendar user={user} attendanceInfo={attendanceInfo} isAttendanceInfoLoading={isAttendanceInfoLoading}/>
         <LeaveBalance user={user} />
         <SalaryDetails />
         <ProjectHistory user={user} />

@@ -17,7 +17,6 @@ import {
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { useGetEmployeeAttendanceAdminQuery } from '../../app/features/attendance/attendanceApiSlice'
 import { setEmployeeAttendanceAdmin } from '../../app/features/attendance/attendanceSlice'
 import { selectCurrentUser } from '../../app/features/auth/authSelectors'
 import { useGetEmployeeLeavesAdminQuery } from '../../app/features/leaves/leaveApiSlice'
@@ -30,7 +29,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-function AttendanceCalendar({ user }) {
+function AttendanceCalendar({ user, attendanceInfo, isAttendanceInfoLoading }) {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const today = startOfToday()
@@ -40,7 +39,6 @@ function AttendanceCalendar({ user }) {
 
   const userInfo = useSelector(selectCurrentUser);
 
-  const { data: attendanceInfo, isLoading: isAttendanceInfoLoading } = useGetEmployeeAttendanceAdminQuery(user?.empNo)
   const { data: leaves, isLoading: isLeavesLoading } = useGetEmployeeLeavesAdminQuery(user?.empNo, {
     refetchOnMountOrArgChange: true,
   })
