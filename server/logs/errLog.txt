@@ -30,3 +30,5 @@
 20230602	11:15:22	c80df75c-aa7e-4133-a613-abb9e4049f00	Error: Not allowed by CORS
 20230602	11:15:35	0d8f65ec-7aa9-4bb5-a608-234b82d41360	Error: Not allowed by CORS
 20230609	12:30:03	13fa53ab-c317-4d8c-b1ee-5e6774efb40a	Error: ENOENT: no such file or directory, stat '/Users/user/Desktop/developer/management-system/client/build/index.html'
+20230618	19:08:04	23da3e49-931e-4372-914f-53d18f92ec84	Error: ENOENT: no such file or directory, stat '/Users/user/Desktop/developer/management-system/client/build/index.html'
+20230618	19:08:19	ab8130d4-8a6a-4b08-b6e8-8786c049c785	Error: ENOENT: no such file or directory, stat '/Users/user/Desktop/developer/management-system/client/build/index.html'

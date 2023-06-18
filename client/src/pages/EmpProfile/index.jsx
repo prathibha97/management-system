@@ -1,4 +1,4 @@
-/* eslint-disable no-restricted-globals */
+// /* eslint-disable no-restricted-globals */
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
