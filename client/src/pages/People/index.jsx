@@ -8,7 +8,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { selectCurrentUser } from '../../app/features/auth/authSelectors';
 import { useEmployeeListQuery, useRemoveEmployeeMutation } from '../../app/features/employees/employeeApiSlice';
-import { setEmployeeList, setRemoveEmployee } from '../../app/features/employees/employeeSlice';
+import { selectEmployee } from '../../app/features/employees/employeeSelector';
+import { setEmployeeList, setRemoveEmployee, setSelectEmployee } from '../../app/features/employees/employeeSlice';
 import { Button, Loader } from '../../components';
 import AlertDialog from '../../components/AlertDialog';
 
@@ -23,6 +24,7 @@ function People() {
   const [employeeListChangeCount, setEmployeeListChangeCount] = useState(0)
 
   const userInfo = useSelector(selectCurrentUser);
+  const employee = useSelector(selectEmployee)
 
   const [removeEmployee, { error: errorRemoveEmployee }] = useRemoveEmployeeMutation()
   const { data: employees, isLoading: isEmployeeListLoading, refetch: refetchEmployeeList } = useEmployeeListQuery({
@@ -67,6 +69,11 @@ function People() {
   const handleView = (row) => {
     navigate(row.empNo)
   }
+
+  const handleOpen = (row) => {
+    setOpen(true);
+    dispatch(setSelectEmployee({ employee: row }))
+  };
 
   const handleClose = () => {
     setOpen(false);
@@ -142,15 +149,15 @@ function People() {
                   <TableCell align='center'>
                     <FontAwesomeIcon icon={faEye} onClick={() => handleView(row)} className="mx-1 hover:text-[#1DB3AB] cursor-pointer" />
                     <FontAwesomeIcon icon={faEdit} onClick={() => handleEdit(row)} className="mx-1 hover:text-[#1DB3AB] cursor-pointer" />
-                    <FontAwesomeIcon icon={faTrash} onClick={() => setOpen(true)} className="mx-1 hover:text-[#FF6760] cursor-pointer" />
-                    {open && (
-                      <AlertDialog open={open} handleClose={handleClose} setAlert={setAlert} id={row.empNo} title='Are you sure you want to remove this employee?' remove={removeEmployee} changeCount={setEmployeeListChangeCount} errorRemoveEmployee={errorRemoveEmployee} action={setRemoveEmployee} />
-                    )}
+                    <FontAwesomeIcon icon={faTrash} onClick={() => handleOpen(row)} className="mx-1 hover:text-[#FF6760] cursor-pointer" />
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
+          {open && (
+            <AlertDialog open={open} handleClose={handleClose} setAlert={setAlert} id={employee.empNo} title='Are you sure you want to remove this employee?' remove={removeEmployee} changeCount={setEmployeeListChangeCount} errorRemoveEmployee={errorRemoveEmployee} action={setRemoveEmployee} />
+          )}
         </TableContainer>
         <TablePagination
           rowsPerPageOptions={[10, 25, 100]}

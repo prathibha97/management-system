@@ -15,19 +15,9 @@ export default function AlertDialog({ open, handleClose, id, setAlert, title, re
       dispatch(action({ id }));
       changeCount((prevCount) => prevCount + 1);
       handleClose();
-      setAlert(prevAlert => ({
-        ...prevAlert,
-        open: true,
-        message: 'Removed successfully',
-        severity: 'success'
-      }));
+      setAlert({ open: true, message: 'Removed successfully', severity: 'success' });
     } catch (err) {
-      setAlert(prevAlert => ({
-        ...prevAlert,
-        open: true,
-        message: errorRemoveEmployee?.data?.message,
-        severity: 'error'
-      }));
+      setAlert({ open: true, message: errorRemoveEmployee?.data?.message, severity: 'error' });
     }
   };
 

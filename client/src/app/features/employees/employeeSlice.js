@@ -15,6 +15,10 @@ const employeeSlice = createSlice({
       const { employee } = action.payload;
       state.employee = employee;
     },
+    setSelectEmployee: (state, action) => {
+      const { employee } = action.payload;
+      state.employee = employee;
+    },
     setRemoveEmployee: (state, action) => {
       const { id } = action.payload;
       state.employees = state.employees.filter(
@@ -28,13 +32,14 @@ const employeeSlice = createSlice({
     setRegisterEmployee: (state, action) => {
       const { employee } = action.payload;
       state.employees.push(employee);
-    }
+    },
   },
 });
 
 export const {
   setEmployeeList,
   setEmployeeProfile,
+  setSelectEmployee,
   setRemoveEmployee,
   setEmployeeDetailsAdmin,
   setRegisterEmployee,
