@@ -15,7 +15,8 @@ import {
   faUsers,
   faClockFour,
   faBuilding,
-  faUserTie
+  faUserTie,
+  faAddressCard
 } from "@fortawesome/free-solid-svg-icons";
 
 function Sidebar({ user }) {
@@ -39,6 +40,11 @@ function Sidebar({ user }) {
       name: "Manage Projects",
       link: "/projects",
       icon: faBriefcase,
+    },
+    {
+      name: "Manage Clients",
+      link: "/clients",
+      icon: faAddressCard,
     },
     {
       name: "Manage Payroll",

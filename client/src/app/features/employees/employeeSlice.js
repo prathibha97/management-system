@@ -16,9 +16,9 @@ const employeeSlice = createSlice({
       state.employee = employee;
     },
     setRemoveEmployee: (state, action) => {
-      const { employeeId } = action.payload;
+      const { id } = action.payload;
       state.employees = state.employees.filter(
-        (employee) => employee.empNo !== employeeId
+        (employee) => employee.empNo !== id
       );
     },
     setEmployeeDetailsAdmin: (state, action) => {

@@ -11,10 +11,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { useGetEmployeeAttendanceQuery, useLazyMarkAttendanceQuery } from '../../app/features/attendance/attendanceApiSlice';
 import { setEmployeeAttendance, setMarkAttendance } from '../../app/features/attendance/attendanceSlice';
+import { selectCurrentUser } from '../../app/features/auth/authSelectors';
 import { useGetEmployeeProjectsQuery } from '../../app/features/projects/projectApiSlice';
 import { setProjects, setSelectedProject } from '../../app/features/projects/projectSlice';
 import { AccountMenu, Button, Notifications, Timer } from '../../components';
-import { selectCurrentUser } from '../../app/features/auth/authSelectors';
 
 function Header() {
   const location = useLocation();
@@ -101,6 +101,15 @@ function Header() {
       break;
     case '/people':
       heading = 'Manage People';
+      break;
+    case '/clients':
+      heading = 'Manage Clients';
+      break;
+    case '/clients/register':
+      heading = 'Register New Client';
+      break;
+    case `/clients/${id}`:
+      heading = 'Client Profile';
       break;
     case `/people/${id}`:
       heading = `Employee Profile`;

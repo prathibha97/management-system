@@ -7,6 +7,9 @@ import {
   Attendance,
   Auth,
   Board,
+  Client,
+  ClientEdit,
+  ClientRegister,
   Clients,
   Dashboard,
   EmpProfile,
@@ -55,6 +58,9 @@ function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/admin/timesheet" element={<AdminTimeSheet />} />
                 <Route path="/clients" element={<Clients />} />
+                <Route path="/clients/:id" element={<Client />} />
+                <Route path="/clients/:id/edit" element={<ClientEdit />} />
+                <Route path="/clients/register" element={<ClientRegister />} />
               </>
             )}
           </Route>
