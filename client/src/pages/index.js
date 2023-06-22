@@ -8,6 +8,7 @@ export { default as ClientEdit } from './ClientEdit';
 export { default as ClientRegister } from './ClientRegister';
 export { default as Clients } from './Clients';
 export { default as Dashboard } from './Dashboard';
+export { default as EditEmployee } from './EditEmployee';
 export { default as EmpProfile } from './EmpProfile';
 export { default as Leaves } from './Leaves';
 export { default as Meetings } from './Meetings';

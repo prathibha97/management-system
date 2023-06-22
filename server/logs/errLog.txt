@@ -27,3 +27,6 @@
 20230601	13:36:53	22213f97-9a4b-4edf-989c-d88416dab4e8	Error: Not Found - /main.f9a9f646563f2df15e86.hot-update.json
 20230609	10:48:37	3fd034b1-b63f-4d34-abc0-54861458230f	Error: Not Found - /socket.io/?empNo=1500&EIO=4&transport=polling&t=OYUbw2y
 20230609	12:38:52	7040b992-51de-4fdb-a193-334cbd9960b5	Error: Not Found - /socket.io/?empNo=1500&EIO=4&transport=polling&t=OYU_9CJ
+20230622	13:52:36	942af30c-6e04-4a23-8e47-4bc020597871	Error: ENOENT: no such file or directory, stat 'undefined'
+20230622	13:53:07	ed692123-1d79-4e73-967f-5da815cd492a	Error: ENOENT: no such file or directory, stat 'undefined'
+20230622	14:04:01	e9de5dc3-ec48-43cd-818f-fb740dbf1e4b	Error: ENOENT: no such file or directory, stat 'undefined'

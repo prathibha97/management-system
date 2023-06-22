@@ -33,6 +33,15 @@ const employeeSlice = createSlice({
       const { employee } = action.payload;
       state.employees.push(employee);
     },
+    setEditEmployee: (state, action) => {
+      const { employee } = action.payload;
+      const index = state.employees.findIndex(
+        (emp) => emp.empNo === employee.empNo
+      );
+      if (index !== -1) {
+        state.employees[index] = employee;
+      }
+    },
   },
 });
 
@@ -43,5 +52,6 @@ export const {
   setRemoveEmployee,
   setEmployeeDetailsAdmin,
   setRegisterEmployee,
+  setEditEmployee,
 } = employeeSlice.actions;
 export default employeeSlice.reducer;

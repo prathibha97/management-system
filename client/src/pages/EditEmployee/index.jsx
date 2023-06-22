@@ -1,39 +1,40 @@
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
+import { selectEmployee } from '../../app/features/employees/employeeSelector'
 import { DocumentUpload, PersonalInfoForm, ProfessionalInfoForm, ReviewNewEmployee, SalaryStructure } from '../../components'
 
-function Register() {
+function EditEmployee() {
+
+  const employee = useSelector(selectEmployee)
+
   const [step, setStep] = useState(1)
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [birthDate, setBirthDate] = useState('')
-  const [email, setEmail] = useState('')
+  const [firstName, setFirstName] = useState(employee.name.first)
+  const [lastName, setLastName] = useState(employee.name.first)
+  const [birthDate, setBirthDate] = useState(employee.birthDate)
+  const [email, setEmail] = useState(employee.email)
   const [password, setPassword] = useState('123456')
-  const [phone, setPhone] = useState('')
-  const [gender, setGender] = useState('')
-  const [nic, setNic] = useState('')
-  const [street, setStreet] = useState('')
-  const [city, setCity] = useState('')
-  const [state, setState] = useState('')
-  const [zip, setZip] = useState('')
-  const [empNo, setEmpNo] = useState('')
-  const [dateOfAppointment, setDateOfAppointment] = useState('')
-  const [designation, setDesignation] = useState('')
-  const [workType, setWorkType] = useState('')
-  const [department, setDepartment] = useState('')
+  const [phone, setPhone] = useState(employee.phone)
+  const [gender, setGender] = useState(employee.gender)
+  const [nic, setNic] = useState(employee.nic)
+  const [street, setStreet] = useState(employee.address.street)
+  const [city, setCity] = useState(employee.address.city)
+  const [state, setState] = useState(employee.address.state)
+  const [zip, setZip] = useState(employee.address.zip)
+  const [empNo, setEmpNo] = useState(employee.empNo)
+  const [dateOfAppointment, setDateOfAppointment] = useState(employee.dateOfAppointment)
+  const [designation, setDesignation] = useState(employee.designation._id)
+  const [workType, setWorkType] = useState(employee.workType)
+  const [department, setDepartment] = useState(employee.department._id)
   const [leaveAllocation, setLeaveAllocation] = useState([])
-  const [role, setRole] = useState('Employee')
+  const [role, setRole] = useState(employee.role)
   const [idCardPath, setIdCardPath] = useState(null)
   const [bankPassPath, setBankPassPath] = useState(null)
   const [resumePath, setResumePath] = useState(null)
-  const [effectiveDate, setEffectiveDate] = useState('')
-  const [paymentModel, setPaymentModel] = useState('')
-  const [basicSalary, setBasicSalary] = useState(0)
-  const [pf, setPf] = useState(false)
-  const [bank, setBank] = useState('')
-  const [accNo, setAccNo] = useState('')
-  const [advance, setAdvance] = useState(false)
-  const [maxAdvance, setMaxAdvance] = useState(0)
-  const [noOfAdvances, setNoOfAdvances] = useState(0)
+  const [effectiveDate, setEffectiveDate] = useState(employee.effectiveDate)
+  const [paymentModel, setPaymentModel] = useState(employee.paymentModel)
+  const [bank, setBank] = useState(employee.bank)
+  const [accNo, setAccNo] = useState(employee.accountNo)
+
 
   const nextStep = () => {
     setStep(step + 1);
@@ -105,26 +106,11 @@ function Register() {
       case 'paymentModel':
         setPaymentModel(e.target.value);
         break;
-      case 'basicSalary':
-        setBasicSalary(e.target.value);
-        break;
-      case 'pf':
-        setPf(e.target.value);
-        break;
       case 'bank':
         setBank(e.target.value);
         break;
       case 'accNo':
         setAccNo(e.target.value);
-        break;
-      case 'advance':
-        setAdvance(e.target.value);
-        break;
-      case 'maxAdvance':
-        setMaxAdvance(e.target.value);
-        break;
-      case 'noOfAdvances':
-        setNoOfAdvances(e.target.value);
         break;
       case 'role':
         setRole(e.target.value);
@@ -151,7 +137,7 @@ function Register() {
     }
   };
 
-  const values = { firstName, lastName, email, password, birthDate, phone, gender, nic, street, city, state, zip, empNo, dateOfAppointment, designation, workType, department, leaveAllocation, role, idCardPath, bankPassPath, resumePath, effectiveDate, paymentModel, basicSalary, pf, bank, accNo, advance, maxAdvance, noOfAdvances };
+  const values = { firstName, lastName, email, password, birthDate, phone, gender, nic, street, city, state, zip, empNo, dateOfAppointment, designation, workType, department, leaveAllocation, role, idCardPath, bankPassPath, resumePath, effectiveDate, paymentModel, bank, accNo };
   switch (step) {
     case 1:
       return (
@@ -202,4 +188,4 @@ function Register() {
   }
 }
 
-export default Register
+export default EditEmployee

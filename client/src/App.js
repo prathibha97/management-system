@@ -12,6 +12,7 @@ import {
   ClientRegister,
   Clients,
   Dashboard,
+  EditEmployee,
   EmpProfile,
   Layout,
   Leaves,
@@ -50,12 +51,13 @@ function App() {
               <>
                 <Route path="/people" element={<People />} />
                 <Route path="/people/:empNo" element={<EmpProfile />} />
+                <Route path="/people/:empNo/edit" element={<EditEmployee />} />
+                <Route path="/people/register" element={<Register />} />
                 <Route path="/projects" element={<Projects />} />
                 <Route path="/projects/create" element={<CreateProject />} />
                 <Route path="/projects/:id" element={<Project />} />
                 <Route path="/payroll" element={<Payroll />} />
                 <Route path="/leaves" element={<Leaves />} />
-                <Route path="/register" element={<Register />} />
                 <Route path="/admin/timesheet" element={<AdminTimeSheet />} />
                 <Route path="/clients" element={<Clients />} />
                 <Route path="/clients/:id" element={<Client />} />

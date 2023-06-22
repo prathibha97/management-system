@@ -62,8 +62,8 @@ function People() {
   }
 
   const handleEdit = (row) => {
-    // handle edit action here
-    console.log(`Edit row ${row.empNo}`);
+    navigate(`${row.empNo}/edit`)
+    dispatch(setSelectEmployee({ employee: row }))
   };
 
   const handleView = (row) => {
@@ -171,7 +171,7 @@ function People() {
       </Paper>
 
       <div className='flex justify-end mt-10'>
-        <Button title='Add New Employee' icon={faUserPlus} onClick={() => navigate('/register')} />
+        <Button title='Add New Employee' icon={faUserPlus} onClick={() => navigate('/people/register')} />
       </div>
       <Snackbar open={alert?.open} autoHideDuration={5000} onClose={handleAlertClose}>
         <Alert onClose={handleAlertClose} severity={alert?.severity}>
