@@ -39,7 +39,9 @@ const employeeSlice = createSlice({
         (emp) => emp.empNo === employee.empNo
       );
       if (index !== -1) {
-        state.employees[index] = employee;
+        const updatedEmployees = [...state.employees]; // Create a copy of the employees array
+        updatedEmployees[index] = employee; // Update the specific employee object
+        state.employees = updatedEmployees; // Update the state with the new array
       }
     },
   },

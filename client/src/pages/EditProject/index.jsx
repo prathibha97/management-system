@@ -1,5 +1,5 @@
 import { InputLabel, MenuItem, Select, TextField, } from '@mui/material'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -8,26 +8,30 @@ import { useGetClientsQuery } from '../../app/features/clients/clientApiSlice'
 import { getClients } from '../../app/features/clients/clientSlice'
 import { useGetDepartmentEmployeeListQuery, useGetDepartmentsQuery } from '../../app/features/departments/departmentApiSlice'
 import { departmentEmployeeList, getDepartments } from '../../app/features/departments/departmentSlice'
-import { useCreateProjectMutation } from '../../app/features/projects/projectApiSlice'
-import { setCreateProject } from '../../app/features/projects/projectSlice'
-import Loader from '../Loader'
+import { useEditProjectMutation } from '../../app/features/projects/projectApiSlice'
+import { selectProject } from '../../app/features/projects/projectSelectors'
+import { setEditProject } from '../../app/features/projects/projectSlice'
+import Loader from '../../components/Loader'
 
-function CreateProject() {
+function EditProject() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  const [title, setTitle] = useState('')
-  const [department, setDepartment] = useState('')
-  const [category, setCategory] = useState('NFT')
-  const [client, setClient] = useState('')
-  const [deadline, setDeadline] = useState(moment().format('YYYY-MM-DD'))
-  const [team, setTeam] = useState([])
-  const [designLink, setDesignLink] = useState('')
-  const [specialNotes, setSpecialNotes] = useState('')
+  const project = useSelector(selectProject)
+
+
+  const [title, setTitle] = useState(project.title)
+  const [department, setDepartment] = useState(project.department._id)
+  const [category, setCategory] = useState(project.category)
+  const [client, setClient] = useState(project.client._id || '')
+  const [deadline, setDeadline] = useState(dayjs(project.deadline).format('YYYY-MM-DD'))
+  const [team, setTeam] = useState(project.assignee || [])
+  const [designLink, setDesignLink] = useState(project.designLink)
+  const [specialNotes, setSpecialNotes] = useState(project.specialNotes)
   const [projectScope, setProjectScope] = useState(null)
-  const [nftBaseDesignCount, setNftBaseDesignCount] = useState(0)
-  const [nftTraitCount, setNftTraitCount] = useState(0)
-  const [nftCollectionSize, setnftCollectionSize] = useState(0)
+  const [nftBaseDesignCount, setNftBaseDesignCount] = useState(project.nftBaseDesignCount)
+  const [nftTraitCount, setNftTraitCount] = useState(project.nftTraitCount)
+  const [nftCollectionSize, setnftCollectionSize] = useState(project.nftCollectionSize)
 
   const userInfo = useSelector(selectCurrentUser);
 
@@ -35,7 +39,7 @@ function CreateProject() {
   const { data: clients } = useGetClientsQuery()
   const { data: departments } = useGetDepartmentsQuery()
 
-  const [createProject, { isLoading: isProjectCreateLoading }] = useCreateProjectMutation()
+  const [editProject, { isLoading: isProjectEditLoading }] = useEditProjectMutation()
 
   useEffect(() => {
     if (!userInfo) {
@@ -51,9 +55,9 @@ function CreateProject() {
   }, [userInfo, department])
 
 
-  const handleCreateProject = async () => {
+  const handleEditProject = async () => {
     try {
-      const projectData = await createProject({
+      const editedProject = {
         title,
         category,
         department,
@@ -66,8 +70,10 @@ function CreateProject() {
         nftBaseDesignCount,
         nftTraitCount,
         nftCollectionSize
-      }).unwrap()
-      dispatch(setCreateProject({ project: projectData }))
+      }
+      const projectData = await editProject({ id: project?._id, project: editedProject }).unwrap();
+      console.log(projectData);
+      dispatch(setEditProject({ project: projectData }))
       navigate('/projects')
     } catch (error) {
       console.log(error);
@@ -78,15 +84,15 @@ function CreateProject() {
     navigate('/projects')
   }
 
-  if (isProjectCreateLoading) return <Loader />
+  if (isProjectEditLoading) return <Loader />
 
   return (
     <div className='bg-[#EEF2F5] h-[90%] w-[95%] mt-6 rounded-xl m-auto overflow-y-auto'>
       <div className='flex flex-col mt-1 ml-[55px]'>
-        <h1 className='text-2xl font-bold mt-4'>Create New Project</h1>
-        <p className='text-[#707070] text-sm'>Here you can create a new project</p>
+        <h1 className='text-2xl font-bold mt-4'>Edit {title}</h1>
+        <p className='text-[#707070] text-sm'>Here you can edit the project</p>
       </div>
-      <div className='flex bg-white px-12 py-5 mt-5 justify-between items-center w-[90%] h-[90%] lg:h-[70%] m-auto rounded-2xl overflow-y-auto'>
+      <div className='flex bg-white px-12  mt-5 justify-between items-center w-[90%] h-[70%] m-auto rounded-2xl overflow-y-auto'>
         <div className='flex flex-wrap justify-between gap-1'>
           <div className='flex flex-col w-[45%]'>
             <InputLabel
@@ -228,12 +234,12 @@ function CreateProject() {
           </div>
         </div>
       </div>
-      <div className='flex justify-end py-5 gap-6 mr-[55px]'>
+      <div className='flex justify-end py-5 gap-6 mr-[100px]'>
         <button type='button' className='bg-white text-[#707070] py-2 px-5 rounded' onClick={handleCancel}>Cancel</button>
-        <button type='button' className='bg-[#1DB3AB] text-white py-2 px-5 rounded' onClick={handleCreateProject}>Create Project</button>
+        <button type='button' className='bg-[#1DB3AB] text-white py-2 px-5 rounded' onClick={handleEditProject}>Edit Project</button>
       </div>
     </div>
   )
 }
 
-export default CreateProject
+export default EditProject

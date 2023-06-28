@@ -200,6 +200,81 @@ const deleteProject = async (req, res) => {
   }
 };
 
+/*
+?@desc   Edit project
+*@route  Put /api/projects/:id
+*@access Private/Admin
+*/
+
+const editProject = async (req, res) => {
+  const { id } = req.params;
+  const {
+    title,
+    deadline,
+    startDate,
+    endDate,
+    team,
+    client,
+    department,
+    designLink,
+    specialNotes,
+    category,
+    nftCollectionSize,
+    nftTraitCount,
+    nftBaseDesignCount,
+  } = req.body;
+
+  // Convert team field into an array
+  const teamArray = team ? team.split(',') : [];
+
+  const scopePath = req.files?.projectScope?.[0]?.path ?? '';
+
+  // Upload files using the "upload" middleware
+  await upload.any()(req, res, () => {});
+
+  const assigneeObjectIds = teamArray
+    .map((employeeId) => {
+      const isValidEmpObjectId = Types.ObjectId.isValid(employeeId);
+
+      if (!isValidEmpObjectId) {
+        return null;
+      }
+
+      return Types.ObjectId(employeeId);
+    })
+    .filter((objectId) => objectId !== null);
+
+  try {
+    const project = await Project.findById(id);
+
+    if (!project) {
+      return res.status(404).json({ message: 'Project not found' });
+    }
+
+    project.title = title ?? project.title;
+    project.deadline = deadline ?? project.deadline;
+    project.startDate = startDate ?? project.startDate;
+    project.endDate = endDate ?? project.endDate;
+    project.assignee = assigneeObjectIds.length > 0 ? assigneeObjectIds : project.assignee;
+    project.client = client ?? project.client;
+    project.department = department ?? project.department;
+    project.designLink = designLink ?? project.designLink;
+    project.specialNotes = specialNotes ?? project.specialNotes;
+    project.category = category ?? project.category;
+    project.nftCollectionSize = nftCollectionSize ?? project.nftCollectionSize;
+    project.nftTraitCount = nftTraitCount ?? project.nftTraitCount;
+    project.nftBaseDesignCount = nftBaseDesignCount ?? project.nftBaseDesignCount;
+    project.scope = scopePath || project.scope;
+
+    const updatedProject = await project.save();
+
+    return res.status(200).json(updatedProject);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: 'Error occurred while updating the project' });
+  }
+};
+
 
 module.exports = {
   createProject,
@@ -207,4 +282,5 @@ module.exports = {
   getAllProjects,
   getProjectByEmpId,
   deleteProject,
+  editProject,
 };
