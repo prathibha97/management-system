@@ -103,6 +103,8 @@ function Kanban({ numTasks, setNumTasks }) {
 
 
   return (
+
+
     <DragDropContext onDragEnd={onDragEnd}>
       <div className="flex items-start justify-between mt-10 m-auto gap-10 w-[1400px]">
         {boards?.map((section, index) => (
@@ -155,7 +157,7 @@ function Kanban({ numTasks, setNumTasks }) {
                     </Draggable>
                   ))}
                 </div>
-                {isBoardHovered === section._id && (
+                {userInfo.role === 'Admin' && isBoardHovered === section._id ? (
                   <div className="mt-4">
                     <div
                       className={`flex items-center justify-center p-2 gap-2 cursor-pointer rounded-md hover:bg-[#E2E4EA] ${showCreateForms[index] ? 'hidden' : ''}`}
@@ -182,15 +184,17 @@ function Kanban({ numTasks, setNumTasks }) {
                       />
                     )}
                   </div>
-                )}
+                ) : null
+                }
               </div>
             )}
           </Droppable>
         ))}
       </div>
     </DragDropContext>
-  );
-
+  )
 }
+
+
 
 export default Kanban

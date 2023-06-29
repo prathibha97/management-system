@@ -131,7 +131,7 @@ const createProject = async (req, res) => {
 const getProjectById = async (req, res) => {
   const { id } = req.params;
   try {
-    const project = await Project.findById(id).populate('boards');
+    const project = await Project.findById(id).populate('boards').populate('assignee', 'name');
     return res.status(200).json(project);
   } catch (err) {
     return res.status(500).json({ message: 'Error occured while getting the project details' });
@@ -178,7 +178,6 @@ const getProjectByEmpId = async (req, res) => {
     return res.status(500).json({ message: 'Error occurred while getting the project details' });
   }
 };
-
 
 /*
 ?@desc   Delete project
@@ -279,6 +278,8 @@ const editProject = async (req, res) => {
       return res.status(404).json({ message: 'Project not found' });
     }
 
+    const previousAssignees = project.assignee;
+
     project.title = title ?? project.title;
     project.deadline = deadline ?? project.deadline;
     project.startDate = startDate ?? project.startDate;
@@ -296,12 +297,32 @@ const editProject = async (req, res) => {
 
     const updatedProject = await project.save();
 
+    // Update employee project history
+    const newAssignees = project.assignee;
+    const addedAssignees = newAssignees.filter((assignee) => !previousAssignees.includes(assignee));
+    const removedAssignees = previousAssignees.filter(
+      (assignee) => !newAssignees.includes(assignee)
+    );
+
+    // Update added assignees' project history
+    await Employee.updateMany(
+      { _id: { $in: addedAssignees } },
+      { $push: { projectHistory: updatedProject._id } }
+    );
+
+    // Update removed assignees' project history
+    await Employee.updateMany(
+      { _id: { $in: removedAssignees } },
+      { $pull: { projectHistory: updatedProject._id } }
+    );
+
     return res.status(200).json(updatedProject);
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: 'Error occurred while updating the project' });
   }
 };
+
 
 module.exports = {
   createProject,

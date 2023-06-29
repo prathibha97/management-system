@@ -1,29 +1,26 @@
+/* eslint-disable no-shadow */
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, Snackbar, TextField } from '@mui/material';
 import React, { useRef, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { useCreateTaskMutation } from '../../app/features/tasks/taskApiSlice';
 import { setCreateTask } from '../../app/features/tasks/taskSlice';
 import Loader from '../Loader';
+import { useGetProjectByIdQuery } from '../../app/features/projects/projectApiSlice';
 
 function AddTaskModal({ open, handleClose, boardId, setNumTasks, refetchProjectBoards }) {
-  const user = JSON.parse(localStorage.getItem('userInfo'));
+  const projectId = useSelector((state) => state.projects.project._id);
+  const { data: project } = useGetProjectByIdQuery({ id: projectId });
+
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState('backlog');
-  const [assignee, setAssignee] = useState(user?._id)
+  const [assignee, setAssignee] = useState('');
+
   const taskNameRef = useRef();
 
   const dispatch = useDispatch();
 
-  const projectId = useSelector((state) => state.projects.project._id);
-  // const { tasks } = useSelector((state) => state.getTasksByProject);
-
-  const [createTask, { isLoading: isCreateTaskLoading, error: taskCreateError }] = useCreateTaskMutation()
-  // const { refetch: refetchProjectBoards } = useGetProjectBoardsByIdQuery(projectId, {
-  //   refetchOnMountOrArgChange: true,
-  // })
-
-
+  const [createTask, { isLoading: isCreateTaskLoading, error: taskCreateError }] = useCreateTaskMutation();
 
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
 
@@ -42,20 +39,6 @@ function AddTaskModal({ open, handleClose, boardId, setNumTasks, refetchProjectB
   const handleAssigneeChange = (event) => {
     setAssignee(event.target.value);
   };
-
-  // const handleAddButtonClick = async () => {
-  //   try {
-  //     // Add the task and close the dialog
-  //     const { task } = await createTask({ boardId, projectId, title, description, status, assignee: { _id: assignee } }).unwrap();
-  //     dispatch(setCreateTask({ task }));
-  //     setNumTasks(1);
-  //     refetchProjectBoards();
-  //     setAlert({ open: true, message: 'Attendance marked successfully', severity: 'success' });
-  //     handleClose();
-  //   } catch (err) {
-  //     setAlert({ open: true, message: taskCreateError?.data?.message, severity: 'error' });
-  //   }
-  // };
 
   const handleEnterKey = (event) => {
     // If the user presses Enter while typing in the task name input field,
@@ -78,7 +61,7 @@ function AddTaskModal({ open, handleClose, boardId, setNumTasks, refetchProjectB
     <>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Add New Task</DialogTitle>
-        <DialogContent >
+        <DialogContent>
           <TextField
             id="task-name"
             label="Task Name"
@@ -99,16 +82,22 @@ function AddTaskModal({ open, handleClose, boardId, setNumTasks, refetchProjectB
             fullWidth
             sx={{ marginBottom: 2 }}
           />
-          <TextField
-            id="assignee"
-            label="Assign To"
-            value={assignee}
-            onChange={handleAssigneeChange}
-            multiline
-            fullWidth
-            sx={{ marginBottom: 2 }}
-          />
-          <FormControl fullWidth >
+          <FormControl fullWidth sx={{ marginBottom: 2 }}>
+            <InputLabel>Assign To</InputLabel>
+            <Select
+              value={assignee}
+              onChange={handleAssigneeChange}
+              // displayEmpty
+            >
+              {/* <MenuItem value="">Select Assignee</MenuItem> */}
+              {project?.assignee.map((assignee) => (
+                <MenuItem key={assignee._id} value={assignee._id}>
+                  {assignee.name.first} {assignee.name.last}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl fullWidth>
             <InputLabel>Status</InputLabel>
             <Select value={status} onChange={handleStatusChange}>
               <MenuItem value="backlog">Backlog</MenuItem>
@@ -125,18 +114,17 @@ function AddTaskModal({ open, handleClose, boardId, setNumTasks, refetchProjectB
           </Button>
           <Button
             variant="contained"
-            onClick={() => {
-              const { task } = createTask({ boardId, projectId, title, description, status, assignee: { _id: assignee } }).unwrap()
-                .then(() => {
-                  dispatch(setCreateTask({ task }));
-                  setNumTasks(1);
-                  refetchProjectBoards();
-                  setAlert({ open: true, message: 'Attendance marked successfully', severity: 'success' });
-                  handleClose();
-                })
-                .catch((err) => {
-                  setAlert({ open: true, message: taskCreateError?.data?.message || err, severity: 'error' });
-                })
+            onClick={async () => {
+              try {
+                const { task } = await createTask({ boardId, projectId, title, description, status, assignee }).unwrap();
+                dispatch(setCreateTask({ task }));
+                setNumTasks(1);
+                refetchProjectBoards();
+                setAlert({ open: true, message: 'Task added successfully', severity: 'success' });
+                handleClose();
+              } catch (error) {
+                setAlert({ open: true, message: taskCreateError?.data?.message || error.message, severity: 'error' });
+              }
             }}
             disabled={!title}
             style={{ backgroundColor: '#1EB3AB', color: 'white' }}

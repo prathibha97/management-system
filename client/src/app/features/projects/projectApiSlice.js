@@ -35,7 +35,7 @@ export const projectApiSlice = apiSlice.injectEndpoints({
     }),
 
     getProjectById: builder.query({
-      query: (id) => ({
+      query: ({id}) => ({
         url: `/projects/${id}`,
       }),
     }),

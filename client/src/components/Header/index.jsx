@@ -21,12 +21,13 @@ function Header() {
   const dispatch = useDispatch()
   const id = location.pathname.split('/')[2];
 
-  const { data: projects } = useGetEmployeeProjectsQuery({})
+  const { data: projects, refetch: refetchProjects } = useGetEmployeeProjectsQuery({});
+
   dispatch(setProjects({ projects }))
 
 
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
-  const [project, setProject] = useState(projects?.length > 0 ? projects[0]?._id : '');
+  const [project, setProject] = useState('');
   const [attendanceChangeCount, setAttendanceChangeCount] = useState(0)
 
 
@@ -36,6 +37,12 @@ function Header() {
 
   const [trigger, { data: attendance, error: markAttendanceError }] = useLazyMarkAttendanceQuery()
 
+  useEffect(() => {
+    if (location.pathname === '/board') {
+      refetchProjects();
+      dispatch(setProjects({ projects }))
+    }
+  }, [location.pathname, refetchProjects]);
 
   const handleMarkAttendance = () => {
     try {
@@ -64,7 +71,7 @@ function Header() {
   const handleProjectChange = (event) => {
     const selectedProject = event.target.value;
     setProject(selectedProject?._id);
-    dispatch(setSelectedProject({ project: selectedProject }))
+    dispatch(setSelectedProject({ project: selectedProject }));
   };
 
   let heading;
@@ -142,7 +149,11 @@ function Header() {
   };
 
   useEffect(() => {
-    dispatch(setProjects({ projects })); // Dispatch here to update projects when fetched
+    dispatch(setProjects({ projects }));
+    if (projects?.length > 0) {
+      setProject(projects[0]?._id);
+      dispatch(setSelectedProject({ project: projects[0] }));
+    }
   }, [projects, dispatch]);
 
 
@@ -153,20 +164,20 @@ function Header() {
         {heading === 'Project Boards' && (
           <div className="flex items-center">
             <FormControl sx={{ m: 1, minWidth: 150 }}>
-              <InputLabel id="Select Project">Select Project</InputLabel>
+              <InputLabel id="select-project-label">Select Project</InputLabel>
               <Select
                 onChange={handleProjectChange}
-                labelId="Select Project"
+                labelId="select-project-label"
                 label="Select Project"
-                value={project?._id || ''}
+                value={project}
                 renderValue={(value) => value ? value?.title : ''}
+                displayEmpty
               >
-                {projects && projects?.length > 0 ? projects?.map((item) => (
+                {projects?.map((item) => (
                   <MenuItem key={item._id} value={item}>{item?.title}</MenuItem>
-                )) : <MenuItem disabled>No Projects Found</MenuItem>}
+                ))}
               </Select>
             </FormControl>
-
           </div>
         )}
       </div>

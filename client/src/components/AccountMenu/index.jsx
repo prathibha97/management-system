@@ -14,6 +14,8 @@ import { useLogoutMutation } from '../../app/features/auth/authApiSlice';
 import { setLogout } from '../../app/features/auth/authSlice';
 import CustomAvatar from '../CustomAvatar';
 import Loader from '../Loader';
+import { resetProjects } from '../../app/features/projects/projectSlice';
+import { resetBoards } from '../../app/features/boards/boardSlice';
 
 export default function AccountMenu({ userInfo }) {
   const dispatch = useDispatch();
@@ -35,6 +37,8 @@ export default function AccountMenu({ userInfo }) {
     try {
       await logout().unwrap();
       dispatch(setLogout());
+      dispatch(resetProjects())
+      dispatch(resetBoards())
       navigate('/');
     } catch (error) {
       console.log('Logout failed', error);

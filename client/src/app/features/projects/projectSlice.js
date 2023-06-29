@@ -34,6 +34,11 @@ const projectSlice = createSlice({
         state.employees = updatedProjects; // Update the state with the new array
       }
     },
+    resetProjects: (state) => {
+      state.projects = [];
+      state.project = {};
+      state.employees = [];
+    },
   },
 });
 
@@ -43,5 +48,6 @@ export const {
   setDeleteProject,
   setSelectedProject,
   setEditProject,
+  resetProjects,
 } = projectSlice.actions;
 export default projectSlice.reducer;

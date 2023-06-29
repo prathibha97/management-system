@@ -26,9 +26,13 @@ const getBoardsByProjectId = async (req, res) => {
   const { projectId } = req.params;
   try {
     const boards = await Board.find({ project: projectId }).populate({
-      path: 'tasks',
-      options: { distinct: true },
-    });
+        path: 'tasks',
+        options: { distinct: true },
+        populate: {
+          path: 'assignee',
+          select: 'name', // Specify the fields you want to include in the assignee object
+        },
+      });
 
     res.status(200).json(boards);
   } catch (err) {

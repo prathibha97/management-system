@@ -25,7 +25,7 @@ function EditProject() {
   const [category, setCategory] = useState(project.category)
   const [client, setClient] = useState(project.client._id || '')
   const [deadline, setDeadline] = useState(dayjs(project.deadline).format('YYYY-MM-DD'))
-  const [team, setTeam] = useState(project.assignee || [])
+  const [team, setTeam] = useState([])
   const [designLink, setDesignLink] = useState(project.designLink)
   const [specialNotes, setSpecialNotes] = useState(project.specialNotes)
   const [projectScope, setProjectScope] = useState(null)
@@ -53,6 +53,12 @@ function EditProject() {
       }
     }
   }, [userInfo, department])
+
+  useEffect(() => {
+    // Set the initial value of the team state based on the project assignees
+    setTeam(project.assignee || [])
+  }, [project.assignee])
+
 
 
   const handleEditProject = async () => {
@@ -187,9 +193,17 @@ function EditProject() {
               labelid="gender-lable">
               Assignees
             </InputLabel>
-            <Select labelid="gender-lable" id="gender-lable" multiple onChange={(e) => setTeam(e.target.value)} value={team}>
+            <Select
+              labelid="gender-lable"
+              id="gender-lable"
+              multiple
+              onChange={(e) => setTeam(e.target.value)}
+              value={team}
+            >
               {employees?.map((employee) => (
-                <MenuItem key={employee?._id} value={employee?._id}>{employee?.name?.first} {employee?.name?.last}</MenuItem>
+                <MenuItem key={employee?._id} value={employee?._id}>
+                  {employee?.name?.first} {employee?.name?.last}
+                </MenuItem>
               ))}
             </Select>
           </div>

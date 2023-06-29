@@ -31,3 +31,16 @@
 20230622	13:53:07	ed692123-1d79-4e73-967f-5da815cd492a	Error: ENOENT: no such file or directory, stat 'undefined'
 20230622	14:04:01	e9de5dc3-ec48-43cd-818f-fb740dbf1e4b	Error: ENOENT: no such file or directory, stat 'undefined'
 20230627	10:29:14	dadffa79-9193-49ed-8722-6d66e7e757aa	Error: ENOENT: no such file or directory, stat 'uploads/medicals/Prathibha-medical-2023-06-18T08:52:43.741Z'
+20230629	10:24:12	191977f1-23ea-4f9d-b657-58863a126ff2	Error: Not authorized, as an admin
+20230629	10:24:31	2208d65d-22ed-4fa5-9c86-d27a03ad2c04	Error: Not authorized, as an admin
+20230629	10:39:13	9629d456-91d3-493a-bc77-2de98cc986bd	Error: Not authorized, as an admin
+20230629	10:40:43	2bac014f-e5e4-4671-a9db-f4a39719c634	Error: Not authorized, as an admin
+20230629	10:41:18	ca840424-bd5f-4d7d-8a60-8c2bd25ca02d	Error: Not authorized, as an admin
+20230629	10:43:52	0f4c0078-3fa1-40e8-b3f3-40757b40bae7	Error: Not authorized, as an admin
+20230629	10:53:13	6fd49908-b9de-4550-b95f-a8803c0f8e9c	Error: Not authorized, as an admin
+20230629	10:53:55	e0401ba2-5459-4b9b-8bba-6e4b2e2e1591	Error: Not authorized, as an admin
+20230629	10:54:19	51993ba9-11cb-4433-8b37-e1dff60bde65	Error: Not authorized, as an admin
+20230629	10:57:19	b539bf3e-1fd4-4afd-bcd2-ce0f129fc222	Error: Not authorized, as an admin
+20230629	10:57:37	244257df-d443-480f-8f37-049778d95bcc	Error: Not authorized, as an admin
+20230629	10:58:04	42b40457-807f-4edd-88e2-9ffa6c18d347	Error: Not authorized, as an admin
+20230629	10:58:35	1e04a8e0-2e89-4d6c-91cc-be7c93bf57a5	Error: Not authorized, as an admin
