@@ -44,3 +44,7 @@
 20230629	10:57:37	244257df-d443-480f-8f37-049778d95bcc	Error: Not authorized, as an admin
 20230629	10:58:04	42b40457-807f-4edd-88e2-9ffa6c18d347	Error: Not authorized, as an admin
 20230629	10:58:35	1e04a8e0-2e89-4d6c-91cc-be7c93bf57a5	Error: Not authorized, as an admin
+20230629	13:52:28	d0f5e90d-1792-48cc-98c3-64b76ffdf38c	Error: ENOENT: no such file or directory, stat 'undefined'
+20230629	13:53:38	ab95442b-657a-482d-9e9f-a8567f6c9afd	Error: ENOENT: no such file or directory, stat 'undefined'
+20230629	13:57:17	e7c91ad3-bb60-4c73-8bbd-0afd09bd127b	Error: ENOENT: no such file or directory, stat 'undefined'
+20230629	13:57:51	6b2cdb31-d8f8-40fe-9507-67d67372e087	Error: ENOENT: no such file or directory, stat 'undefined'

@@ -153,7 +153,7 @@ function Notifications({ empNo }) {
         ) : userNotifications?.length > 0 ? (
           <List sx={{ textAlign: 'center' }}>
             {userNotifications.map((notification) => (
-              <NotificationItem key={notification.id} notification={notification} empNo={empNo} />
+              <NotificationItem key={notification._id} notification={notification} empNo={empNo} />
             ))}
             <Button onClick={handleClearNotifications}>Clear All</Button>
           </List>

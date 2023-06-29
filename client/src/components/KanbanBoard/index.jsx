@@ -151,6 +151,7 @@ function Kanban({ numTasks, setNumTasks }) {
                             boardId={section?._id}
                             refetchProjectBoards={refetchProjectBoards}
                             setNumTasks={setNumTasks}
+                            user={userInfo}
                           />
                         </div>
                       )}

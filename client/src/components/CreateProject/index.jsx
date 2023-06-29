@@ -37,8 +37,6 @@ function CreateProject() {
 
   const { data: projects, refetch: refetchProjects } = useGetEmployeeProjectsQuery({})
 
-  console.log(clients);
-
   const [createProject, { isLoading: isProjectCreateLoading }] = useCreateProjectMutation()
 
   useEffect(() => {

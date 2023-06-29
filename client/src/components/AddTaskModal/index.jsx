@@ -14,7 +14,7 @@ function AddTaskModal({ open, handleClose, boardId, setNumTasks, refetchProjectB
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState('backlog');
-  const [assignee, setAssignee] = useState('');
+  const [assignee, setAssignee] = useState([]);
 
   const taskNameRef = useRef();
 
@@ -37,8 +37,12 @@ function AddTaskModal({ open, handleClose, boardId, setNumTasks, refetchProjectB
   };
 
   const handleAssigneeChange = (event) => {
-    setAssignee(event.target.value);
+    const selectedAssignees = Array.isArray(event.target.value)
+      ? event.target.value
+      : [event.target.value];
+    setAssignee(selectedAssignees);
   };
+
 
   const handleEnterKey = (event) => {
     // If the user presses Enter while typing in the task name input field,
@@ -87,10 +91,10 @@ function AddTaskModal({ open, handleClose, boardId, setNumTasks, refetchProjectB
             <Select
               value={assignee}
               onChange={handleAssigneeChange}
-              // displayEmpty
+              multiple
             >
               {/* <MenuItem value="">Select Assignee</MenuItem> */}
-              {project?.assignee.map((assignee) => (
+              {project?.assignee?.map((assignee) => (
                 <MenuItem key={assignee._id} value={assignee._id}>
                   {assignee.name.first} {assignee.name.last}
                 </MenuItem>
