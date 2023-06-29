@@ -8,8 +8,8 @@ import { useGetClientsQuery } from '../../app/features/clients/clientApiSlice'
 import { getClients } from '../../app/features/clients/clientSlice'
 import { useGetDepartmentEmployeeListQuery, useGetDepartmentsQuery } from '../../app/features/departments/departmentApiSlice'
 import { departmentEmployeeList, getDepartments } from '../../app/features/departments/departmentSlice'
-import { useCreateProjectMutation } from '../../app/features/projects/projectApiSlice'
-import { setCreateProject } from '../../app/features/projects/projectSlice'
+import { useCreateProjectMutation, useGetEmployeeProjectsQuery } from '../../app/features/projects/projectApiSlice'
+import { setCreateProject, setProjects } from '../../app/features/projects/projectSlice'
 import Loader from '../Loader'
 
 function CreateProject() {
@@ -34,6 +34,10 @@ function CreateProject() {
   const { data: employees } = useGetDepartmentEmployeeListQuery(department)
   const { data: clients } = useGetClientsQuery()
   const { data: departments } = useGetDepartmentsQuery()
+
+  const { data: projects, refetch: refetchProjects } = useGetEmployeeProjectsQuery({})
+
+  console.log(clients);
 
   const [createProject, { isLoading: isProjectCreateLoading }] = useCreateProjectMutation()
 
@@ -68,6 +72,9 @@ function CreateProject() {
         nftCollectionSize
       }).unwrap()
       dispatch(setCreateProject({ project: projectData }))
+      refetchProjects()
+      dispatch(setProjects({ projects }))
+
       navigate('/projects')
     } catch (error) {
       console.log(error);

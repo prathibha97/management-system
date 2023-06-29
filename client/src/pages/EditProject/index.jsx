@@ -72,7 +72,6 @@ function EditProject() {
         nftCollectionSize
       }
       const projectData = await editProject({ id: project?._id, project: editedProject }).unwrap();
-      console.log(projectData);
       dispatch(setEditProject({ project: projectData }))
       navigate('/projects')
     } catch (error) {

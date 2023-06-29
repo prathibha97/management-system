@@ -2,7 +2,11 @@
 /* eslint-disable no-restricted-syntax */
 const { Types } = require('mongoose');
 const Department = require('../models/Department');
+const Board = require('../models/Board');
+const Task = require('../models/Task');
 const Employee = require('../models/Employee');
+const TimeRecord = require('../models/TimeRecord');
+const Client = require('../models/Client');
 const Project = require('../models/Project');
 const upload = require('../services/fileUpload');
 
@@ -99,6 +103,15 @@ const createProject = async (req, res) => {
       { new: true }
     );
 
+    const clientId = Types.ObjectId(client);
+
+    // Update the projects field for the corresponding client
+    await Client.findByIdAndUpdate(
+      clientId,
+      { $push: { projectHistory: project._id } },
+      { new: true }
+    );
+
     return res.status(201).json({
       message: 'Project created successfully',
       project,
@@ -145,7 +158,7 @@ const getAllProjects = async (req, res) => {
 };
 
 /*
-?@desc   Get all projects
+?@desc   Get all projects of employee
 *@route  Get /api/projects/emp
 *@access Private
 */
@@ -154,12 +167,18 @@ const getProjectByEmpId = async (req, res) => {
   const { _id } = req.user;
   try {
     const projects = await Project.find({ assignee: _id }).populate('boards').populate('tasks');
+
+    if (!projects) {
+      return res.status(404).json({ message: 'No projects found for the given assignee' });
+    }
+
     return res.status(200).json(projects);
   } catch (err) {
     console.log(err);
-    return res.status(500).json({ message: 'Error occured while getting the project details' });
+    return res.status(500).json({ message: 'Error occurred while getting the project details' });
   }
 };
+
 
 /*
 ?@desc   Delete project
@@ -171,7 +190,7 @@ const deleteProject = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const project = await Project.findById(id);
+    const project = await Project.findById(id).populate('boards');
 
     if (!project) {
       return res.status(404).json({ message: 'Project not found' });
@@ -180,16 +199,25 @@ const deleteProject = async (req, res) => {
     const projectId = Types.ObjectId(id);
 
     // Remove the project from the corresponding department
-    await Department.updateOne(
-      { 'projects.project': projectId },
-      { $pull: { projects: { project: projectId } } }
-    );
+    await Department.updateOne({ projects: projectId }, { $pull: { projects: projectId } });
+
+    // Remove the project from the projectHistory of the client
+    await Client.updateOne({ projectHistory: projectId }, { $pull: { projectHistory: projectId } });
 
     // Remove the project from the projectHistory of all employees who have been assigned to it
     await Employee.updateMany(
       { 'projectHistory.project': projectId },
       { $pull: { projectHistory: { project: projectId } } }
     );
+
+    // Delete project boards and associated tasks
+    for (const board of project.boards) {
+      await Task.deleteMany({ board: { $elemMatch: { boardId: board._id } } });
+      await Board.findByIdAndDelete(board._id);
+    }
+
+    // Delete time records associated with the project
+    await TimeRecord.deleteMany({ project: projectId });
 
     await project.remove();
 
@@ -274,7 +302,6 @@ const editProject = async (req, res) => {
     return res.status(500).json({ message: 'Error occurred while updating the project' });
   }
 };
-
 
 module.exports = {
   createProject,

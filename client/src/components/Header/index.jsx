@@ -21,10 +21,7 @@ function Header() {
   const dispatch = useDispatch()
   const id = location.pathname.split('/')[2];
 
-  const { data: projects } = useGetEmployeeProjectsQuery({
-    refetchOnMountOrArgChange: true,
-    refetchOnReconnect: true,
-  })
+  const { data: projects } = useGetEmployeeProjectsQuery({})
   dispatch(setProjects({ projects }))
 
 
@@ -143,6 +140,11 @@ function Header() {
   const handleAlertClose = () => {
     setAlert({ ...alert, open: false });
   };
+
+  useEffect(() => {
+    dispatch(setProjects({ projects })); // Dispatch here to update projects when fetched
+  }, [projects, dispatch]);
+
 
   return (
     <div className="flex items-center justify-between px-10 pt-2">

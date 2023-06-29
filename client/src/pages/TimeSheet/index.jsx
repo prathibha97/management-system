@@ -37,10 +37,7 @@ function TimeSheet() {
   const dispatch = useDispatch();
   const user = useSelector(selectCurrentUser)
 
-  const { data: timeSheetDataFromApi, refetch: refetchTimeSheetData, isLoading: isTimeSheetDataFromApiLoading } = useGetTimeRecordsByEmployeeQuery({
-    id: user._id,
-    refetchOnMountOrArgChange: true,
-  });
+  const { data: timeSheetDataFromApi, refetch: refetchTimeSheetData, isLoading: isTimeSheetDataFromApiLoading } = useGetTimeRecordsByEmployeeQuery({ id: user._id, });
 
   useEffect(() => {
     dispatch(setGetTimeRecords({ timeRecords: timeSheetDataFromApi?.timeRecords }));
@@ -204,7 +201,7 @@ function TimeSheet() {
       field: 'client',
       headerName: 'Client',
       width: 150,
-      valueGetter: (params) => `${params?.row?.client?.name}`,
+      valueGetter: (params) => `${params?.row?.client?.name?.first} ${params?.row?.client?.name?.last}`,
     },
     {
       field: 'project',
