@@ -127,9 +127,9 @@ function Header() {
   const isProjectBoardsPage = location.pathname === '/board';
 
   return (
-    <div className="flex items-center justify-between px-10 pt-2">
-      <div className="flex gap-2 items-center">
-        <div className="text-3xl font-semibold">{getPageHeading()}</div>
+    <div className="flex flex-col lg:flex-row items-center justify-between px-10 pt-2">
+      <div className="flex flex-col lg:flex-row gap-2 items-center">
+        <div className="text-3xl font-semibold hidden lg:block">{getPageHeading()}</div>
         {isProjectBoardsPage && (
           <div className="flex items-center">
             <FormControl sx={{ m: 1, minWidth: 150 }}>
@@ -150,7 +150,7 @@ function Header() {
           </div>
         )}
       </div>
-      <div className="flex items-center gap-10">
+      <div className="flex items-center gap-5 lg:gap-10">
         <Timer />
         <Button title="Log Time" onClick={handleMarkAttendance} icon={faClock} />
         <Notifications empNo={userInfo?.empNo} />

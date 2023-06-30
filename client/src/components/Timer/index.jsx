@@ -16,7 +16,7 @@ function Timer() {
   const dispatch = useDispatch();
   const intervalRef = useRef(null);
 
-  const [createTimeRecord] = useCreateTimeRecordMutation()
+  const [createTimeRecord] = useCreateTimeRecordMutation();
   const { refetch: refetchTimeSheetData } = useGetAllTimeRecordsQuery();
 
   const formatTime = (timeInSeconds) => {
@@ -40,7 +40,7 @@ function Timer() {
 
   const handleStopTimer = async () => {
     try {
-      const timeRecordData = await createTimeRecord({ timeSpent: time, date: dayjs().format() }).unwrap()
+      const timeRecordData = await createTimeRecord({ timeSpent: time, date: dayjs().format() }).unwrap();
       dispatch(setCreateTimeRecord({ timeRecord: timeRecordData.timeRecord }));
       refetchTimeSheetData();
       dispatch(stopTimer());
@@ -64,17 +64,15 @@ function Timer() {
     };
   }, [isRunning, dispatch, time]);
 
-  // ...
-
   return (
-    <Box sx={{ backgroundColor: '#f9fbfc', borderRadius: 2, p: 1 }}>
+    <Box className="bg-gray-100 rounded-md p-2">
       <Grid container alignItems="center" spacing={1}>
         {!isRunning && (
-          <Grid item>
+          <Grid item className="md:flex md:flex-row md:space-x-2">
             <IconButton onClick={handleStartTimer}>
               <PlayArrowIcon />
             </IconButton>
-            {time !== 0 && ( // Add this condition to display the stop button
+            {time !== 0 && (
               <IconButton onClick={handleStopTimer}>
                 <StopIcon />
               </IconButton>
@@ -82,11 +80,11 @@ function Timer() {
           </Grid>
         )}
         <Grid item>
-          <Typography variant="h5" sx={{ color: '#76797b' }}>
+          <Typography variant="h5" className="text-gray-700">
             {formatTime(time)}
           </Typography>
         </Grid>
-        <Grid item>
+        <Grid item className="md:flex md:flex-row md:space-x-2">
           {isRunning && (
             <>
               <IconButton onClick={handlePauseTimer}>
@@ -98,13 +96,12 @@ function Timer() {
             </>
           )}
           <IconButton onClick={handlePauseTimer}>
-            <TimerIcon color="secondary" />
+            <TimerIcon className="text-purple-500" />
           </IconButton>
         </Grid>
       </Grid>
     </Box>
   );
-
 }
 
 export default Timer;

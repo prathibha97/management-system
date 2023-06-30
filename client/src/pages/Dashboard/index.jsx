@@ -1,65 +1,3 @@
-// import { useEffect } from "react";
-// import { useDispatch, useSelector } from "react-redux";
-// import { selectCurrentUser } from "../../app/features/auth/authSelectors";
-// import { useGetTimeRecordsByEmployeeCurrentMonthQuery, useGetTimeRecordsByEmployeeQuery, useGetWeeklyTimeRecordsForCurrentMonthQuery } from "../../app/features/timeRecords/timeRecordsApiSlice";
-// import { setGetTimeRecordsByEmployeeForCurrentMonth } from "../../app/features/timeRecords/timeRecordsSlice";
-// import { MonthTotals, MuiCalendar, RecentlyActiveProjects, WeeklyProjectCount } from "../../components";
-
-// function Dashboard() {
-
-//   const dispatch = useDispatch();
-//   const user = useSelector(selectCurrentUser)
-
-//   const { data: monthlyData } = useGetTimeRecordsByEmployeeCurrentMonthQuery({ id: user?._id }, {
-//     refetchOnMountOrArgChange: true,
-//     refetchOnReconnect: true,
-//   });
-
-//   const { data: dailyTimeRecords, isLoading } = useGetTimeRecordsByEmployeeQuery({ id: user?._id })
-//   const timeRecords = monthlyData?.timeRecords;
-
-//   const { data: weeklyTimeRecordsForTheMonth } = useGetWeeklyTimeRecordsForCurrentMonthQuery({ id: user?._id })
-//   const weeklyTimeRecords = weeklyTimeRecordsForTheMonth?.weeklyTotals;
-//   console.log(weeklyTimeRecords);
-
-//   useEffect(() => {
-//     dispatch(setGetTimeRecordsByEmployeeForCurrentMonth({ timeRecords }))
-//   }, [timeRecords])
-
-//   return (
-//     <div className="mt-5">
-//       <div className="flex gap-2 w-full">
-//         <div className="bg-[#ecf1f4] w-[620px] p-5">
-//           <div>
-//             <h1 className="text-lg text-gray-600 font-bold mb-2">Month Totals</h1>
-//           </div>
-//           <MonthTotals data={timeRecords} />
-//         </div>
-//         <div className="bg-[#ecf1f4] max-w-[610px] min-w-[580px] p-5">
-//           <h1 className="text-lg text-gray-600 font-bold mb-2">Totals by Day and Week</h1>
-//           <div className="flex items-center">
-//             <div className="mr-5">
-//               <div className="my-2 text-sm text-gray-700">Daily Totals</div>
-//               <div>
-//                 <MuiCalendar data={dailyTimeRecords} isLoading={isLoading} />
-//               </div>
-//             </div>
-//             <WeeklyProjectCount data={weeklyTimeRecords} />
-//           </div>
-//         </div>
-//         <div className="bg-[#ecf1f4] w-[500px] p-5">
-//           <h1 className="text-lg text-gray-600 font-bold mb-2">Recently Active Projects You Are Assigned To</h1>
-//           <div className="flex flex-wrap mt-4">
-//             <RecentlyActiveProjects />
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   )
-// }
-
-// export default Dashboard;
-
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentUser } from "../../app/features/auth/authSelectors";
@@ -100,17 +38,17 @@ function Dashboard() {
 
   return (
     <div className="mt-5">
-      <div className="flex gap-2 w-full">
-        <div className="bg-[#ecf1f4] w-[620px] p-5">
+      <div className="flex flex-wrap gap-2 w-full">
+        <div className="bg-[#ecf1f4] w-full lg:w-[620px] p-5">
           <div>
             <h1 className="text-lg text-gray-600 font-bold mb-2">Month Totals</h1>
           </div>
           <MonthTotals data={timeRecords} />
         </div>
-        <div className="bg-[#ecf1f4] max-w-[610px] min-w-[580px] p-5">
+        <div className="bg-[#ecf1f4] w-full lg:w-[610px] min-w-[580px] p-5">
           <h1 className="text-lg text-gray-600 font-bold mb-2">Totals by Day and Week</h1>
-          <div className="flex items-center">
-            <div className="mr-5">
+          <div className="flex flex-col lg:flex-row items-center">
+            <div className="lg:mr-5 mb-5 lg:mb-0">
               <div className="my-2 text-sm text-gray-700">Daily Totals</div>
               <div>
                 <MuiCalendar data={dailyTimeRecords} isLoading={isLoading} />
@@ -119,10 +57,10 @@ function Dashboard() {
             <WeeklyProjectCount data={weeklyTimeRecords} />
           </div>
         </div>
-        <div className="bg-[#ecf1f4] w-[500px] p-5">
+        <div className="bg-[#ecf1f4] w-full lg:w-[500px] p-5">
           <h1 className="text-lg text-gray-600 font-bold mb-2">Recently Active Projects You Are Assigned To</h1>
           <div className="flex flex-wrap mt-4">
-            <RecentlyActiveProjects/>
+            <RecentlyActiveProjects />
           </div>
         </div>
       </div>
