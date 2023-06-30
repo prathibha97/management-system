@@ -17,11 +17,11 @@ const clientSlice = createSlice({
     },
     setCreateClient: (state, action) => {
       const { client } = action.payload;
+      state.client = client;
       state.clients.push(client);
     },
     setRemoveClient: (state, action) => {
       const { id } = action.payload;
-      console.log(id);
       state.clients = state.clients.filter((client) => client._id !== id);
     },
     setEditClient: (state, action) => {

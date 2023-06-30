@@ -27,8 +27,7 @@ function ClientRegister() {
   const [state, setState] = useState('')
   const [zip, setZip] = useState('')
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  const handleSubmit = async () => {
     try {
       const clientData = await createClient({ first, last, email, phone, street, city, state, zip }).unwrap()
       dispatch(setCreateClient({ client: clientData }))
