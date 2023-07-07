@@ -3,7 +3,7 @@ import { Pie, PieChart, ResponsiveContainer } from 'recharts';
 
 function CustomPieChart({ data, innerRadius, outerRadius }) {
   const chartData = data.map((record) => ({
-    name: record.project.title,
+    name: record?.project?.title,
     timeSpent: parseFloat(record.timeSpent.split(':')[0]),
   }));
 

@@ -39,7 +39,7 @@ function MonthTotals({ data }) {
   }
 
   const projectTotals = data?.reduce((totals, item) => {
-    const project = item?.project.title;
+    const project = item?.project?.title;
     const timeSpentSeconds = convertTimeToSeconds(item.timeSpent);
     if (!totals[project]) {
       totals[project] = 0;
