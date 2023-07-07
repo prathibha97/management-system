@@ -9,15 +9,13 @@ import {
   useCreateTimeRecordMutation,
   useDeleteTimeRecordMutation,
   useEditTimeRecordMutation,
-  useGetTimeRecordsByEmployeeQuery,
-  useRejectTimeRecordMutation
+  useGetTimeRecordsByEmployeeQuery
 } from '../../app/features/timeRecords/timeRecordsApiSlice';
 import {
   setCreateTimeRecord,
   setDeleteTimeRecord,
   setEditTimeRecord,
   setGetTimeRecords,
-  setRejectTimeRecord,
 } from '../../app/features/timeRecords/timeRecordsSlice';
 import { startTimer } from '../../app/features/timer/timerSlice';
 import {
@@ -29,8 +27,6 @@ import {
   TimeSheetMenu,
   ViewTimeEntry,
 } from '../../components';
-
-
 
 function TimeSheet() {
 
@@ -53,7 +49,6 @@ function TimeSheet() {
   const [createTimeRecord, { isLoading: isCreateTimeRecordLoading }] = useCreateTimeRecordMutation();
   const [editTimeRecord, { isLoading: isEditTimeRecordLoading }] = useEditTimeRecordMutation();
   const [deleteTimeRecord, { isLoading: isDeleteTimeRecordLoading }] = useDeleteTimeRecordMutation();
-  const [rejectTimeRecord, { isLoading: isRejectTimeRecordLoading }] = useRejectTimeRecordMutation()
 
   useEffect(() => {
     if (timeSheetData) {
@@ -136,35 +131,6 @@ function TimeSheet() {
           }
         };
 
-        const handleReject = async (rejectedReason) => {
-          console.log('rejectedReason', rejectedReason)
-          try {
-            const timeRecordData = await rejectTimeRecord({ id: params.id, rejectReason: rejectedReason }).unwrap();
-            dispatch(setRejectTimeRecord({ timeRecord: timeRecordData?.timeRecord }));
-            const updatedRows = [...filteredRows, timeRecordData?.timeRecord];
-            setFilteredRows(updatedRows);
-            setTimeRecordChangeCount((prev) => prev + 1);
-            handleMenuClose();
-          } catch (err) {
-            console.log(err);
-          }
-        }
-
-        const handleApprove = async () => {
-          // try {
-          //   const timeRecordData = await rejectTimeRecord({ id: params.id }).unwrap();
-          //   dispatch(setRejectTimeRecord({ timeRecord: timeRecordData?.timeRecord }));
-          //   const updatedRows = [...filteredRows, timeRecordData?.timeRecord];
-          //   setFilteredRows(updatedRows);
-          //   setTimeRecordChangeCount((prev) => prev + 1);
-          //   handleMenuClose();
-          // } catch (err) {
-          //   console.log(err);
-          // }
-          console.log('Approve clicked for ID:', params.id);
-        }
-
-
         return (
           <div>
             <IconButton size="small" onClick={handleMenuOpen}>
@@ -176,8 +142,6 @@ function TimeSheet() {
               handleView={handleView}
               handleEdit={handleEdit}
               handleDelete={handleDelete}
-              handleReject={handleReject}
-              handleApprove={handleApprove}
               params={params}
             />
             <ViewTimeEntry handleCloseDialog={handleCloseDialog} openDialog={openDialog} params={params} />
@@ -304,7 +268,7 @@ function TimeSheet() {
     dispatch(startTimer());
   };
 
-  if (isCreateTimeRecordLoading || isDeleteTimeRecordLoading || isEditTimeRecordLoading || isTimeSheetDataFromApiLoading || isRejectTimeRecordLoading) return <Loader />;
+  if (isCreateTimeRecordLoading || isDeleteTimeRecordLoading || isEditTimeRecordLoading || isTimeSheetDataFromApiLoading) return <Loader />;
 
   return (
     <div className="flex">

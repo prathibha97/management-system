@@ -45,9 +45,9 @@ function Dashboard() {
           </div>
           <MonthTotals data={timeRecords} />
         </div>
-        <div className="bg-[#ecf1f4] w-full lg:w-[610px] min-w-[580px] p-5">
+        <div className="bg-[#ecf1f4] w-full lg:w-[620px] p-5">
           <h1 className="text-lg text-gray-600 font-bold mb-2">Totals by Day and Week</h1>
-          <div className="flex flex-col lg:flex-row items-center">
+          <div className="flex flex-col md:flex-row items-center justify-center">
             <div className="lg:mr-5 mb-5 lg:mb-0">
               <div className="my-2 text-sm text-gray-700">Daily Totals</div>
               <div>
@@ -57,9 +57,9 @@ function Dashboard() {
             <WeeklyProjectCount data={weeklyTimeRecords} />
           </div>
         </div>
-        <div className="bg-[#ecf1f4] w-full lg:w-[500px] p-5">
+        <div className="bg-[#ecf1f4] w-full lg:w-[620px] p-5">
           <h1 className="text-lg text-gray-600 font-bold mb-2">Recently Active Projects You Are Assigned To</h1>
-          <div className="flex flex-wrap mt-4">
+          <div className="flex flex-wrap mt-4 w-full">
             <RecentlyActiveProjects />
           </div>
         </div>
