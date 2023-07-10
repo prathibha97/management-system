@@ -115,6 +115,8 @@ function Header() {
         return 'Register New Employee';
       case '/reset-password':
         return 'Reset Password';
+        case '/admin/invoice':
+          return 'Invoice Generator'
       default:
         return 'Unknown Page';
     }

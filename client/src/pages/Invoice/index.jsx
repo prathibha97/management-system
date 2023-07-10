@@ -14,7 +14,7 @@ import TableForm from '../../components/Invoice/TableForm';
 
 function Invoice() {
   const [showInvoice, setShowInvoice] = useState(false);
-  const [name, setName] = useState('');
+  const [name, setName] = useState('Sphiria Digital Studio');
   const [address, setAddress] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -190,7 +190,7 @@ function Invoice() {
             </div>
           </article>
 
-          <article className="md:grid grid-cols-2 gap-10 md:mt-16">
+          <article className="md:grid grid-cols-2 gap-10 md:mt-8">
             <div className="flex flex-col">
               <label htmlFor="clientName">Enter your client name </label>
               <TextField

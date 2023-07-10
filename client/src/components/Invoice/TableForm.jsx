@@ -85,7 +85,7 @@ function TableForm({
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <div className="md:mt-16">
+        <div className="md:mt-8">
           <div className="flex flex-col">
             <label htmlFor="description"> Item Description</label>
             <TextField
