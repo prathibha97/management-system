@@ -14,6 +14,7 @@ import {
   Dashboard,
   EditEmployee,
   EmpProfile,
+  Invoice,
   Layout,
   Leaves,
   Meetings,
@@ -61,6 +62,7 @@ function App() {
                 <Route path="/payroll" element={<Payroll />} />
                 <Route path="/leaves" element={<Leaves />} />
                 <Route path="/admin/timesheet" element={<AdminTimeSheet />} />
+                <Route path="/admin/invoice" element={<Invoice />} />
                 <Route path="/clients" element={<Clients />} />
                 <Route path="/clients/:id" element={<Client />} />
                 <Route path="/clients/:id/edit" element={<ClientEdit />} />

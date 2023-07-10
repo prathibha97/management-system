@@ -22,3 +22,4 @@ export { default as Register } from './Register';
 export { default as Settings } from './Settings';
 export { default as TimeSheet } from './TimeSheet';
 export { default as Layout } from './layout';
+export { default as Invoice } from './Invoice';
