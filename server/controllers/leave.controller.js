@@ -63,7 +63,6 @@ const createLeaveRequest = async (req, res) => {
   }
 };
 
-
 /* 
 ?@desc   Get all leave requests
 *@route  Get /api/leaves/
@@ -134,7 +133,9 @@ const approveOrRejectLeave = async (req, res) => {
       leave.approvedBy = req.user.id;
 
       // Notify employee about leave approval
-      const message = `Your leave request has been approved for ${numberOfDays} days from ${formatDate(startDate)} to ${formatDate(endDate)}.`;
+      const message = `Your leave request has been approved for ${numberOfDays} days from ${formatDate(
+        startDate
+      )} to ${formatDate(endDate)}.`;
       const payload = { message };
       const channel = `private-${empNo}`;
       io.to(channel).emit('newNotification', payload);
@@ -146,7 +147,6 @@ const approveOrRejectLeave = async (req, res) => {
         empNo,
       };
       await Notification.create(notification);
-
     } else {
       const { reason } = req.body;
       leave.status = status;
@@ -158,7 +158,7 @@ const approveOrRejectLeave = async (req, res) => {
       const message = `Your leave request has been rejected due to ${reason}.`;
       const payload = { message };
       const channel = `private-${empNo}`;
-      io.to(channel).emit('newNotification', payload); 
+      io.to(channel).emit('newNotification', payload);
 
       // Persist the notification
       const notification = {
@@ -207,6 +207,12 @@ const getLeaveRequestByIdAdmin = async (req, res) => {
   }
 };
 
+/* 
+?@desc   Delete leave request
+*@route  DELETE /api/leaves/:id
+*@access Private/Admin
+*/
+
 const deleteLeaveRequest = async (req, res) => {
   const { id } = req.params;
   try {
@@ -220,8 +226,47 @@ const deleteLeaveRequest = async (req, res) => {
     console.error(err.message);
     res.status(500).json({ message: 'Failed to delete leave request' });
   }
-}
+};
 
+/* 
+?@desc   Allocate duty and nopay leaves
+*@route  POST /api/leaves/allocate-admin-leaves
+*@access Private/Admin
+*/
+
+async function allocateAdminLeaves(req, res) {
+  try {
+    const { empNo, leaveType, leaveDays } = req.body;
+
+    // Check if the logged-in admin has the necessary permissions
+    if (req.user.role !== 'Admin') {
+      return res.status(403).json({ error: 'You are not authorized to perform this action.' });
+    }
+
+    // Find the employee by their empNo
+    const employee = await Employee.findOne({ empNo });
+
+    // If the employee does not exist, return an error
+    if (!employee) {
+      return res.status(404).json({ error: 'Employee not found.' });
+    }
+
+    // Update the employee's leave balance based on the leave type
+    if (leaveType === 'Duty') {
+      employee.leaveBalance.Duty += leaveDays;
+    } else if (leaveType === 'NoPay') {
+      employee.leaveBalance.NoPay += leaveDays;
+    }
+
+    // Save the updated employee record
+    await employee.save();
+
+    return res.status(200).json({ message: 'Leave allocated successfully.' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Internal server error.' });
+  }
+}
 
 module.exports = {
   createLeaveRequest,
@@ -230,4 +275,5 @@ module.exports = {
   approveOrRejectLeave,
   getLeaveRequestByIdAdmin,
   deleteLeaveRequest,
+  allocateAdminLeaves,
 };
