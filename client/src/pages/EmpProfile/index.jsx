@@ -41,7 +41,7 @@ function EmpProfile() {
     <div className="h-[90%]">
       <div className="bg-[#EEF2F5]  w-[95%] rounded-xl mt-6 m-auto overflow-y-auto">
         <EmployeeDetails user={user} />
-        <div className='flex'>
+        <div className='lg:flex'>
         <AttendanceCalendar user={user} />
         <AdminLeaveAllocation empNo={empNo}/>
         </div>
