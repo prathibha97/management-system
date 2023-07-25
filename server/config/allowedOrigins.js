@@ -7,7 +7,9 @@ const allowedOrigins = [
   'http://34.210.201.75:5000',
   'http://34.217.133.161:5000',
   'http://ec2-34-210-201-75.us-west-2.compute.amazonaws.com:5000',
-  'http://ec2-34-210-201-75.us-west-2.compute.amazonaws.com:5001',
+  'http://ec2-34-210-201-75.us-west-2.compute.amazonaws.com:5000',
+  'http://ec2-34-217-133-161.us-west-2.compute.amazonaws.com:5000',
+  'http://ec2-34-217-133-161.us-west-2.compute.amazonaws.com:5001',
 ];
 
 module.exports = allowedOrigins;

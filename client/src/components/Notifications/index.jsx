@@ -115,7 +115,7 @@ function Notifications({ empNo }) {
   useEffect(() => {
     let isMounted = true;
 
-    const socket = io('http://34.210.201.75:5000', {
+    const socket = io('http://34.217.133.161:5000', {
       query: { empNo },
     });
 
