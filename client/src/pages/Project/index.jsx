@@ -11,6 +11,7 @@ function Project() {
   const navigate = useNavigate();
   const userInfo = useSelector(selectCurrentUser);
   const { id } = useParams();
+  console.log(id);
 
   const { data: project, isLoading: isProjectLoading } = useGetProjectByIdQuery(id)
   useEffect(() => {

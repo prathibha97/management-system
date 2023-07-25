@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { selectCurrentUser } from '../../app/features/auth/authSelectors';
 import { useDeleteProjectMutation, useGetAllProjectsQuery } from '../../app/features/projects/projectApiSlice';
-import { setDeleteProject, setProjects } from '../../app/features/projects/projectSlice';
+import { setDeleteProject, setProjects, setSelectedProject } from '../../app/features/projects/projectSlice';
 import { Button, Loader } from '../../components';
 import AlertDialog from '../../components/AlertDialog';
 import { formatDate } from '../../utils/formatDate';
@@ -63,8 +63,8 @@ function Projects() {
   }
 
   const handleEdit = (row) => {
-    // handle edit action here
-    console.log(`Edit row ${row._id}`);
+    dispatch(setSelectedProject({ project: row }))
+    navigate(`/projects/${row._id}/edit`)
   };
 
   const handleView = (row) => {
@@ -138,7 +138,7 @@ function Projects() {
               {projects?.map((row) => (
                 <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
                   <TableCell align='center'>{row?.title}</TableCell>
-                  <TableCell align='center'>{row?.client?.name}</TableCell>
+                  <TableCell align='center'>{row?.client?.name?.first} {row?.client?.name?.last}</TableCell>
                   <TableCell align='center'>{row?.department?.name}</TableCell>
                   <TableCell align='center'>{row?.category}</TableCell>
                   <TableCell align='center'>{formatDate(row?.deadline)}</TableCell>

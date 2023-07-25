@@ -3,6 +3,7 @@
 // updateUserProfile private,
 
 const Employee = require('../models/Employee');
+const upload = require('../services/fileUpload');
 
 /*
 ?@desc   Get all employees
@@ -56,6 +57,14 @@ const getEmployeeById = async (req, res) => {
 
 const updateEmployee = async (req, res) => {
   const { id } = req.params;
+
+  const idCardPath = req.files?.idCardPath?.[0]?.path ?? '';
+  const bankPassPath = req.files?.bankPassPath?.[0]?.path ?? '';
+  const resumePath = req.files?.resumePath?.[0]?.path ?? '';
+
+  // Upload files using the "upload" middleware
+  await upload.any()(req, res, () => {});
+
   const {
     empNo,
     firstName,
@@ -72,9 +81,6 @@ const updateEmployee = async (req, res) => {
     role,
     employmentHistory,
     projectHistory,
-    idPath,
-    bankSlipPath,
-    resumePath,
     department,
   } = req.body;
 
@@ -96,8 +102,8 @@ const updateEmployee = async (req, res) => {
       employee.role = role;
       employee.employmentHistory = employmentHistory || employee.employmentHistory;
       employee.projectHistory = projectHistory || employee.projectHistory;
-      employee.idPath = idPath || employee.idPath;
-      employee.bankSlipPath = bankSlipPath || employee.bankSlipPath;
+      employee.idCardPath = idCardPath || employee.idCardPath;
+      employee.bankPassPath = bankPassPath || employee.bankPassPath;
       employee.resumePath = resumePath || employee.resumePath;
       employee.department = department || employee.department;
     } else {

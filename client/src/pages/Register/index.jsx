@@ -43,39 +43,6 @@ function Register() {
     setStep(step - 1);
   };
 
-  // const handleIdInputChange = (e) => {
-  //   const file = e.target.files[0];
-  //   encodePDFToBase64(file)
-  //     .then((base64) => {
-  //       setIdCardPath(base64);
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //     });
-  // };
-
-  // const handleBankPassInputChange = (e) => {
-  //   const file = e.target.files[0];
-  //   encodePDFToBase64(file)
-  //     .then((base64) => {
-  //       setBankPassPath(base64);
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //     });
-  // };
-
-  // const handleResumeInputChange = (e) => {
-  //   const file = e.target.files[0];
-  //   encodePDFToBase64(file)
-  //     .then((base64) => {
-  //       setResumePath(base64);
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //     });
-  // };
-
   const handleChange = input => e => {
     switch (input) {
       case 'firstName':

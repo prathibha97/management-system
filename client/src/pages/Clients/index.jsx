@@ -1,45 +1,203 @@
-import React, { useState } from 'react';
+/* eslint-disable no-restricted-globals */
+/* eslint-disable react/no-unstable-nested-components */
+import { faEdit, faEye, faTrash, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Alert, Paper, Snackbar, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { selectCurrentUser } from '../../app/features/auth/authSelectors';
+import { useGetClientsQuery, useRemoveClientMutation } from '../../app/features/clients/clientApiSlice';
+import { getClient, getClients, setRemoveClient } from '../../app/features/clients/clientSlice';
+import { Button, Loader } from '../../components';
+import AlertDialog from '../../components/AlertDialog';
+import { selectClient } from '../../app/features/clients/clientSelectors';
+
 
 function Clients() {
-  const [clients, setClients] = useState([
-    { id: 1, name: 'Client A', email: 'clienta@example.com', phone: '1234567890' },
-    { id: 2, name: 'Client B', email: 'clientb@example.com', phone: '9876543210' },
-    // Add more client data as needed
-  ]);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [open, setOpen] = useState(false);
+  const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
+  const [clientListChangeCount, setClientListChangeCount] = useState(0)
+
+
+  const userInfo = useSelector(selectCurrentUser);
+
+  const client = useSelector(selectClient)
+
+  const [removeClient, { error: errorRemoveClient }] = useRemoveClientMutation()
+
+  const { data: clients, isLoading: isClientListLoading, refetch: refetchClientList } = useGetClientsQuery({
+    refetchOnMountOrArgChange: true,
+  })
+
+  useEffect(() => {
+    if (!userInfo) {
+      navigate('/');
+    } else {
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+      if (!storedUser || storedUser.empNo !== userInfo.empNo) {
+        dispatch(getClients({ clients }))
+      }
+    }
+  }, [userInfo])
+
+  useEffect(() => {
+    if (errorRemoveClient) {
+      setAlert({ open: true, message: errorRemoveClient?.data?.message, severity: 'error' });
+    } else {
+      refetchClientList()
+    }
+  }, [errorRemoveClient]);
+
+  useEffect(() => {
+    if (clientListChangeCount > 0) {
+      refetchClientList()
+    }
+  }, [clientListChangeCount])
+
+
+  if (!userInfo || isClientListLoading) {
+    return <Loader />
+  }
+
+  const handleEdit = (row) => {
+    dispatch(getClient({ client: row }))
+    navigate(`/clients/${row._id}/edit`)
+  };
+
+  const handleView = (row) => {
+    navigate(row._id)
+  }
+
+  const openDialog = (row) => {
+    setOpen(true)
+    dispatch(getClient({client:row}))
+  }
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  // const handleDelete = async (client) => {
+  //   try {
+  //     await removeClient({ id: client._id }).unwrap();
+  //     dispatch(setRemoveClient({ id: client._id }));
+  //     setClientListChangeCount(prevCount => prevCount + 1);
+  //     handleClose();
+  //     setAlert({ open: true, message: 'Removed successfully', severity: 'success' });
+  //   } catch (err) {
+  //     setAlert({ open: true, message: errorRemoveClient?.data?.message, severity: 'error' });
+  //   }
+  // };
+
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+
+  const handleAlertClose = () => {
+    setAlert({ ...alert, open: false });
+  };
 
   return (
-    <div className="container mx-auto py-8">
-      <h1 className="text-3xl font-bold mb-4">Client Management</h1>
-      <div className="flex justify-end mb-4">
-        <button type='button' className="bg-blue-500 text-white py-2 px-4 rounded">Add Client</button>
+    <>
+      <Paper sx={{ width: '100%', overflow: 'hidden', marginTop: 5 }}>
+        <TableContainer sx={{ maxHeight: 440 }}>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow>
+                <TableCell
+                  align='center'
+                  style={{ minWidth: 90, backgroundColor: '#E8E8E8', fontWeight: 'bold' }}
+                >
+                  Name
+                </TableCell>
+                <TableCell
+                  align='center'
+                  style={{ minWidth: 90, backgroundColor: '#E8E8E8', fontWeight: 'bold' }}
+                >
+                  Email
+                </TableCell>
+                <TableCell
+                  align='center'
+                  style={{ minWidth: 90, backgroundColor: '#E8E8E8', fontWeight: 'bold' }}
+                >
+                  Contact
+                </TableCell>
+                <TableCell
+                  align='center'
+                  style={{ minWidth: 90, backgroundColor: '#E8E8E8', fontWeight: 'bold' }}
+                >
+                  Projects
+                </TableCell>
+                <TableCell
+                  align='center'
+                  style={{ minWidth: 90, backgroundColor: '#e8e8e8', fontWeight: 'bold' }}
+                >
+                  Action
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {clients?.map((row) => (
+                <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
+                  <TableCell align='center'>{row.name.first} {row.name.last}</TableCell>
+                  <TableCell align='center'>{row.email}</TableCell>
+                  <TableCell align='center'>{row.phone}</TableCell>
+                  <TableCell align='center'>{row.projectHistory.map((project)=> project.title)}</TableCell>
+                  <TableCell align='center'>
+                    <FontAwesomeIcon icon={faEye} onClick={() => handleView(row)} className="mx-1 hover:text-[#1DB3AB] cursor-pointer" />
+                    <FontAwesomeIcon icon={faEdit} onClick={() => handleEdit(row)} className="mx-1 hover:text-[#1DB3AB] cursor-pointer" />
+                    <FontAwesomeIcon icon={faTrash} onClick={() => openDialog(row)} className="mx-1 hover:text-[#FF6760] cursor-pointer" />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 100]}
+          component="div"
+          count={clients?.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Paper>
+      {open && (
+        <AlertDialog
+          open={open}
+          handleClose={handleClose}
+          id={client._id}
+          setAlert={setAlert}
+          title="Are you sure you want to remove this client?"
+          remove={removeClient}
+          changeCount={setClientListChangeCount}
+          errorRemoveEmployee={errorRemoveClient}
+          action={setRemoveClient}
+        />
+      )}
+
+      <div className='flex justify-end mt-10'>
+        <Button title='Add New Client' icon={faUserPlus} onClick={() => navigate('/clients/register')} />
       </div>
-      <table className="min-w-full">
-        <thead>
-          <tr>
-            <th className="py-2 px-4">ID</th>
-            <th className="py-2 px-4">Name</th>
-            <th className="py-2 px-4">Email</th>
-            <th className="py-2 px-4">Phone</th>
-            <th className="py-2 px-4">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {clients.map((client) => (
-            <tr key={client.id}>
-              <td className="py-2 px-4">{client.id}</td>
-              <td className="py-2 px-4">{client.name}</td>
-              <td className="py-2 px-4">{client.email}</td>
-              <td className="py-2 px-4">{client.phone}</td>
-              <td className="py-2 px-4">
-                <button type='button' className="bg-blue-500 text-white py-1 px-2 rounded mr-2" onClick={(e)=>setClients(e.target.value)}>Edit</button>
-                <button type='button' className="bg-red-500 text-white py-1 px-2 rounded">Delete</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+      <Snackbar open={alert?.open} autoHideDuration={5000} onClose={handleAlertClose}>
+        <Alert onClose={handleAlertClose} severity={alert?.severity}>
+          {alert?.message}
+        </Alert>
+      </Snackbar>
+    </>
   );
 }
 
-export default Clients;
+export default Clients

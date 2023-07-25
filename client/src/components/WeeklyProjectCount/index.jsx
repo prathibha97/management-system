@@ -14,15 +14,16 @@ function WeeklyProjectCount({ data }) {
   return (
     <section>
       <div className="my-[10px] mr-[7px] text-sm text-[#878b8e]">Weekly Totals</div>
-      <div>
-        {data?.map((week) => (
-          <div key={week.weekStartDate} className="flex justify-start items-center flex-nowrap mt-[15px] h-[53px]">
+      <div className='flex flex-wrap md:flex-col'>
+        {data?.map((week, index) => (
+          <div key={week.weekStartDate} className="flex justify-start items-center flex-nowrap mt-[15px] h-[53px] ">
             {week.projectCount > 0 && week.totalHours > 0 ? (
               <>
                 <div className="mr-[13px] w-[53px]">
                   <CustomPieChart data={week.timeRecords} innerRadius={8} outerRadius={24} />
                 </div>
-                <div className="flex flex-col text-base text-[#165e92]">
+                <div className="flex flex-col text-base text-[#165e92] mr-5">
+                  <span className='text-xs'>Week {index + 1}</span>
                   <span>{week.projectCount} project{week.projectCount > 1 ? 's' : ''}</span>
                   <span className="text-[#767a7d]">{week.totalHours.toFixed(2)} h</span>
                 </div>
@@ -30,7 +31,12 @@ function WeeklyProjectCount({ data }) {
             ) : (
               <>
                 <EmptyData />
-                <div className="text-base text-[#869199]">No data<br />available</div>
+                <div className="flex flex-col text-base text-[#869199] mr-3">
+                  <span className='text-xs'>Week {index + 1}</span>
+                  <p className='text-sm md:text-base'>
+                    No data<br />available
+                  </p>
+                </div>
               </>
             )}
           </div>

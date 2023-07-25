@@ -53,6 +53,13 @@ export const leaveApiSlice = apiSlice.injectEndpoints({
         url: `/leaves/emp/${empNo}`,
       }),
     }),
+    leaveAllocate: builder.mutation({
+      query: ({ empNo, leaveType, leaveDays }) => ({
+        url: `/leaves/allocate-admin-leaves`,
+        method: 'POST',
+        body: { empNo, leaveType, leaveDays },
+      }),
+    }),
   }),
 });
 
@@ -64,4 +71,5 @@ export const {
   useGetAllLeavesQuery,
   useDeleteLeaveMutation,
   useGetEmployeeLeavesAdminQuery,
+  useLeaveAllocateMutation
 } = leaveApiSlice;

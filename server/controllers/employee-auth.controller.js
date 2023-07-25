@@ -99,15 +99,15 @@ const registerEmployee = async (req, res) => {
     res.status(201).json({ newEmployee, message: 'Employee created successfully' });
   } catch (err) {
     // Delete uploaded files if any
-    if (req.files?.idCard) {
+    if (req.files?.idCardPath) {
       await unlinkAsync(req.files?.idCardPath[0].path);
     }
 
-    if (req.files?.bankPass) {
+    if (req.files?.bankPassPath) {
       await unlinkAsync(req.files?.bankPassPath[0].path);
     }
 
-    if (req.files?.resume) {
+    if (req.files?.resumePath) {
       await unlinkAsync(req.files?.resumePath[0].path);
     }
 

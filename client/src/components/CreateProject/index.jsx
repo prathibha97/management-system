@@ -8,8 +8,8 @@ import { useGetClientsQuery } from '../../app/features/clients/clientApiSlice'
 import { getClients } from '../../app/features/clients/clientSlice'
 import { useGetDepartmentEmployeeListQuery, useGetDepartmentsQuery } from '../../app/features/departments/departmentApiSlice'
 import { departmentEmployeeList, getDepartments } from '../../app/features/departments/departmentSlice'
-import { useCreateProjectMutation } from '../../app/features/projects/projectApiSlice'
-import { setCreateProject } from '../../app/features/projects/projectSlice'
+import { useCreateProjectMutation, useGetEmployeeProjectsQuery } from '../../app/features/projects/projectApiSlice'
+import { setCreateProject, setProjects } from '../../app/features/projects/projectSlice'
 import Loader from '../Loader'
 
 function CreateProject() {
@@ -34,6 +34,8 @@ function CreateProject() {
   const { data: employees } = useGetDepartmentEmployeeListQuery(department)
   const { data: clients } = useGetClientsQuery()
   const { data: departments } = useGetDepartmentsQuery()
+
+  const { data: projects, refetch: refetchProjects } = useGetEmployeeProjectsQuery({})
 
   const [createProject, { isLoading: isProjectCreateLoading }] = useCreateProjectMutation()
 
@@ -68,6 +70,9 @@ function CreateProject() {
         nftCollectionSize
       }).unwrap()
       dispatch(setCreateProject({ project: projectData }))
+      refetchProjects()
+      dispatch(setProjects({ projects }))
+
       navigate('/projects')
     } catch (error) {
       console.log(error);
@@ -86,7 +91,7 @@ function CreateProject() {
         <h1 className='text-2xl font-bold mt-4'>Create New Project</h1>
         <p className='text-[#707070] text-sm'>Here you can create a new project</p>
       </div>
-      <div className='flex bg-white px-12 py-5 mt-5 justify-between items-center w-[90%] h-[90%] m-auto rounded-2xl overflow-y-auto'>
+      <div className='flex bg-white px-12 py-5 mt-5 justify-between items-center w-[90%] h-[90%] lg:h-[70%] m-auto rounded-2xl overflow-y-auto'>
         <div className='flex flex-wrap justify-between gap-1'>
           <div className='flex flex-col w-[45%]'>
             <InputLabel
@@ -162,7 +167,7 @@ function CreateProject() {
             </InputLabel>
             <Select labelid="gender-lable" id="gender-lable" onChange={(e) => setClient(e.target.value)} value={client}>
               {clients?.map((item) => (
-                <MenuItem key={item?._id} value={item?._id}>{item?.name}</MenuItem>
+                <MenuItem key={item?._id} value={item?._id}>{item?.name.first} {item?.name.last}</MenuItem>
               ))}
             </Select>
           </div>

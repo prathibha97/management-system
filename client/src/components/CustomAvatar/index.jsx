@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import Avatar from '@mui/material/Avatar';
 
-function CustomAvatar({ name, size = 42, style = {} }) {
+function CustomAvatar({ name, size, fontSize, style = {} }) {
   function stringToColor(string) {
     let hash = 0;
     let i;
@@ -26,6 +26,7 @@ function CustomAvatar({ name, size = 42, style = {} }) {
     return {
       sx: {
         bgcolor: stringToColor(str),
+        fontSize,
         width: size,
         height: size,
         ...style,

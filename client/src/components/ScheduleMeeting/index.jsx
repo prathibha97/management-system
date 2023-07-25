@@ -16,7 +16,7 @@ function ScheduleMeeting({ isOpen, setIsOpen, selectedDay, people, handleSubmit 
   const [selectedPeople, setSelectedPeople] = useState([people[0]]);
 
   const handleChange = (event) => {
-    const {value} = event.target;
+    const { value } = event.target;
     setSelectedPeople(value);
   };
 
@@ -46,7 +46,7 @@ function ScheduleMeeting({ isOpen, setIsOpen, selectedDay, people, handleSubmit 
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-[600px] h-[450px] max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+              <Dialog.Panel className="w-[600px] h-[450px] max-w-lg transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                 <Dialog.Title
                   as="h3"
                   className="text-lg font-medium leading-6 text-gray-900"
@@ -54,7 +54,7 @@ function ScheduleMeeting({ isOpen, setIsOpen, selectedDay, people, handleSubmit 
                   Schedule a Meeting
                 </Dialog.Title>
                 <div className="mt-2">
-                  <div className="fixed top-18 w-[400px]">
+                  <div className="fixed top-18 w-[450px]">
                     <InputLabel id="demo-simple-select-label" className='mb-2'>Meeting Summary</InputLabel>
                     <TextField fullWidth value={summary} onChange={(e) => setSummary(e.target.value)} />
                     <InputLabel id="demo-simple-select-label" className='mb-2'>Select Attendees</InputLabel>

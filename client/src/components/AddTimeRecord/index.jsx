@@ -12,12 +12,9 @@ import { useGetTasksByProjectIdQuery } from '../../app/features/tasks/taskApiSli
 
 function AddTimeRecord({ openDialog, handleCloseDialog, handleSubmit }) {
 
-  const { data: projects } = useGetEmployeeProjectsQuery({
-    refetchOnMountOrArgChange: true,
-    refetchOnReconnect: true,
-  })
+  const { data: projects } = useGetEmployeeProjectsQuery()
 
-  const [project, setProject] = useState(projects[0]?._id || '')
+  const [project, setProject] = useState('')
   const [client, setClient] = useState('')
   const [task, setTask] = useState('')
   const [workPerformed, setWorkPerformed] = useState('')
@@ -39,6 +36,7 @@ function AddTimeRecord({ openDialog, handleCloseDialog, handleSubmit }) {
                 value={project}
                 label="Select Project"
                 onChange={(e) => setProject(e.target.value)}
+                // defaultValue={projects[0]._id}
               >
                 {
                   projects?.map((project) => (
@@ -55,10 +53,11 @@ function AddTimeRecord({ openDialog, handleCloseDialog, handleSubmit }) {
                 value={client}
                 label="Select Client"
                 onChange={(e) => setClient(e.target.value)}
+                defaultValue=''
               >
                 {
                   clients?.map((client) => (
-                    <MenuItem value={client._id} key={client._id}>{client.name}</MenuItem>
+                    <MenuItem value={client._id} key={client._id}>{client.name.first} {client.name.first}</MenuItem>
                   ))
                 }
               </Select>
@@ -69,6 +68,7 @@ function AddTimeRecord({ openDialog, handleCloseDialog, handleSubmit }) {
                 value={task}
                 label="Select Task"
                 onChange={(e) => setTask(e.target.value)}
+                defaultValue=''
               >
                 {
                   tasks?.map((task) => (

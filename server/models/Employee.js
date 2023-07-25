@@ -142,6 +142,14 @@ const empSchema = new mongoose.Schema(
         type: Number,
         default: 0,
       },
+      Duty: {
+        type: Number,
+        default: 0,
+      },
+      NoPay: {
+        type: Number,
+        default: 0,
+      },
     },
     refreshToken: [String],
   },

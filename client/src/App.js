@@ -7,9 +7,14 @@ import {
   Attendance,
   Auth,
   Board,
+  Client,
+  ClientEdit,
+  ClientRegister,
   Clients,
   Dashboard,
+  EditEmployee,
   EmpProfile,
+  Invoice,
   Layout,
   Leaves,
   Meetings,
@@ -23,6 +28,7 @@ import {
   Settings,
   TimeSheet,
 } from './pages';
+import EditProject from './pages/EditProject';
 import Leave from './pages/Leave';
 
 function App() {
@@ -47,14 +53,20 @@ function App() {
               <>
                 <Route path="/people" element={<People />} />
                 <Route path="/people/:empNo" element={<EmpProfile />} />
+                <Route path="/people/:empNo/edit" element={<EditEmployee />} />
+                <Route path="/people/register" element={<Register />} />
                 <Route path="/projects" element={<Projects />} />
                 <Route path="/projects/create" element={<CreateProject />} />
                 <Route path="/projects/:id" element={<Project />} />
+                <Route path="/projects/:id/edit" element={<EditProject />} />
                 <Route path="/payroll" element={<Payroll />} />
                 <Route path="/leaves" element={<Leaves />} />
-                <Route path="/register" element={<Register />} />
                 <Route path="/admin/timesheet" element={<AdminTimeSheet />} />
+                <Route path="/admin/invoice" element={<Invoice />} />
                 <Route path="/clients" element={<Clients />} />
+                <Route path="/clients/:id" element={<Client />} />
+                <Route path="/clients/:id/edit" element={<ClientEdit />} />
+                <Route path="/clients/register" element={<ClientRegister />} />
               </>
             )}
           </Route>

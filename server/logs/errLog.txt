@@ -25,10 +25,28 @@
 20230601	10:28:33	3152eed4-ddfd-41ce-83e0-9af8699ce48b	Error: Not authorized, as an admin
 20230601	11:36:38	b33c7047-b534-4f4d-b2c9-c18f7dbc12d2	Error: Not Found - /main.54fbdc22f4acc86a577a.hot-update.json
 20230601	13:36:53	22213f97-9a4b-4edf-989c-d88416dab4e8	Error: Not Found - /main.f9a9f646563f2df15e86.hot-update.json
-20230602	11:14:09	cd0563cc-3f46-4923-b0bf-a07e46699791	Error: Not Found - /
-20230602	11:14:53	76671b88-cb7e-4da1-9a0a-2e944453057d	Error: Not allowed by CORS
-20230602	11:15:22	c80df75c-aa7e-4133-a613-abb9e4049f00	Error: Not allowed by CORS
-20230602	11:15:35	0d8f65ec-7aa9-4bb5-a608-234b82d41360	Error: Not allowed by CORS
-20230609	12:30:03	13fa53ab-c317-4d8c-b1ee-5e6774efb40a	Error: ENOENT: no such file or directory, stat '/Users/user/Desktop/developer/management-system/client/build/index.html'
-20230618	19:08:04	23da3e49-931e-4372-914f-53d18f92ec84	Error: ENOENT: no such file or directory, stat '/Users/user/Desktop/developer/management-system/client/build/index.html'
-20230618	19:08:19	ab8130d4-8a6a-4b08-b6e8-8786c049c785	Error: ENOENT: no such file or directory, stat '/Users/user/Desktop/developer/management-system/client/build/index.html'
+20230609	10:48:37	3fd034b1-b63f-4d34-abc0-54861458230f	Error: Not Found - /socket.io/?empNo=1500&EIO=4&transport=polling&t=OYUbw2y
+20230609	12:38:52	7040b992-51de-4fdb-a193-334cbd9960b5	Error: Not Found - /socket.io/?empNo=1500&EIO=4&transport=polling&t=OYU_9CJ
+20230622	13:52:36	942af30c-6e04-4a23-8e47-4bc020597871	Error: ENOENT: no such file or directory, stat 'undefined'
+20230622	13:53:07	ed692123-1d79-4e73-967f-5da815cd492a	Error: ENOENT: no such file or directory, stat 'undefined'
+20230622	14:04:01	e9de5dc3-ec48-43cd-818f-fb740dbf1e4b	Error: ENOENT: no such file or directory, stat 'undefined'
+20230627	10:29:14	dadffa79-9193-49ed-8722-6d66e7e757aa	Error: ENOENT: no such file or directory, stat 'uploads/medicals/Prathibha-medical-2023-06-18T08:52:43.741Z'
+20230629	10:24:12	191977f1-23ea-4f9d-b657-58863a126ff2	Error: Not authorized, as an admin
+20230629	10:24:31	2208d65d-22ed-4fa5-9c86-d27a03ad2c04	Error: Not authorized, as an admin
+20230629	10:39:13	9629d456-91d3-493a-bc77-2de98cc986bd	Error: Not authorized, as an admin
+20230629	10:40:43	2bac014f-e5e4-4671-a9db-f4a39719c634	Error: Not authorized, as an admin
+20230629	10:41:18	ca840424-bd5f-4d7d-8a60-8c2bd25ca02d	Error: Not authorized, as an admin
+20230629	10:43:52	0f4c0078-3fa1-40e8-b3f3-40757b40bae7	Error: Not authorized, as an admin
+20230629	10:53:13	6fd49908-b9de-4550-b95f-a8803c0f8e9c	Error: Not authorized, as an admin
+20230629	10:53:55	e0401ba2-5459-4b9b-8bba-6e4b2e2e1591	Error: Not authorized, as an admin
+20230629	10:54:19	51993ba9-11cb-4433-8b37-e1dff60bde65	Error: Not authorized, as an admin
+20230629	10:57:19	b539bf3e-1fd4-4afd-bcd2-ce0f129fc222	Error: Not authorized, as an admin
+20230629	10:57:37	244257df-d443-480f-8f37-049778d95bcc	Error: Not authorized, as an admin
+20230629	10:58:04	42b40457-807f-4edd-88e2-9ffa6c18d347	Error: Not authorized, as an admin
+20230629	10:58:35	1e04a8e0-2e89-4d6c-91cc-be7c93bf57a5	Error: Not authorized, as an admin
+20230629	13:52:28	d0f5e90d-1792-48cc-98c3-64b76ffdf38c	Error: ENOENT: no such file or directory, stat 'undefined'
+20230629	13:53:38	ab95442b-657a-482d-9e9f-a8567f6c9afd	Error: ENOENT: no such file or directory, stat 'undefined'
+20230629	13:57:17	e7c91ad3-bb60-4c73-8bbd-0afd09bd127b	Error: ENOENT: no such file or directory, stat 'undefined'
+20230629	13:57:51	6b2cdb31-d8f8-40fe-9507-67d67372e087	Error: ENOENT: no such file or directory, stat 'undefined'
+20230704	11:27:26	d08ea70b-5cce-408c-aed1-d6bbd6541fb7	Error: Not authorized, as an admin
+20230704	11:29:24	00c86c29-ff57-478b-9ca4-2fda115fc596	Error: Not authorized, as an admin

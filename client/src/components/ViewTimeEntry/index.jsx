@@ -14,7 +14,7 @@ function ViewTimeEntry({ openDialog, handleCloseDialog, params }) {
             <Typography variant="subtitle1" color="textSecondary" sx={{ width: 100 }}>
               Client:
             </Typography>
-            <Typography variant="body1">{params?.row?.client?.name}</Typography>
+            <Typography variant="body1">{params?.row?.client?.name?.first} {params?.row?.client?.name?.last}</Typography>
           </div>
           <div className="flex items-center">
             <Typography variant="subtitle1" color="textSecondary" sx={{ width: 100 }}>

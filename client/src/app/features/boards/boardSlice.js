@@ -11,8 +11,12 @@ const boardlice = createSlice({
       const { boards } = action.payload;
       state.boards = boards;
     },
+    resetBoards: (state) => {
+      state.boards = [];
+      state.board = {};
+    },
   },
 });
 
-export const { getBoardsByProjectId } = boardlice.actions;
+export const { getBoardsByProjectId, resetBoards } = boardlice.actions;
 export default boardlice.reducer;
