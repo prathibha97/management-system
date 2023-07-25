@@ -29,7 +29,7 @@ jobs:
         run: |
           echo "$PRIVATE_KEY" > key.pem
           chmod 400 key.pem
-          ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=60 -i key.pem ec2-user@ec2-34-220-229-58.us-west-2.compute.amazonaws.com << 'EOF'
+          ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=60 -i key.pem ec2-user@ec2-34-217-133-161.us-west-2.compute.amazonaws.com << 'EOF'
           docker pull prathibha097/management-build
           docker stop management-container
           docker rm -f management-container
