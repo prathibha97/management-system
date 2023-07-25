@@ -48,6 +48,13 @@ export const employeeApiSlice = apiSlice.injectEndpoints({
         body: createFormData(employee),
       }),
     }),
+    editEmployee: builder.mutation({
+      query: ({id,employee}) => ({
+        url: `/emp/${id}`,
+        method: 'PUT',
+        body: createFormData(employee),
+      }),
+    }),
   }),
 });
 
@@ -57,4 +64,5 @@ export const {
   useRemoveEmployeeMutation,
   useEmployeeDetailsAdminQuery,
   useRegisterEmployeeMutation,
+  useEditEmployeeMutation
 } = employeeApiSlice;

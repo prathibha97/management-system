@@ -53,14 +53,14 @@ function EmployeeCard({ employee }) {
   ];
 
   return (
-    <div className='bg-[#EEF2F5] h-[90%] w-[95%] rounded-xl m-auto'>
+    <div className='bg-[#EEF2F5] md:h-[90%] w-[95%] rounded-xl m-auto'>
       <div className='flex flex-col mt-6 ml-[35px]'>
         <h1 className='text-2xl font-bold'>User Information</h1>
         <p className='text-[#707070] text-sm'>Here you can edit public details about yourself</p>
       </div>
       <div className='flex flex-col items-center mt-4'>
-        <div className='h-[90%] w-[95%] rounded-xl ml-12'>
-          <div className='flex bg-white p-6 rounded-2xl w-[90%] justify-between px-[100px]'>
+        <div className='w-[95%] rounded-xl m-auto'>
+          <div className='flex bg-white p-3 md:p-6 rounded-2xl max-w-fit m-auto justify-center gap-5'>
             {/* <Avatar {...stringAvatar('Kent Dodds')} /> */}
             <CustomAvatar name={`${employee?.name?.first} ${employee?.name?.last}`} size={60}/>
             <div>
@@ -70,11 +70,11 @@ function EmployeeCard({ employee }) {
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center justify-between bg-white p-10 rounded-2xl w-[90%] mt-5">
+          <div className="flex flex-wrap items-center justify-between bg-white p-4 md:p-10 rounded-2xl mt-5 ">
             {empDetails.map((emp) => (
               <div
                 key={emp.id}
-                className={`flex items-center mb-5 gap-5 w-${emp.id === 5 ? 'full' : '1/2'
+                className={`flex items-center mb-3 md:mb-5 gap-3 md:gap-5 w-${emp.id === 5 ? 'full' : '1/2'
                   }`}
               >
                 {emp.subtitle === 'Gender' && (

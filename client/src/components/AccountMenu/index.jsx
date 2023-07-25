@@ -1,6 +1,5 @@
 import { faGear, faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
@@ -12,6 +11,8 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useLogoutMutation } from '../../app/features/auth/authApiSlice';
 import { setLogout } from '../../app/features/auth/authSlice';
+import { resetBoards } from '../../app/features/boards/boardSlice';
+import { resetProjects } from '../../app/features/projects/projectSlice';
 import CustomAvatar from '../CustomAvatar';
 import Loader from '../Loader';
 
@@ -35,6 +36,8 @@ export default function AccountMenu({ userInfo }) {
     try {
       await logout().unwrap();
       dispatch(setLogout());
+      dispatch(resetProjects())
+      dispatch(resetBoards())
       navigate('/');
     } catch (error) {
       console.log('Logout failed', error);
@@ -95,10 +98,10 @@ export default function AccountMenu({ userInfo }) {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <MenuItem onClick={() => navigate('/profile')}>
-          <Avatar /> Profile
+          <CustomAvatar name={`${userInfo?.name?.first} ${userInfo?.name?.last}`} fontSize={14}/> Profile
         </MenuItem>
         <Divider />
-        <MenuItem onClick={handleClose} className="gap-2">
+        <MenuItem onClick={() => navigate('/settings')} className="gap-2">
           <FontAwesomeIcon icon={faGear} />
           Settings
         </MenuItem>

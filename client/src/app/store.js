@@ -31,7 +31,7 @@ import timerReducer from './features/timer/timerSlice';
 const persistConfig = {
   key: 'root',
   storage,
-  blacklist: ['projects.scope'],
+  // blacklist: ['projects.scope'],
 };
 
 const persistedReducer = persistReducer(

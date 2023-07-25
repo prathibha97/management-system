@@ -3,6 +3,7 @@ export { default as AccountMenu } from './AccountMenu';
 export { default as AddExperience } from './AddExperience';
 export { default as AddTaskModal } from './AddTaskModal';
 export { default as AddTimeRecord } from './AddTimeRecord';
+export { default as AdminLeaveAllocation } from './AdminLeaveAllocation';
 export { default as ApplyLeave } from './ApplyLeave';
 export { default as AttendanceCalendar } from './AttendanceCalendar';
 export { default as Button } from './Button';

@@ -3,18 +3,23 @@ import { faBriefcase, faBuilding, faEnvelope, faGift, faHouse, faHouseLaptop, fa
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Alert, Snackbar } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { useRegisterEmployeeMutation } from '../../app/features/employees/employeeApiSlice';
-import { setRegisterEmployee } from '../../app/features/employees/employeeSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useEditEmployeeMutation, useRegisterEmployeeMutation } from '../../app/features/employees/employeeApiSlice';
+import { selectEmployee } from '../../app/features/employees/employeeSelector';
+import { setEditEmployee, setRegisterEmployee } from '../../app/features/employees/employeeSlice';
 import Loader from '../Loader';
 
 function ReviewNewEmployee({ prevStep, values }) {
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const location = useLocation()
   const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
 
-  const [registerEmployee, { error, isLoading }] = useRegisterEmployeeMutation()
+  const selectedEmployee = useSelector(selectEmployee)
+
+  const [registerEmployee, { error: registerError, isLoading: registerLoading }] = useRegisterEmployeeMutation()
+  const [editEmployee, { error: editError, isLoading: editLoading }] = useEditEmployeeMutation()
 
   const { firstName,
     lastName,
@@ -46,7 +51,7 @@ function ReviewNewEmployee({ prevStep, values }) {
     accNo,
   } = values
 
-  const saveEmployee = async () => {
+  const handleRegisterEmployee = async () => {
     try {
       const employee = await registerEmployee({
         firstName,
@@ -82,10 +87,55 @@ function ReviewNewEmployee({ prevStep, values }) {
       navigate('/people')
       setAlert({ open: true, message: 'Employee Added Successfully', severity: 'success' });
     } catch (err) {
-      setAlert({ open: true, message: error?.data?.message, severity: 'error' });
+      setAlert({ open: true, message: registerError?.data?.message, severity: 'error' });
     }
 
   }
+
+  const handleEditEmployee = async () => {
+    const employee = {
+      firstName,
+      lastName,
+      birthDate,
+      email,
+      password,
+      phone,
+      gender,
+      nic,
+      street,
+      city,
+      state,
+      zip,
+      empNo,
+      designation,
+      workType,
+      department,
+      employementHistoty,
+      projectHistory,
+      leaveAllocation,
+      role,
+      idCardPath,
+      bankPassPath,
+      resumePath,
+      dateOfAppointment,
+      effectiveDate,
+      paymentModel,
+      bank,
+      accNo,
+    }
+    try {
+      const employeeData = await editEmployee({ id: selectedEmployee.empNo, employee }).unwrap()
+      dispatch(setEditEmployee({ employee: employeeData }))
+      navigate('/people')
+      setAlert({ open: true, message: 'Employee Edited Successfully', severity: 'success' });
+    } catch (err) {
+      setAlert({ open: true, message: editError?.data?.message, severity: 'error' });
+    }
+  }
+
+  // Determine which function to call based on the current URL
+  const handleSave = location.pathname === '/people/register' ? handleRegisterEmployee : handleEditEmployee;
+
   const handlePrevStep = (e) => {
     e.preventDefault()
     prevStep()
@@ -96,12 +146,12 @@ function ReviewNewEmployee({ prevStep, values }) {
   };
 
   useEffect(() => {
-    if (error) {
-      setAlert({ open: true, message: error?.data?.message, severity: 'error' });
+    if (registerError || editError) {
+      setAlert({ open: true, message: registerError?.data?.message || editError?.data?.message, severity: 'error' });
     }
-  }, [error]);
+  }, [registerError, editError]);
 
-  if (isLoading) return <Loader />
+  if (registerLoading || editLoading) return <Loader />
 
   const birthdateString = birthDate;
   const birthdate = new Date(birthdateString);
@@ -324,7 +374,9 @@ function ReviewNewEmployee({ prevStep, values }) {
 
       <div className='flex justify-end py-10 gap-6 mr-[55px]'>
         <button type='button' className='bg-white text-[#707070] py-2 px-5 rounded' onClick={handlePrevStep}>Back</button>
-        <button type='button' className='bg-[#1DB3AB] text-white py-2 px-5 rounded' onClick={saveEmployee}>Save</button>
+        <button type='button' className='bg-[#1DB3AB] text-white py-2 px-5 rounded' onClick={handleSave}>
+          {location.pathname === '/people/register' ? 'Save' : 'Edit' }
+        </button>
       </div>
       <Snackbar open={alert?.open} autoHideDuration={5000} onClose={handleAlertClose}>
         <Alert onClose={handleAlertClose} severity={alert?.severity}>

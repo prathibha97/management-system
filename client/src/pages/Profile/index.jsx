@@ -7,17 +7,15 @@ import { setEmployeeProfile } from '../../app/features/employees/employeeSlice';
 import { useGetUserExperiencesQuery } from '../../app/features/experiences/experienceApiSlice';
 import { EmployeeCard, ExperienceCard, Loader } from '../../components';
 
-
-
 function Profile() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [experienceChangeCount, setExperienceChangeCount] = useState(0)
+  const [experienceChangeCount, setExperienceChangeCount] = useState(0);
 
-  const userInfo = useSelector(selectCurrentUser)
+  const userInfo = useSelector(selectCurrentUser);
 
-  const { data: experiences, isLoading, isFetching } = useGetUserExperiencesQuery(userInfo?.empNo, {
+  const { data: experiences, isLoading: isExperiencesLoading, isFetching: isExperiencesFetching } = useGetUserExperiencesQuery(userInfo?.empNo, {
     refetchOnMountOrArgChange: true,
     refetchOnReconnect: true,
     refetchOnFocus: true,
@@ -25,33 +23,33 @@ function Profile() {
     keepUnusedDataFor: 10 // Number of seconds to keep unused data for
   });
 
-  const { data: user, isLoading: isProfileLoading, refetch } = useEmployeeProfileQuery(userInfo?.empNo)
-  
+  const { data: user, isLoading: isProfileLoading, refetch: refetchProfile } = useEmployeeProfileQuery(userInfo?.empNo);
+
   useEffect(() => {
     if (!userInfo) {
-      navigate('/')
+      navigate('/');
     } else {
       const storedUser = JSON.parse(localStorage.getItem('userInfo'));
       if (!storedUser || storedUser.empNo !== userInfo.empNo) {
         dispatch(setEmployeeProfile(userInfo?.empNo));
       }
     }
-  }, [userInfo])
+  }, [userInfo, dispatch, navigate]);
 
   useEffect(() => {
-    refetch()
-  }, [experienceChangeCount, experiences])
+    refetchProfile();
+  }, [experienceChangeCount, experiences, refetchProfile]);
 
-  if (!user || isLoading || isProfileLoading || isFetching) {
-    return <Loader />
+  if (!user || isProfileLoading || isExperiencesLoading || isExperiencesFetching) {
+    return <Loader />;
   }
 
   return (
-    <div className="flex h-[90vh]">
-      <div className="flex flex-col flex-1">
+    <div className="flex flex-col lg:flex-row h-[90vh]">
+      <div className="flex flex-col lg:w-1/2">
         <EmployeeCard employee={user} />
       </div>
-      <div className="flex flex-col flex-1">
+      <div className="flex flex-col lg:w-1/2">
         <ExperienceCard employee={user} setExperienceChangeCount={setExperienceChangeCount} />
       </div>
     </div>

@@ -12,9 +12,9 @@ function Attendance() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const userInfo = useSelector(selectCurrentUser)
+  const userInfo = useSelector(selectCurrentUser);
 
-  const { data: attendanceInfo, isLoading } = useGetEmployeeAttendanceQuery(userInfo.empNo)
+  const { data: attendanceInfo, isLoading } = useGetEmployeeAttendanceQuery(userInfo?.empNo);
 
   useEffect(() => {
     if (!userInfo) {
@@ -22,45 +22,45 @@ function Attendance() {
     } else {
       const storedUserInfo = JSON.parse(localStorage.getItem('user'));
       if (!storedUserInfo || storedUserInfo.empNo !== userInfo.empNo) {
-        dispatch(setEmployeeAttendance({ attendanceInfo }))
+        dispatch(setEmployeeAttendance({ attendanceInfo }));
       }
     }
-  }, [userInfo])
+  }, [userInfo, navigate, dispatch, attendanceInfo]);
 
   if (isLoading) {
-    return <Loader />
+    return <Loader />;
   }
 
   const attendanceColumns = [
-    { id: 'date', label: 'Date', minWidth: 90, align: 'center', },
+    { id: 'date', label: 'Date', minWidth: 90, align: 'center' },
     {
       id: 'inTime',
       label: 'In Time',
       minWidth: 90,
       align: 'center',
-      format: (value) => formatTime(value),
+      format: formatTime,
     },
     {
       id: 'outTime',
       label: 'Out Time',
       minWidth: 90,
       align: 'center',
-      format: (value) => formatTime(value),
+      format: formatTime,
     },
     {
       id: 'workHours',
       label: 'Worked Hours',
       minWidth: 90,
       align: 'center',
-      format: (value) => roundToTwoDecimals(value)
+      format: roundToTwoDecimals,
     },
-    {
-      id: 'overtimeHours',
-      label: 'Overtime Hours',
-      minWidth: 90,
-      align: 'center',
-      format: (value) => roundToTwoDecimals(value)
-    },
+    // {
+    //   id: 'overtimeHours',
+    //   label: 'Overtime Hours',
+    //   minWidth: 90,
+    //   align: 'center',
+    //   format: roundToTwoDecimals,
+    // },
   ];
 
   return (

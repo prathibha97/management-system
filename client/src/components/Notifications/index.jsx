@@ -1,8 +1,16 @@
 /* eslint-disable no-unused-vars */
-/* eslint-disable no-nested-ternary */
 import { CheckCircle } from '@mui/icons-material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { Badge, Button, Divider, IconButton, List, ListItem, ListItemText, Popover } from '@mui/material';
+import {
+  Badge,
+  Button,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  Popover,
+  Typography,
+} from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import io from 'socket.io-client';
@@ -11,7 +19,10 @@ import {
   useReadNotificationMutation,
   useUserNotificationsQuery,
 } from '../../app/features/notifications/notificationApiSlice';
-import { setClearNotifications, setReadNotification } from '../../app/features/notifications/notificationSlice';
+import {
+  setClearNotifications,
+  setReadNotification,
+} from '../../app/features/notifications/notificationSlice';
 
 function NotificationItem({ notification, empNo }) {
   const dispatch = useDispatch();
@@ -21,9 +32,11 @@ function NotificationItem({ notification, empNo }) {
 
   const handleMarkAsRead = async () => {
     try {
-      const notificationData = await readNotification({ id: notification._id }).unwrap();
+      const notificationData = await readNotification({
+        id: notification._id,
+      }).unwrap();
       dispatch(setReadNotification({ notificationData }));
-      refetchNotifications()
+      refetchNotifications();
     } catch (err) {
       console.log('Error marking notification as read');
     }
@@ -35,15 +48,31 @@ function NotificationItem({ notification, empNo }) {
 
   return (
     <>
-      <ListItem key={notification.id} sx={{ background: '#EEF2F5' }}>
-        <ListItemText primary={notification.message} secondary={formattedDate} />
-        {!notification.isRead && (
-          <IconButton onClick={handleMarkAsRead}>
+      <ListItem
+        key={notification?._id}
+        sx={{
+          // background: '#EEF2F5',
+          padding: '8px 12px',
+          marginBottom: '5px',
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
+        {notification?.isRead === false && (
+          <IconButton
+            sx={{ marginRight: '8px' }}
+            onClick={handleMarkAsRead}
+            title="Mark as read"
+          >
             <CheckCircle color="primary" />
           </IconButton>
         )}
+        <ListItemText
+          primary={notification.message}
+          secondary={formattedDate}
+        />
       </ListItem>
-      <Divider />
+      {/* <Divider /> */}
     </>
   );
 }
@@ -52,11 +81,16 @@ function Notifications({ empNo }) {
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [notificationCount, setNotificationCount] = useState(0);
-  const { data: userNotifications, refetch: refetchNotifications } = useUserNotificationsQuery(empNo);
+  const { data: userNotifications, refetch: refetchNotifications } =
+    useUserNotificationsQuery(empNo);
+  const [notificationCount, setNotificationCount] = useState(
+    userNotifications?.length
+  );
   const [clearNotifications] = useClearNotificationsMutation();
 
-  const unreadCount = userNotifications?.filter((notification) => !notification.isRead).length;
+  const unreadCount = userNotifications?.filter(
+    (notification) => !notification.isRead
+  ).length;
 
   const handleNotificationClick = useCallback((event) => {
     setAnchorEl(event.currentTarget);
@@ -81,7 +115,7 @@ function Notifications({ empNo }) {
   useEffect(() => {
     let isMounted = true;
 
-    const socket = io('http://34.220.229.58:5000', {
+    const socket = io('http://34.217.133.161:5000', {
       query: { empNo },
     });
 
@@ -141,29 +175,59 @@ function Notifications({ empNo }) {
           horizontal: 'right',
         }}
         PaperProps={{
-          style: { minWidth: '20em', minHeight: '18em', overflowY: 'auto' },
+          style: {
+            minWidth: '20em',
+            maxWidth: '30em',
+            minHeight: '18em',
+            borderRadius: '8px',
+            boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+          },
         }}
       >
-        {loading ? (
-          <List>
-            <ListItem sx={{ justifyContent: 'center' }}>
-              <ListItemText primary="Loading..." />
-            </ListItem>
-          </List>
-        ) : userNotifications?.length > 0 ? (
-          <List sx={{ textAlign: 'center' }}>
-            {userNotifications.map((notification) => (
-              <NotificationItem key={notification.id} notification={notification} empNo={empNo} />
-            ))}
-            <Button onClick={handleClearNotifications}>Clear All</Button>
-          </List>
-        ) : (
-          <List>
-            <ListItem sx={{ textAlign: 'center' }}>
-              <ListItemText primary="No new notifications" />
-            </ListItem>
-          </List>
-        )}
+        <List sx={{ padding: '16px' }}>
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, marginBottom: '6px' }}
+          >
+            Notifications
+          </Typography>
+          {unreadCount > 0 ? (
+            <Typography
+              variant="subtitle2"
+              color="GrayText"
+              sx={{ marginBottom: '8px' }}
+            >
+              You have {unreadCount} unread messages.
+            </Typography>
+          ) : (
+            <Typography variant="subtitle2" color="GrayText">
+              You have no unread messages.
+            </Typography>
+          )}
+          {loading ? (
+            <Typography variant="body2">Loading...</Typography>
+          ) : (
+            notificationCount > 0 &&
+            userNotifications.map((notification) => (
+              <>
+                <NotificationItem
+                  key={notification._id}
+                  notification={notification}
+                  empNo={empNo}
+                />
+
+                <Button
+                  variant="contained"
+                  color="info"
+                  sx={{ marginTop: '16px' }}
+                  onClick={handleClearNotifications}
+                >
+                  Clear All
+                </Button>
+              </>
+            ))
+          )}
+        </List>
       </Popover>
     </>
   );

@@ -28,6 +28,10 @@ const getBoardsByProjectId = async (req, res) => {
     const boards = await Board.find({ project: projectId }).populate({
       path: 'tasks',
       options: { distinct: true },
+      populate: {
+        path: 'assignee',
+        select: 'name',
+      },
     });
 
     res.status(200).json(boards);

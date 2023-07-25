@@ -11,7 +11,7 @@ const leaveSchema = new mongoose.Schema({
   },
   leaveType: {
     type: String,
-    enum: ['Casual', 'Annual', 'Medical', 'BroughtForward'],
+    enum: ['Casual', 'Annual', 'Medical', 'BroughtForward', 'Duty', 'NoPay'],
     required: true,
   },
   startDate: {

@@ -6,7 +6,7 @@ import { formatDateShort } from '../../utils/formatDate'
 
 function LeaveHistory({ leaves }) {
   return (
-    <div className='flex flex-col bg-white px-12 py-5 mt-5 h-[390px] overflow-y-auto w-[90%] m-auto rounded-2xl'>
+    <div className='flex flex-col bg-white px-12 py-5 mt-5 h-[390px] md:h-[730px] overflow-y-auto w-[90%] m-auto rounded-2xl'>
       <h1 className='font-bold mb-5'>Leave History</h1>
       {leaves?.map((leave) => (
         <>

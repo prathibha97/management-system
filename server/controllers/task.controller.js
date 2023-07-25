@@ -1,6 +1,9 @@
 const Board = require('../models/Board');
 const Project = require('../models/Project');
+const Employee = require('../models/Employee');
+const Notification = require('../models/Notification');
 const Task = require('../models/Task');
+const io = require('../services/socket');
 
 /*
 ?@desc   create new task
@@ -27,6 +30,26 @@ const createTask = async (req, res) => {
 
     // Find the project and update its tasks array
     await Project.findByIdAndUpdate(projectId, { $push: { tasks: task._id } }, { new: true });
+
+    // Get an array of promises to send notifications to each assigned employee
+    const notificationPromises = assignee.map(async (assignedEmployeeId) => {
+      const message = `${task.title} has been assigned to you.`;
+      const payload = { message };
+      const assignedEmployee = await Employee.findById(assignedEmployeeId);
+      const channel = `private-${assignedEmployee.empNo}`;
+      io.to(channel).emit('newNotification', payload);
+
+      // Persist the notification
+      const notification = {
+        message,
+        type: 'new-task',
+        empNo: assignedEmployee.empNo,
+      };
+      await Notification.create(notification);
+    });
+
+    // Execute all notification promises
+    await Promise.all(notificationPromises);
 
     return res.status(201).json({
       message: 'Task created successfully',
@@ -138,7 +161,7 @@ const deleteTask = async (req, res) => {
 const getTasksByProject = async (req, res) => {
   const { id } = req.params;
   try {
-    const tasks = await Task.find({ project: id })
+    const tasks = await Task.find({ project: id });
     return res.status(200).json(tasks);
   } catch (err) {
     console.log(err);

@@ -1,12 +1,11 @@
-import { Close, Delete, Edit, Visibility, Check } from '@mui/icons-material';
+import { Check, Close, Delete, Edit, Visibility } from '@mui/icons-material';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Menu, MenuItem, TextField, Typography } from '@mui/material';
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { selectCurrentUser } from '../../app/features/auth/authSelectors';
+import { useLocation } from 'react-router-dom';
 
-function TimeSheetMenu({ anchorEl, handleMenuClose, handleView, handleEdit, handleDelete, handleReject ,params, handleApprove}) {
+function TimeSheetMenu({ anchorEl, handleMenuClose, handleView, handleEdit, handleDelete, handleReject, params, handleApprove }) {
 
-  const user = useSelector(selectCurrentUser)
+  const { pathname } = useLocation()
 
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
   const [rejectOpen, setRejectOpen] = useState(false);
@@ -68,7 +67,7 @@ function TimeSheetMenu({ anchorEl, handleMenuClose, handleView, handleEdit, hand
           </div>
         </MenuItem>
         {
-          params?.row?.status !== 'rejected' && user?.role === 'Admin' && (
+          params?.row?.status !== 'rejected' && pathname === '/admin/timesheet' && (
             <MenuItem onClick={handleRejectOpen} sx={{ '&:hover': { bgcolor: 'grey.200' } }}>
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <Close fontSize='small' color='error' />
@@ -78,7 +77,7 @@ function TimeSheetMenu({ anchorEl, handleMenuClose, handleView, handleEdit, hand
           )
         }
         {
-          params?.row?.status === 'rejected' && user?.role === 'Admin' && (
+          params?.row?.status === 'rejected' && pathname === '/admin/timesheet' && (
             <MenuItem onClick={handleApprove} sx={{ '&:hover': { bgcolor: 'grey.200' } }}>
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <Check fontSize='small' />
@@ -103,7 +102,7 @@ function TimeSheetMenu({ anchorEl, handleMenuClose, handleView, handleEdit, hand
         <DialogActions>
           <Button onClick={handleDeleteConfirmationClose} color="primary">
             Cancel
-          </Button> 
+          </Button>
           <Button onClick={handleDeleteConfirmation} color="error" >
             Delete
           </Button>

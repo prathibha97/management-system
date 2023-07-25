@@ -21,7 +21,9 @@ function EditTimeRecord({ openEditDialog, handleCloseEditDialog, handleSubmit, p
   const [timeLogged, setTimeLogged] = useState(params?.row?.timeSpent);
 
   const { data: clients } = useGetClientsQuery()
-  const { data: tasks } = useGetTasksByProjectIdQuery({ id: project })
+  const { data: tasks } = useGetTasksByProjectIdQuery({
+    id: project,
+  })
 
   return (
     <Dialog open={openEditDialog} onClose={handleCloseEditDialog} maxWidth="sm" fullWidth>
@@ -54,7 +56,7 @@ function EditTimeRecord({ openEditDialog, handleCloseEditDialog, handleSubmit, p
               >
                 {
                   clients?.map((client, index) => (
-                    <MenuItem value={client._id} key={`client-${index}`}>{client.name}</MenuItem>
+                    <MenuItem value={client._id} key={`client-${index}`}>{client.name.first} {client.name.last}</MenuItem>
                   ))
                 }
               </Select>
