@@ -48,18 +48,35 @@ function MonthTotals({ data }) {
     return totals;
   }, {});
 
-  const chartData = Object.entries(projectTotals).map(([project, seconds]) => ({
+  // Define an array of colors for the projects
+  const projectColors = [
+    '#8884d8',
+    '#82ca9d',
+    '#ffc658',
+    '#ff6666',
+    '#ffa8c2',
+    '#8dd1e1',
+  ];
+
+  const chartData = Object.entries(projectTotals).map(([project, seconds],index) => ({
     name: project,
     timeSpent: seconds,
+    // Assign a color to each project based on its index in the array
+    fill: projectColors[index % projectColors.length],
   }));
 
-  const totalSeconds = chartData.reduce((acc, curr) => acc + curr.timeSpent, 0) || 0;
+  const totalSeconds =
+    chartData.reduce((acc, curr) => acc + curr.timeSpent, 0) || 0;
   const totalHours = convertSecondsToHours(totalSeconds);
   const projectCount = chartData.length;
 
   const legendItems = [
     { value: `Projects: ${projectCount}`, type: 'star', id: 'projects' },
-    { value: `Total Hours: ${totalHours}`, type: 'star', id: 'hours' }
+    {
+      value: `Total Hours: ${totalHours.toFixed(2)}`,
+      type: 'star',
+      id: 'hours',
+    },
   ];
 
   return (

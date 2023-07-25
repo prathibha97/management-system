@@ -162,7 +162,7 @@ function Timer() {
           horizontal: 'center',
         }}
       >
-        {/* Add your content for the Popover here */}
+        {/* Content for popper */}
         <div className='md:min-w-full md:min-h-full'>
           <div className='flex items-center justify-between p-2 bg-[#1db4ab] text-gray-100'>
             <div className='flex items-center gap-1 text-2xl'>

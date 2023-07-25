@@ -1,15 +1,31 @@
 /* eslint-disable import/no-cycle */
 import { faClock } from '@fortawesome/free-solid-svg-icons';
-import { Alert, FormControl, InputLabel, MenuItem, Select, Snackbar } from '@mui/material';
+import {
+  Alert,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Snackbar,
+} from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { AccountMenu, Button, Notifications, Timer } from "..";
-import { useGetEmployeeAttendanceQuery, useLazyMarkAttendanceQuery } from '../../app/features/attendance/attendanceApiSlice';
-import { setEmployeeAttendance, setMarkAttendance } from '../../app/features/attendance/attendanceSlice';
+import { AccountMenu, Button, Notifications, Timer } from '..';
+import {
+  useGetEmployeeAttendanceQuery,
+  useLazyMarkAttendanceQuery,
+} from '../../app/features/attendance/attendanceApiSlice';
+import {
+  setEmployeeAttendance,
+  setMarkAttendance,
+} from '../../app/features/attendance/attendanceSlice';
 import { selectCurrentUser } from '../../app/features/auth/authSelectors';
 import { useGetEmployeeProjectsQuery } from '../../app/features/projects/projectApiSlice';
-import { setProjects, setSelectedProject } from '../../app/features/projects/projectSlice';
+import {
+  setProjects,
+  setSelectedProject,
+} from '../../app/features/projects/projectSlice';
 
 function Header() {
   const location = useLocation();
@@ -17,11 +33,18 @@ function Header() {
   const id = location.pathname.split('/')[2];
   const userInfo = useSelector(selectCurrentUser);
 
-  const { data: projects, refetch: refetchProjects } = useGetEmployeeProjectsQuery({});
-  const { data: attendanceInfo, refetch: refetchAttendance } = useGetEmployeeAttendanceQuery(userInfo?.empNo);
-  const [trigger, { data: attendance, error: markAttendanceError }] = useLazyMarkAttendanceQuery();
+  const { data: projects, refetch: refetchProjects } =
+    useGetEmployeeProjectsQuery({});
+  const { data: attendanceInfo, refetch: refetchAttendance } =
+    useGetEmployeeAttendanceQuery(userInfo?.empNo);
+  const [trigger, { data: attendance, error: markAttendanceError }] =
+    useLazyMarkAttendanceQuery();
 
-  const [alert, setAlert] = useState({ open: false, message: '', severity: 'success' });
+  const [alert, setAlert] = useState({
+    open: false,
+    message: '',
+    severity: 'success',
+  });
   const [project, setProject] = useState('');
   const [attendanceChangeCount, setAttendanceChangeCount] = useState(0);
 
@@ -48,9 +71,17 @@ function Header() {
       trigger().unwrap();
       dispatch(setMarkAttendance({ attendance }));
       setAttendanceChangeCount((count) => count + 1);
-      setAlert({ open: true, message: 'Attendance marked successfully', severity: 'success' });
+      setAlert({
+        open: true,
+        message: 'Attendance marked successfully',
+        severity: 'success',
+      });
     } catch (err) {
-      setAlert({ open: true, message: markAttendanceError?.data?.message, severity: 'error' });
+      setAlert({
+        open: true,
+        message: markAttendanceError?.data?.message,
+        severity: 'error',
+      });
     }
   };
 
@@ -115,8 +146,8 @@ function Header() {
         return 'Register New Employee';
       case '/reset-password':
         return 'Reset Password';
-        case '/admin/invoice':
-          return 'Invoice Generator'
+      case '/admin/invoice':
+        return 'Invoice Generator';
       default:
         return 'Unknown Page';
     }
@@ -129,9 +160,11 @@ function Header() {
   const isProjectBoardsPage = location.pathname === '/board';
 
   return (
-    <div className="flex flex-col lg:flex-row items-center justify-between px-10 pt-2">
-      <div className="flex flex-col lg:flex-row gap-2 items-center">
-        <div className="text-3xl font-semibold hidden lg:block">{getPageHeading()}</div>
+    <div className="flex flex-col lg:flex-row items-center justify-between px-4 pt-2">
+      <div className="flex flex-col lg:flex-row sm:gap-2 items-center">
+        <div className="text-3xl font-semibold hidden lg:block">
+          {getPageHeading()}
+        </div>
         {isProjectBoardsPage && (
           <div className="flex items-center">
             <FormControl sx={{ m: 1, minWidth: 150 }}>
@@ -141,24 +174,34 @@ function Header() {
                 labelId="select-project-label"
                 label="Select Project"
                 value={project}
-                renderValue={(value) => value ? value?.title : ''}
+                renderValue={(value) => (value ? value?.title : '')}
                 displayEmpty
               >
                 {projects?.map((item) => (
-                  <MenuItem key={item._id} value={item}>{item?.title}</MenuItem>
+                  <MenuItem key={item._id} value={item}>
+                    {item?.title}
+                  </MenuItem>
                 ))}
               </Select>
             </FormControl>
           </div>
         )}
       </div>
-      <div className="flex items-center gap-5 lg:gap-10">
+      <div className="flex items-center gap-4 lg:gap-10">
         <Timer />
-        <Button title="Log Time" onClick={handleMarkAttendance} icon={faClock} />
+        <Button
+          title="Log Time"
+          onClick={handleMarkAttendance}
+          icon={faClock}
+        />
         <Notifications empNo={userInfo?.empNo} />
         <AccountMenu userInfo={userInfo} />
       </div>
-      <Snackbar open={alert?.open} autoHideDuration={5000} onClose={handleAlertClose}>
+      <Snackbar
+        open={alert?.open}
+        autoHideDuration={5000}
+        onClose={handleAlertClose}
+      >
         <Alert onClose={handleAlertClose} severity={alert?.severity}>
           {alert?.message}
         </Alert>
