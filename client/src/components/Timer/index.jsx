@@ -42,7 +42,6 @@ function Timer() {
     id: formValues.project,
   })
 
-  console.log(formValues);
   const formatTime = (timeInSeconds) => {
     const hours = Math.floor(timeInSeconds / 3600)
       .toString()
