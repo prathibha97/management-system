@@ -23,6 +23,22 @@ const projectSlice = createSlice({
       const { project } = action.payload;
       state.project = project;
     },
+    setEditProject: (state, action) => {
+      const { project } = action.payload;
+      const index = state.projects.findIndex(
+        (prjct) => prjct._id === project._id
+      );
+      if (index !== -1) {
+        const updatedProjects = [...state.projects]; // Create a copy of the projects array
+        updatedProjects[index] = project; // Update the specific project object
+        state.employees = updatedProjects; // Update the state with the new array
+      }
+    },
+    resetProjects: (state) => {
+      state.projects = [];
+      state.project = {};
+      state.employees = [];
+    },
   },
 });
 
@@ -31,5 +47,7 @@ export const {
   setCreateProject,
   setDeleteProject,
   setSelectedProject,
+  setEditProject,
+  resetProjects,
 } = projectSlice.actions;
 export default projectSlice.reducer;

@@ -1,4 +1,5 @@
 /* eslint-disable no-underscore-dangle */
+import { useState } from 'react';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -7,8 +8,6 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { useState } from 'react';
-
 
 function DataTable({ data, columns }) {
   const [page, setPage] = useState(0);
@@ -23,7 +22,6 @@ function DataTable({ data, columns }) {
     setPage(0);
   };
 
-
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
       <TableContainer sx={{ maxHeight: 540 }}>
@@ -34,7 +32,11 @@ function DataTable({ data, columns }) {
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  style={{ minWidth: column.minWidth, backgroundColor: '#E8E8E8', fontWeight: 'bold' }}
+                  style={{
+                    minWidth: column.minWidth,
+                    backgroundColor: '#E8E8E8',
+                    fontWeight: 'bold',
+                  }}
                 >
                   {column.label}
                 </TableCell>
@@ -42,16 +44,19 @@ function DataTable({ data, columns }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            {data
+              ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => (
                 <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
                   {columns.map((column) => {
                     const value = row[column.id];
+                    const formattedValue =
+                      column.format && (typeof value === 'string' || typeof value === 'number')
+                        ? column.format(value)
+                        : value;
                     return (
                       <TableCell key={column.id} align={column.align}>
-                        {column.format && typeof value === 'string' || typeof value === 'number'
-                          ? column.format(value)
-                          : value}
+                        {formattedValue}
                       </TableCell>
                     );
                   })}
@@ -63,7 +68,7 @@ function DataTable({ data, columns }) {
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={data?.length}
+        count={data?.length || 0}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}

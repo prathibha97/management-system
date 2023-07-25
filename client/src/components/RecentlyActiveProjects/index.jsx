@@ -16,9 +16,9 @@ function RecentlyActiveProjects() {
   };
 
   return (
-    <div>
+    <div className='w-full'>
       {projects?.map((project) => (
-        <div className="flex justify-between items-center w-full bg-white py-2 px-3 rounded my-2" key={project._id}>
+        <div className="flex justify-between items-center w-full bg-white py-2 px-3 rounded my-2" key={project?._id}>
           <div className="flex items-center mr-3">
             <span className="w-4 h-4 p-1 rounded bg-[#f8bbd0]" />
             <div className="ml-2 text-md font-semibold">{project.title}</div>

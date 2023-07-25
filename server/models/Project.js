@@ -66,6 +66,9 @@ const projectSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  tag: {
+    type: String,
+  },
 });
 
 // Set the defaults for the new fields if the category is not NFT
@@ -75,6 +78,17 @@ projectSchema.pre('validate', function (next) {
     this.nftTradeCount = 0;
     this.nftCollectionSize = 0;
   }
+
+  if (this.category === 'Web Development') {
+    this.tag = 'WEB';
+  } else if (this.category === 'NFT') {
+    this.tag = 'NFT';
+  } else if (this.category === 'Graphic Design') {
+    this.tag = 'GD';
+  } else if (this.category === 'Social Media Marketing') {
+    this.tag = 'SMM';
+  }
+
   next();
 });
 
@@ -124,6 +138,5 @@ projectSchema.pre('save', async function (next) {
     next(err);
   }
 });
-
 
 module.exports = mongoose.model('Project', projectSchema);

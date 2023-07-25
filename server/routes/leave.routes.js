@@ -6,6 +6,7 @@ const {
   approveOrRejectLeave,
   getLeaveRequestByIdAdmin,
   deleteLeaveRequest,
+  allocateAdminLeaves,
 } = require('../controllers/leave.controller');
 
 const { protect, admin } = require('../middleware/auth.middleware');
@@ -13,7 +14,11 @@ const upload = require('../services/fileUpload');
 
 const leaveRouter = express.Router();
 
-leaveRouter.post('/', protect, upload.fields([{ name: 'medical', maxCount: 1 }]), createLeaveRequest).get('/', protect, admin, getAllLeaveRequests);
+leaveRouter
+  .post('/', protect, upload.fields([{ name: 'medical', maxCount: 1 }]), createLeaveRequest)
+  .get('/', protect, admin, getAllLeaveRequests);
+
+leaveRouter.post('/allocate-admin-leaves', protect, admin, allocateAdminLeaves);
 
 leaveRouter.get('/emp/:id', protect, admin, getLeaveRequestByIdAdmin);
 

@@ -51,12 +51,12 @@ function ApplyLeave({ user, setLeaveChangeCount }) {
   }, [error]);
 
   return (
-    <div className='bg-[#EEF2F5] h-[90%] w-[95%] rounded-xl m-auto'>
-      <div className='flex flex-col mt-6 ml-[35px]'>
-        <h1 className='text-2xl font-bold'>Apply For Leave</h1>
-        <p className='text-[#707070] text-sm'>Here you can apply for a leave</p>
+    <div className="bg-[#EEF2F5] h-[90%] w-[95%] rounded-xl m-auto">
+      <div className="flex flex-col mt-6 ml-[35px]">
+        <h1 className="text-2xl font-bold">Apply For Leave</h1>
+        <p className="text-[#707070] text-sm">Here you can apply for a leave</p>
       </div>
-      <div className='flex flex-col justify-between bg-white px-12 py-5 mt-5 w-[90%] m-auto rounded-2xl'>
+      <div className="flex flex-col justify-between bg-white px-12 py-5 mt-5 w-[90%] m-auto rounded-2xl">
         <div>
           <FormControl fullWidth>
             <InputLabel>Leave Type</InputLabel>
@@ -64,25 +64,28 @@ function ApplyLeave({ user, setLeaveChangeCount }) {
               value={leaveType}
               label="Leave Type"
               onChange={(e) => {
-                setLeaveType(e.target.value)
+                setLeaveType(e.target.value);
                 setIsMedicalSelected(e.target.value === 'Medical');
-              }
-              }
+              }}
             >
-              <MenuItem value='Casual'>Casual</MenuItem>
-              {
-                user?.leaveBalance?.Maternity === 0 ? null :
-                  <MenuItem value='Maternity'>Maternity</MenuItem>
-              }
-              <MenuItem value='Annual'>Annual</MenuItem>
-              <MenuItem value='Medical'>Medical</MenuItem>
-              {
-                user?.leaveBalance?.BroughtForward === 0 ? null :
-                  <MenuItem value='BroughtForward'>Brought Forward</MenuItem>
-              }
+              <MenuItem value="Casual">Casual</MenuItem>
+              {user?.leaveBalance?.Maternity === 0 ? null : (
+                <MenuItem value="Maternity">Maternity</MenuItem>
+              )}
+              <MenuItem value="Annual">Annual</MenuItem>
+              <MenuItem value="Medical">Medical</MenuItem>
+              {user?.leaveBalance?.BroughtForward === 0 ? null : (
+                <MenuItem value="BroughtForward">Brought Forward</MenuItem>
+              )}
+              {user?.leaveBalance?.Duty === 0 ? null : (
+                <MenuItem value="Duty">Duty</MenuItem>
+              )}
+              {user?.leaveBalance?.NoPay === 0 ? null : (
+                <MenuItem value="NoPay">NoPay</MenuItem>
+              )}
             </Select>
           </FormControl>
-          <div className='flex mt-5 mb-5 gap-5'>
+          <div className="flex mt-5 mb-5 gap-5">
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DesktopDatePicker
                 label="Start Date"
@@ -104,24 +107,40 @@ function ApplyLeave({ user, setLeaveChangeCount }) {
             {isMedicalSelected && (
               <TextField
                 sx={{ marginBottom: '20px' }}
-                type='file'
-                id='pdf-file-input'
+                type="file"
+                id="pdf-file-input"
                 accept=".pdf,.doc,.docx,.jpeg,.jpg,.png"
                 onChange={(e) => setMedical(e.target.files[0])}
               />
             )}
           </div>
-          <TextField sx={{ marginBottom: '20px' }} fullWidth multiline rows={5} label="Reason" value={reason} onChange={(e) => setReason(e.target.value)} />
-          <Button title="Apply Leave" onClick={handleSubmit} icon={faGreaterThan} />
+          <TextField
+            sx={{ marginBottom: '20px' }}
+            fullWidth
+            multiline
+            rows={5}
+            label="Reason"
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+          />
+          <Button
+            title="Apply Leave"
+            onClick={handleSubmit}
+            icon={faGreaterThan}
+          />
         </div>
       </div>
-      <Snackbar open={alert?.open} autoHideDuration={5000} onClose={handleAlertClose}>
+      <Snackbar
+        open={alert?.open}
+        autoHideDuration={5000}
+        onClose={handleAlertClose}
+      >
         <Alert onClose={handleAlertClose} severity={alert?.severity}>
           {alert?.message}
         </Alert>
       </Snackbar>
     </div>
-  )
+  );
 }
 
 export default ApplyLeave

@@ -103,22 +103,44 @@ function MuiCalendar() {
     ? data?.timeRecords.map((d) => dayjs(d.date).date())
     : [];
 
+  // return (
+  //   <LocalizationProvider dateAdapter={AdapterDayjs}>
+  //     <DateCalendar
+  //       defaultValue={initialValue}
+  //       loading={isLoading}
+  //       renderLoading={() => <DayCalendarSkeleton />}
+  //       slots={{
+  //         day: ServerDay,
+  //       }}
+  //       slotProps={{
+  //         day: {
+  //           highlightedDays,
+  //         },
+  //       }}
+  //     />
+  //   </LocalizationProvider>
+  // );
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <DateCalendar
-        defaultValue={initialValue}
-        loading={isLoading}
-        renderLoading={() => <DayCalendarSkeleton />}
-        slots={{
-          day: ServerDay,
-        }}
-        slotProps={{
-          day: {
-            highlightedDays,
-          },
-        }}
-      />
-    </LocalizationProvider>
+    <div className="flex flex-col items-center">
+      {/* <h2 className="text-lg font-bold mb-2">Daily Totals</h2> */}
+      <div className="w-full sm:w-auto">
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DateCalendar
+            defaultValue={initialValue}
+            loading={isLoading}
+            renderLoading={() => <DayCalendarSkeleton />}
+            slots={{
+              day: ServerDay,
+            }}
+            slotProps={{
+              day: {
+                highlightedDays,
+              },
+            }}
+          />
+        </LocalizationProvider>
+      </div>
+    </div>
   );
 }
 

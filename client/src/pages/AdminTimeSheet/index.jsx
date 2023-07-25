@@ -213,7 +213,7 @@ function AdminTimeSheet() {
       field: 'client',
       headerName: 'Client',
       width: 150,
-      valueGetter: (params) => `${params?.row?.client?.name}`,
+      valueGetter: (params) => `${params?.row?.client?.name?.first} ${params?.row?.client?.name?.last}`,
     },
     {
       field: 'project',
