@@ -145,11 +145,14 @@ jobs:
 
       - name: Remove old Nginx configuration and start the new container
         run: |
-          # Remove the old Nginx configuration
-          sudo rm /etc/nginx/sites-available/${{ matrix.container_name }}
-          sudo rm /etc/nginx/sites-enabled/${{ matrix.container_name }}
-          sudo nginx -t
-          sudo service nginx reload
+          # Check if the old Nginx configuration exists before removing it
+          if [ -f "/etc/nginx/sites-available/${{ matrix.container_name }}" ]; then
+            # Remove the old Nginx configuration
+            sudo rm "/etc/nginx/sites-available/${{ matrix.container_name }}"
+            sudo rm "/etc/nginx/sites-enabled/${{ matrix.container_name }}"
+            sudo nginx -t
+            sudo service nginx reload
+          fi
 
           # Start the new container with the original name
           # Note: The dynamic port assignment returns the actual mapped port for the second container
