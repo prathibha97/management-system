@@ -116,11 +116,16 @@ jobs:
 
       - name: Configure Nginx
         run: |
-          # Create a new Nginx configuration file for the new containers
+          # Create the sites-available and sites-enabled directories if they don't exist
+          sudo mkdir -p /etc/nginx/sites-available
+          sudo mkdir -p /etc/nginx/sites-enabled
+
+          # Create a new Nginx configuration file for the load balancer
           cat << EOF | sudo tee /etc/nginx/sites-available/load_balancer
           upstream backend {
-              server 34.217.133.161:5000;
-              server 34.217.133.161:5001;
+             # Change to the appropriate container ports (5000 and 5001 in this example)
+              server 127.0.0.1:5000; 
+              server 127.0.0.1:5001;
           }
           
           server {
@@ -163,7 +168,7 @@ jobs:
             docker rename ${{ matrix.container_name }}-new-${TIMESTAMP} ${{ matrix.container_name }}
 
             # Update the Nginx configuration with the correct mapped port for the second container
-            sudo sed -i "s/server 34.217.133.161:5001;/server 34.217.133.161:${NEW_CONTAINER_PORT};/" /etc/nginx/sites-available/load_balancer
+            sudo sed -i "s/server 127.0.0.1:5001;/server 127.0.0.1:${NEW_CONTAINER_PORT};/" /etc/nginx/sites-available/load_balancer
             sudo nginx -t
             sudo service nginx reload
           else
