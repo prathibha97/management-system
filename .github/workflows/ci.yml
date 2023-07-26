@@ -57,7 +57,7 @@ jobs:
 
     strategy:
       matrix:
-        container_name: [management-container-1, management-container-2] # Add more if needed
+        container_name: [management-container-1, management-container-2]
 
     steps:
       - name: Checkout
@@ -86,9 +86,14 @@ jobs:
 
           ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=60 -i key.pem ec2-user@ec2-34-217-133-161.us-west-2.compute.amazonaws.com << 'EOF'
           docker pull prathibha097/management-build
+
+          # Stop the old container gracefully
           docker stop ${{ matrix.container_name }}
-          docker rm -f ${{ matrix.container_name }}
-          docker run -p 5000:5000 --name=${{ matrix.container_name }} --restart always -d prathibha097/management-build
+          docker rm ${{ matrix.container_name }}
+
+          # Start the new container with a different name
+          docker run -d --name=${{ matrix.container_name }}-new -p 5000:5000 prathibha097/management-build
+
           exit
           EOF
 
@@ -99,11 +104,10 @@ jobs:
 
       - name: Configure Nginx
         run: |
-          # Create a new Nginx configuration file
-          cat << EOF | sudo tee /etc/nginx/sites-available/load_balancer
+          # Create a new Nginx configuration file for the new container
+          cat << EOF | sudo tee /etc/nginx/sites-available/${{ matrix.container_name }}-new
           upstream backend {
-              server localhost:5000;  # Change to the appropriate container ports (5000 and 5001 in this example)
-              server localhost:5001;
+              server localhost:5000;
           }
           
           server {
@@ -113,17 +117,33 @@ jobs:
               }
           }
           EOF
-          
-          # Create a symbolic link to enable the configuration
-          sudo ln -s /etc/nginx/sites-available/load_balancer /etc/nginx/sites-enabled/load_balancer
+
+          # Create a symbolic link to enable the configuration for the new container
+          sudo ln -s /etc/nginx/sites-available/${{ matrix.container_name }}-new /etc/nginx/sites-enabled/${{ matrix.container_name }}-new
 
           # Test the Nginx configuration for syntax errors
           sudo nginx -t
 
-      - name: Restart Nginx
-        run: sudo service nginx restart
+          # Reload Nginx to apply the new configuration
+          sudo service nginx reload
+
+      - name: Sleep to allow traffic to shift gradually
+        run: sleep 10
+
+      - name: Remove old Nginx configuration and start the new container
+        run: |
+          # Remove the old Nginx configuration
+          sudo rm /etc/nginx/sites-available/${{ matrix.container_name }}
+          sudo rm /etc/nginx/sites-enabled/${{ matrix.container_name }}
+          sudo nginx -t
+          sudo service nginx reload
+
+          # Start the new container with the original name
+          docker stop ${{ matrix.container_name }}-new
+          docker rename ${{ matrix.container_name }}-new ${{ matrix.container_name }}
 
       - name: Remove Unused Docker Images
         run: |
           docker image rm -f prathibha097/management-build
+
 
