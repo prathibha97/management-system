@@ -1,4 +1,50 @@
-name: Build and Deploy
+# name: Build and Deploy
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   build-and-deploy:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v3
+
+#       - name: Build Images
+#         run: docker build -t prathibha097/management-build .
+
+#       - name: Push Build Images to DockerHub
+#         env:
+#           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+#         run: |
+#           echo $DOCKER_PASSWORD | docker login -u prathibha097 --password-stdin
+#           docker push prathibha097/management-build
+
+#       - name: Update Docker Container on EC2
+#         env:
+#           PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+#         run: |
+#           echo "$PRIVATE_KEY" > key.pem
+#           chmod 400 key.pem
+#           ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=60 -i key.pem ec2-user@ec2-34-217-133-161.us-west-2.compute.amazonaws.com << 'EOF'
+#           docker pull prathibha097/management-build
+#           docker stop management-container
+#           docker rm -f management-container
+#           docker run -p 5000:5000 --name=management-container-new --restart always -d prathibha097/management-build
+#           docker update --link --volumes-from=management-container management-container-new
+#           docker rename management-container-new management-container
+#           exit
+#           EOF
+
+#       # - name: Remove Unused Docker Images
+#       #   run: |
+#       #     docker image rm -f prathibha097/management-build
+#       #     docker system prune -f
+
+name: Build, Deploy, and Set Up Load Balancer
 
 on:
   push:
@@ -6,8 +52,12 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  build-deploy-and-load-balance:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        container_name: [management-container-1, management-container-2] # Add more if needed
 
     steps:
       - name: Checkout
@@ -23,23 +73,57 @@ jobs:
           echo $DOCKER_PASSWORD | docker login -u prathibha097 --password-stdin
           docker push prathibha097/management-build
 
-      - name: Update Docker Container on EC2
+      - name: Update Docker Containers on EC2
         env:
           PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
         run: |
           echo "$PRIVATE_KEY" > key.pem
           chmod 400 key.pem
+
+          # Remove old images and prune the Docker system
+          docker image prune -af
+          docker system prune -af
+
           ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=60 -i key.pem ec2-user@ec2-34-217-133-161.us-west-2.compute.amazonaws.com << 'EOF'
           docker pull prathibha097/management-build
-          docker stop management-container
-          docker rm -f management-container
-          docker run -p 5000:5000 --name=management-container-new --restart always -d prathibha097/management-build
-          docker update --link --volumes-from=management-container management-container-new
-          docker rename management-container-new management-container
+          docker stop ${{ matrix.container_name }}
+          docker rm -f ${{ matrix.container_name }}
+          docker run -p 5000:5000 --name=${{ matrix.container_name }} --restart always -d prathibha097/management-build
           exit
           EOF
 
-      # - name: Remove Unused Docker Images
-      #   run: |
-      #     docker image rm -f prathibha097/management-build
-      #     docker system prune -f
+      - name: Create Nginx Config Directory
+        run: |
+          # Create the sites-available directory if it doesn't exist
+          sudo mkdir -p /etc/nginx/sites-available
+
+      - name: Configure Nginx
+        run: |
+          # Create a new Nginx configuration file
+          cat << EOF | sudo tee /etc/nginx/sites-available/load_balancer
+          upstream backend {
+              server localhost:5000;  # Change to the appropriate container ports (5000 and 5001 in this example)
+              server localhost:5001;
+          }
+          
+          server {
+              listen 80;
+              location / {
+                  proxy_pass http://backend;
+              }
+          }
+          EOF
+          
+          # Create a symbolic link to enable the configuration
+          sudo ln -s /etc/nginx/sites-available/load_balancer /etc/nginx/sites-enabled/load_balancer
+
+          # Test the Nginx configuration for syntax errors
+          sudo nginx -t
+
+      - name: Restart Nginx
+        run: sudo service nginx restart
+
+      - name: Remove Unused Docker Images
+        run: |
+          docker image rm -f prathibha097/management-build
+
