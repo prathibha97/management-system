@@ -103,12 +103,21 @@ jobs:
           # Create the sites-available directory if it doesn't exist
           sudo mkdir -p /etc/nginx/sites-available
 
+      - name: Install Nginx (if not already installed)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y nginx
+
+      - name: Start Nginx (if not already running)
+        run: |
+          sudo service nginx start
+
       - name: Configure Nginx
         run: |
           # Create a new Nginx configuration file for the new container
           cat << EOF | sudo tee /etc/nginx/sites-available/${{ matrix.container_name }}-new
           upstream backend {
-              server localhost:5000;
+              server 34.217.133.161/:5000;
           }
           
           server {
