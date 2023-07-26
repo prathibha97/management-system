@@ -80,12 +80,12 @@ jobs:
           echo "$PRIVATE_KEY" > key.pem
           chmod 400 key.pem
 
+          ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=60 -i key.pem ec2-user@ec2-34-217-133-161.us-west-2.compute.amazonaws.com << 'EOF'
+          docker pull prathibha097/management-build
+
           # Remove old images and prune the Docker system
           docker image prune -af
           docker system prune -af
-
-          ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=60 -i key.pem ec2-user@ec2-34-217-133-161.us-west-2.compute.amazonaws.com << 'EOF'
-          docker pull prathibha097/management-build
 
           # Stop the old container gracefully
           docker stop ${{ matrix.container_name }}
@@ -93,7 +93,9 @@ jobs:
 
           # Start the new container with a unique name (using timestamp)
           TIMESTAMP=$(date '+%Y%m%d%H%M%S')
-          docker run -d --name=${{ matrix.container_name }}-new-${TIMESTAMP} -p 5000:5000 prathibha097/management-build
+
+          # Use dynamic port assignment for the second container
+          docker run -d --name=${{ matrix.container_name }}-new-${TIMESTAMP} -P prathibha097/management-build
 
           exit
           EOF
@@ -114,8 +116,8 @@ jobs:
 
       - name: Configure Nginx
         run: |
-          # Create a new Nginx configuration file for the new container
-          cat << EOF | sudo tee /etc/nginx/sites-available/${{ matrix.container_name }}-new
+          # Create a new Nginx configuration file for the new containers
+          cat << EOF | sudo tee /etc/nginx/sites-available/load_balancer
           upstream backend {
               server 34.217.133.161:5000;
               server 34.217.133.161:5001;
@@ -129,8 +131,8 @@ jobs:
           }
           EOF
 
-          # Create a symbolic link to enable the configuration for the new container
-          sudo ln -s /etc/nginx/sites-available/${{ matrix.container_name }}-new /etc/nginx/sites-enabled/${{ matrix.container_name }}-new
+          # Create a symbolic link to enable the configuration
+          sudo ln -s /etc/nginx/sites-available/load_balancer /etc/nginx/sites-enabled/load_balancer
 
           # Test the Nginx configuration for syntax errors
           sudo nginx -t
@@ -150,8 +152,15 @@ jobs:
           sudo service nginx reload
 
           # Start the new container with the original name
+          # Note: The dynamic port assignment returns the actual mapped port for the second container
+          NEW_CONTAINER_PORT=$(docker port ${{ matrix.container_name }}-new-${TIMESTAMP} 5000 | cut -d ':' -f 2)
           docker stop ${{ matrix.container_name }}-new-${TIMESTAMP}
           docker rename ${{ matrix.container_name }}-new-${TIMESTAMP} ${{ matrix.container_name }}
+
+          # Update the Nginx configuration with the correct mapped port for the second container
+          sudo sed -i "s/server 34.217.133.161:5001;/server 34.217.133.161:${NEW_CONTAINER_PORT};/" /etc/nginx/sites-available/load_balancer
+          sudo nginx -t
+          sudo service nginx reload
 
       - name: Remove Unused Docker Images
         run: |
