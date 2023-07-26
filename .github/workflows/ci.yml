@@ -91,8 +91,9 @@ jobs:
           docker stop ${{ matrix.container_name }}
           docker rm ${{ matrix.container_name }}
 
-          # Start the new container with a different name
-          docker run -d --name=${{ matrix.container_name }}-new -p 5000:5000 prathibha097/management-build
+          # Start the new container with a unique name (using timestamp)
+          TIMESTAMP=$(date '+%Y%m%d%H%M%S')
+          docker run -d --name=${{ matrix.container_name }}-new-${TIMESTAMP} -p 5000:5000 prathibha097/management-build
 
           exit
           EOF
@@ -139,11 +140,12 @@ jobs:
           sudo service nginx reload
 
           # Start the new container with the original name
-          docker stop ${{ matrix.container_name }}-new
-          docker rename ${{ matrix.container_name }}-new ${{ matrix.container_name }}
+          docker stop ${{ matrix.container_name }}-new-${TIMESTAMP}
+          docker rename ${{ matrix.container_name }}-new-${TIMESTAMP} ${{ matrix.container_name }}
 
       - name: Remove Unused Docker Images
         run: |
           docker image rm -f prathibha097/management-build
+
 
 
