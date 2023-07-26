@@ -124,7 +124,8 @@ jobs:
           cat << EOF | sudo tee /etc/nginx/sites-available/load_balancer
           upstream backend {
              # Change to the appropriate container ports (5000 and 5001 in this example)
-              server 127.0.0.1:5000; 
+              server 34.217.133.161:5000;
+              server 34.217.133.161:5001;
               server 127.0.0.1:5001;
           }
           
