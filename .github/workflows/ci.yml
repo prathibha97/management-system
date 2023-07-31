@@ -87,18 +87,28 @@ jobs:
           ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=60 -i key.pem ec2-user@ec2-34-217-133-161.us-west-2.compute.amazonaws.com << 'EOF'
           docker pull prathibha097/management-build
 
-          # Stop the old container gracefully
+          # Stop the old containers gracefully
           docker stop ${{ matrix.container_name }}
           docker rm ${{ matrix.container_name }}
 
-          # Start the new container with a unique name (using timestamp)
+          # Start the new containers with unique names (using timestamp)
           TIMESTAMP=$(date '+%Y%m%d%H%M%S')
 
-          # Use dynamic port assignment for the second container
+          # Use dynamic port assignment for the containers
           docker run -d --name=${{ matrix.container_name }}-new-${TIMESTAMP} -P prathibha097/management-build
 
           exit
           EOF
+
+      - name: Get Container Ports
+        id: get_port1
+        run: |
+          echo "::set-output name=port::$(docker port management-container-1-new-${TIMESTAMP} 5000 | cut -d ':' -f 2)"
+
+      - name: Get Container Ports
+        id: get_port2
+        run: |
+          echo "::set-output name=port::$(docker port management-container-2-new-${TIMESTAMP} 5000 | cut -d ':' -f 2)"
 
       - name: Create Nginx Config Directory
         run: |
@@ -124,9 +134,8 @@ jobs:
           cat << EOF | sudo tee /etc/nginx/sites-available/load_balancer
           upstream backend {
              # Change to the appropriate container ports (5000 and 5001 in this example)
-              server 34.217.133.161:5000;
-              server 34.217.133.161:5001;
-              server 127.0.0.1:5001;
+             server 127.0.0.1:${{ steps.get_port1.outputs.port }};
+             server 127.0.0.1:${{ steps.get_port2.outputs.port }};
           }
           
           server {
@@ -134,6 +143,10 @@ jobs:
               location / {
                   proxy_pass http://backend;
               }
+          }
+
+          events {
+            
           }
           EOF
 
@@ -149,11 +162,11 @@ jobs:
       - name: Sleep to allow traffic to shift gradually
         run: sleep 10
 
-      - name: Remove old Nginx configuration and start the new container
+      - name: Remove old Nginx configuration and start the new containers
         run: |
-          # Check if the new container exists before attempting to rename it
+          # Check if the new containers exist before attempting to rename them
           if [ "$(docker ps -aqf name=${{ matrix.container_name }}-new-${TIMESTAMP})" ]; then
-            # Stop the old container
+            # Stop the old containers
             docker stop ${{ matrix.container_name }}
             # Check if the old Nginx configuration exists before removing it
             if [ -f "/etc/nginx/sites-available/${{ matrix.container_name }}" ]; then
@@ -164,16 +177,19 @@ jobs:
               sudo service nginx reload
             fi
 
-            # Rename the new container to use the original name
-            NEW_CONTAINER_PORT=$(docker port ${{ matrix.container_name }}-new-${TIMESTAMP} 5000 | cut -d ':' -f 2)
+            # Rename the new containers to use the original names
+            NEW_CONTAINER_PORT1=$(docker port ${{ matrix.container_name }}-new-${TIMESTAMP} 5000 | cut -d ':' -f 2)
+            NEW_CONTAINER_PORT2=$(docker port ${{ matrix.container_name }}-new-${TIMESTAMP} 5001 | cut -d ':' -f 2)
+            docker rename ${{ matrix.container_name }}-new-${TIMESTAMP} ${{ matrix.container_name }}
             docker rename ${{ matrix.container_name }}-new-${TIMESTAMP} ${{ matrix.container_name }}
 
-            # Update the Nginx configuration with the correct mapped port for the second container
-            sudo sed -i "s/server 127.0.0.1:5001;/server 127.0.0.1:${NEW_CONTAINER_PORT};/" /etc/nginx/sites-available/load_balancer
+            # Update the Nginx configuration with the correct mapped ports for the containers
+            sudo sed -i "s/server 127.0.0.1:${{ steps.get_port1.outputs.port }};/server 127.0.0.1:${NEW_CONTAINER_PORT1};/" /etc/nginx/sites-available/load_balancer
+            sudo sed -i "s/server 127.0.0.1:${{ steps.get_port2.outputs.port }};/server 127.0.0.1:${NEW_CONTAINER_PORT2};/" /etc/nginx/sites-available/load_balancer
             sudo nginx -t
             sudo service nginx reload
           else
-            echo "New container does not exist. Deployment might have failed."
+            echo "New containers do not exist. Deployment might have failed."
           fi
 
       - name: Remove Unused Docker Images
