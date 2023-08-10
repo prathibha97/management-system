@@ -16,7 +16,7 @@ import {
 } from 'date-fns'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useGetEmployeeAttendanceAdminQuery } from '../../app/features/attendance/attendanceApiSlice'
 import { setEmployeeAttendanceAdmin } from '../../app/features/attendance/attendanceSlice'
 import { selectCurrentUser } from '../../app/features/auth/authSelectors'
@@ -33,6 +33,7 @@ function classNames(...classes) {
 function AttendanceCalendar({ user }) {
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const {empNo} = useParams()
   const today = startOfToday()
   const [selectedDay, setSelectedDay] = useState(today)
   const [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))
@@ -40,10 +41,11 @@ function AttendanceCalendar({ user }) {
 
   const userInfo = useSelector(selectCurrentUser);
 
-  const { data: attendanceInfo, isLoading: isAttendanceInfoLoading } = useGetEmployeeAttendanceAdminQuery(user.empNo)
-  const { data: leaves, isLoading: isLeavesLoading } = useGetEmployeeLeavesAdminQuery(user.empNo, {
-    refetchOnMountOrArgChange: true,
-  })
+  const { data: attendanceInfo, isLoading: isAttendanceInfoLoading } = useGetEmployeeAttendanceAdminQuery(user?.empNo || empNo)
+  const { data: leaves, isLoading: isLeavesLoading } =
+    useGetEmployeeLeavesAdminQuery(user?.empNo || empNo, {
+      refetchOnMountOrArgChange: true,
+    });
 
   useEffect(() => {
     if (!userInfo) {
