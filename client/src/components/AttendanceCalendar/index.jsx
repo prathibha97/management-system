@@ -15,40 +15,47 @@ import {
   isToday,
   parse,
   parseISO,
-  startOfToday
-} from 'date-fns'
-import { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate, useParams } from 'react-router-dom'
-import { useGetEmployeeAttendanceAdminQuery } from '../../app/features/attendance/attendanceApiSlice'
-import { setEmployeeAttendanceAdmin } from '../../app/features/attendance/attendanceSlice'
-import { selectCurrentUser } from '../../app/features/auth/authSelectors'
-import { useGetEmployeeLeavesAdminQuery } from '../../app/features/leaves/leaveApiSlice'
-import { getLeaveDetailsAdmin } from '../../app/features/leaves/leaveSlice'
-import { formatDateShort } from '../../utils/formatDate'
-import formatTime from '../../utils/formatTime'
-import Loader from '../Loader'
+  startOfToday,
+} from 'date-fns';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { useGetEmployeeAttendanceAdminQuery } from '../../app/features/attendance/attendanceApiSlice';
+import { setEmployeeAttendanceAdmin } from '../../app/features/attendance/attendanceSlice';
+import { selectCurrentUser } from '../../app/features/auth/authSelectors';
+import { useGetEmployeeLeavesAdminQuery } from '../../app/features/leaves/leaveApiSlice';
+import { getLeaveDetailsAdmin } from '../../app/features/leaves/leaveSlice';
+import { formatDateShort } from '../../utils/formatDate';
+import formatTime from '../../utils/formatTime';
+import Loader from '../Loader';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
-function AttendanceCalendar({ user }) {
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
-  const {empNo} = useParams()
-  const today = startOfToday()
-  const [selectedDay, setSelectedDay] = useState(today)
-  const [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))
-  const firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date())
+function AttendanceCalendar() {
+  const dispatch = useDispatch();
+  const { empNo } = useParams();
+  const today = startOfToday();
+  const [selectedDay, setSelectedDay] = useState(today);
+  const [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'));
+  const firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date());
 
   const userInfo = useSelector(selectCurrentUser);
 
-  const { data: attendanceInfo, isLoading: isAttendanceInfoLoading } = useGetEmployeeAttendanceAdminQuery(user?.empNo || empNo)
-  const { data: leaves, isLoading: isLeavesLoading } =
-    useGetEmployeeLeavesAdminQuery(user?.empNo || empNo, {
+  const { data: attendanceInfo, isLoading: isAttendanceInfoLoading } =
+    useGetEmployeeAttendanceAdminQuery(empNo, {
       refetchOnMountOrArgChange: true,
+      refetchOnReconnect: true,
     });
+  const { data: leaves, isLoading: isLeavesLoading } =
+    useGetEmployeeLeavesAdminQuery(empNo, {
+      refetchOnMountOrArgChange: true,
+      refetchOnReconnect: true,
+    });
+
+  console.log(`attendance - ${attendanceInfo}`);
+  console.log(`leaves - ${leaves}`);
 
   useEffect(() => {
     if (userInfo && attendanceInfo && leaves) {
