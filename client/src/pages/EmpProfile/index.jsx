@@ -24,7 +24,10 @@ function EmpProfile() {
   const { data: user, isLoading: isUserdetailsLoading } =
     useEmployeeDetailsAdminQuery(empNo, {
       refetchOnMountOrArgChange: true,
+      refetchOnReconnect: true,
     });
+
+  console.log(`user empPage - ${user}`);
 
   useEffect(() => {
     if (!userInfo) {
@@ -35,16 +38,16 @@ function EmpProfile() {
         dispatch(setEmployeeDetailsAdmin({ employee: user }));
       }
     }
-  }, [userInfo]);
+  }, []);
 
   if (isUserdetailsLoading) return <Loader />;
   return (
     <div className="h-[90%]">
       <div className="bg-[#EEF2F5]  w-[95%] rounded-xl mt-6 m-auto overflow-y-auto">
         <EmployeeDetails user={user} />
-        <div className='lg:flex'>
-        <AttendanceCalendar user={user} />
-        <AdminLeaveAllocation empNo={empNo}/>
+        <div className="lg:flex">
+          <AttendanceCalendar user={user} />
+          <AdminLeaveAllocation empNo={empNo} />
         </div>
         <LeaveBalance user={user} />
         <SalaryDetails />
